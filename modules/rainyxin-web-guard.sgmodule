@@ -1,13 +1,13 @@
-#!name=Rainyxin 网页安全拦截
+#!name=Adcote 网页安全拦截
 #!desc=将域名清单中的广告、诈骗和博彩网站跳转到 block.rainyxin.cyou
-#!author=Rainyxin
+#!author=Adcote
 #!homepage=https://block.rainyxin.cyou
 #!category=Security
 
 [URL Rewrite]
-^https?://(?:[^./:]+\.)*(?:ads\.example\.test|metrics\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=ads&source=shadowrocket 302
-^https?://(?:[^./:]+\.)*(?:fake-login\.example\.test|phishing\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=scam&source=shadowrocket 302
-^https?://(?:[^./:]+\.)*(?:betting\.example\.test|casino\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=gambling&source=shadowrocket 302
+^(https?)://((?:[^./:]+\.)*(?:ads\.example\.test|bat\.bing\.com|cdn\.taboola\.com|cpro\.baidu\.com|cpro\.baidustatic\.com|metrics\.example\.test|pagead2\.googlesyndication\.com|trc\.taboola\.com|widgets\.outbrain\.com)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=ads&source=shadowrocket#target=$1://$2 302
+^(https?)://((?:[^./:]+\.)*(?:fake-login\.example\.test|phishing\.example\.test)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=scam&source=shadowrocket#target=$1://$2 302
+^(https?)://((?:[^./:]+\.)*(?:betting\.example\.test|casino\.example\.test)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=gambling&source=shadowrocket#target=$1://$2 302
 
 [MITM]
-hostname = %APPEND% *.ads.example.test, *.betting.example.test, *.casino.example.test, *.fake-login.example.test, *.metrics.example.test, *.phishing.example.test, ads.example.test, betting.example.test, casino.example.test, fake-login.example.test, metrics.example.test, phishing.example.test
+hostname = %APPEND% *.ads.example.test, *.bat.bing.com, *.betting.example.test, *.casino.example.test, *.cdn.taboola.com, *.cpro.baidu.com, *.cpro.baidustatic.com, *.fake-login.example.test, *.metrics.example.test, *.pagead2.googlesyndication.com, *.phishing.example.test, *.trc.taboola.com, *.widgets.outbrain.com, ads.example.test, bat.bing.com, betting.example.test, casino.example.test, cdn.taboola.com, cpro.baidu.com, cpro.baidustatic.com, fake-login.example.test, metrics.example.test, pagead2.googlesyndication.com, phishing.example.test, trc.taboola.com, widgets.outbrain.com
