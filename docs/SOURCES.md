@@ -41,6 +41,28 @@
 
 这些主机只作为保守的初始清单。加入更多域名前，应确认用途、评估误报和站点破坏风险，并记录来源。
 
+## 用户提供的 200 条广告域名
+
+2026-07-27 导入的 `blocklists/ad-domains.txt` 来自用户指定的本地文件。原文件注明参考：
+
+- EasyList
+- AdGuard DNS Filter
+- Peter Lowe's Ad and tracking server list
+- HaGeZi DNS Blocklists
+- OISD
+- StevenBlack/hosts
+
+本次导入完成了以下可复现检查：
+
+- 200 行有效域名，精确重复为 0。
+- 与原网页广告清单有 8 条重叠；这些条目已从 `domains.csv` 迁移到新清单。
+- 清单内部有 23 个子域已被同清单父域覆盖，但为保留原始审核记录没有删除。
+- 与 App 广告静默拒绝清单的覆盖冲突为 0。
+
+原文件没有携带逐条证据或可验证的生成脚本，因此本项目不声称已经独立重现其“每条至少
+三个来源”或“零误报”结论。诸如 `taboola.com`、`outbrain.com`、`criteo.com`
+等根域可能同时承载广告商官网、文档或管理入口，用户主动访问时也会被拦截。
+
 ## YouTube 边界
 
 - Google Ads 官方说明列出 YouTube 搜索、首页、订阅和播放页中的视频广告位置：

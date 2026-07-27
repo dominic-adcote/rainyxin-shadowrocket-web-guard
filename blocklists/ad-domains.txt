@@ -1,0 +1,244 @@
+# 用户于 2026-07-27 提供的海外广告与追踪域名清单，共 200 条。
+# 原文件注明参考 EasyList、AdGuard DNS Filter、Peter Lowe、HaGeZi、
+# OISD 与 StevenBlack；本项目仅确认格式、数量、重复和跨清单冲突，
+# 不作“零误报”承诺。完整审核说明见 README.md 与 docs/SOURCES.md。
+
+# Google
+doubleclick.net
+googleadservices.com
+googlesyndication.com
+googletagservices.com
+adservice.google.com
+pagead2.googlesyndication.com
+tpc.googlesyndication.com
+2mdn.net
+ad.doubleclick.net
+securepubads.g.doubleclick.net
+adclick.g.doubleclick.net
+adsensecustomsearchads.com
+
+# Meta/Facebook
+an.facebook.com
+pixel.facebook.com
+ads.facebook.com
+tr.facebook.com
+atlassolutions.com
+
+# Amazon
+amazon-adsystem.com
+aax.amazon-adsystem.com
+aax-us-east.amazon-adsystem.com
+assoc-amazon.com
+z-na.amazon-adsystem.com
+aaxads.com
+
+# Microsoft/Bing
+ads.bing.com
+adserver.bing.com
+ads.msn.com
+bat.bing.com
+adnxs.com
+
+# Twitter/X
+ads.twitter.com
+ads-twitter.com
+static.ads-twitter.com
+ads-api.twitter.com
+analytics.twitter.com
+
+# AppNexus/Xandr
+adnxs-simple.com
+ib.adnxs.com
+secure.adnxs.com
+appnexus.com
+
+# Criteo
+criteo.com
+criteo.net
+static.criteo.net
+bidswitch.net
+cas.criteo.com
+dis.criteo.com
+
+# Taboola
+taboola.com
+trc.taboola.com
+cdn.taboola.com
+nr.taboola.com
+api.taboola.com
+
+# Outbrain
+outbrain.com
+widgets.outbrain.com
+log.outbrain.com
+outbrainimg.com
+amplify.outbrain.com
+
+# Programmatic advertising
+rubiconproject.com
+magnite.com
+pubmatic.com
+ads.pubmatic.com
+openx.net
+openx.com
+casalemedia.com
+indexww.com
+advertising.com
+adsrvr.org
+thetradedesk.com
+smartadserver.com
+lijit.com
+sovrn.com
+yieldmo.com
+media.net
+sharethrough.com
+33across.com
+3lift.com
+triplelift.com
+gumgum.com
+mathtag.com
+mediamath.com
+turn.com
+contextweb.com
+fastclick.net
+yieldmanager.com
+
+# Tracking and audience measurement
+scorecardresearch.com
+quantserve.com
+quantcount.com
+2o7.net
+omtrdc.net
+demdex.net
+everesttech.net
+adform.com
+adform.net
+adformdsp.net
+serving-sys.com
+bs.serving-sys.com
+eyeblaster.com
+mediaplex.com
+conversantmedia.com
+dotomi.com
+atdmt.com
+mookie1.com
+exelator.com
+bluekai.com
+bkrtx.com
+crwdcntrl.net
+krxd.net
+rlcdn.com
+effectivemeasure.net
+
+# Ad verification and brand safety
+moatads.com
+doubleverify.com
+integralads.com
+adsafeprotected.com
+adloox.com
+adlooxtracking.com
+grapeshot.co.uk
+pixalate.com
+confiant.com
+iasds.com
+
+# Video advertising
+spotxchange.com
+freewheel.tv
+fwmrm.net
+innovid.com
+springserve.com
+teads.tv
+flashtalking.com
+tremorhub.com
+adap.tv
+extremereach.io
+vidoomy.com
+
+# Mobile advertising
+admob.com
+adcolony.com
+applovin.com
+vungle.com
+ironsrc.com
+supersonicads.com
+chartboost.com
+inmobi.com
+mopub.com
+tapjoy.com
+startappservice.com
+millennialmedia.com
+smaato.net
+smaato.com
+fyber.com
+
+# Pop-up advertising
+propellerads.com
+popcash.net
+popads.net
+adcash.com
+adsterra.com
+clickadu.com
+hilltopads.com
+exoclick.com
+exosrv.com
+trafficfactory.biz
+juicyads.com
+plugrush.com
+trafficjunky.com
+ero-advertising.com
+adxpansion.com
+trafficstars.com
+revcontent.com
+mgid.com
+zergnet.com
+
+# Redirect and remarketing
+adroll.com
+steelhouse.com
+perfectaudience.com
+owneriq.net
+zemanta.com
+adblade.com
+content.ad
+nativo.com
+dianomi.com
+liveintent.com
+retargetly.com
+tribalfusion.com
+rhythmone.com
+
+# DMP/data platforms
+lotame.com
+bombora.com
+tapad.com
+drawbridge.com
+agkn.com
+eyeota.net
+ml314.com
+
+# Ad creative and serving
+celtra.com
+adtech.com
+adtechus.com
+sonobi.com
+brightcom.com
+undertone.com
+kargo.com
+adpushup.com
+adbutler.com
+bounceexchange.com
+
+# Affiliate tracking
+buysellads.com
+buysellads.net
+carbonads.net
+jdoqocy.com
+dpbolvw.net
+tkqlhce.com
+
+# Other high-confidence advertising
+zedo.com
+stackadapt.com
+liadm.com
+adthrive.com

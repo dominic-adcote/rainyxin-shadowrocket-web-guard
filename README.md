@@ -20,6 +20,7 @@
 
 ```text
 blocklists/domains.csv              分类域名清单（人工维护）
+blocklists/ad-domains.txt           本地导入的 200 条网页广告域名
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
@@ -92,11 +93,21 @@ gambling,betting.example.test,示例博彩域名
 StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交叉确认；只有同时出现且
 域名名称含有明确博彩语义的条目才会加入。
 
+批量网页广告域名维护在 `blocklists/ad-domains.txt`。文件允许空行和以 `#` 开头的
+注释，其余每行必须是一个纯域名。构建时会与 `domains.csv` 合并并进行全局精确去重。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-27）：网页广告域名 11 条，App 广告规则 30 条，博彩域名 200 条。
+当前审核统计（2026-07-27）：网页广告域名 203 条，App 广告规则 30 条，博彩域名 200 条。
 
-广告部分仅加入服务商文档能够明确确认用途的主机：
+网页广告清单由两部分组成：
+
+- 本地导入清单 200 条，覆盖 Google、Meta、Amazon、Microsoft、Xandr、Criteo、
+  Taboola、Outbrain、程序化交易平台、测量追踪、视频广告、移动广告和联盟营销等。
+- 原人工清单还有 3 条未包含在导入文件中的独立域名：
+  `syndicatedsearch.goog`、`cpro.baidu.com`、`cpro.baidustatic.com`。
+
+以下是原人工审核中用途经服务商资料确认的代表性域名：
 
 - Google AdSense/Ads：`googlesyndication.com`、`googleadservices.com`
 - Google DoubleClick：`doubleclick.net`
@@ -108,7 +119,12 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
 
 广告域名通常作为第三方资源加载。命中后可阻止广告资源，但不保证每次都会触发顶层页面跳转。
 
-项目约定：每次修改 `domains.csv`、`app-ad-domains.csv` 或
+导入文件自述参考 EasyList、AdGuard DNS Filter、Peter Lowe、HaGeZi、OISD 和
+StevenBlack。本项目已确认其包含 200 个合法格式的唯一域名、与现有 App 清单无冲突，
+但没有采纳原文件的“零误报”承诺。部分根域同时承载广告商官网或管理后台，启用后访问
+这些页面也会被拦截。
+
+项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`app-ad-domains.csv` 或
 `gambling-domains.csv`，都必须同步更新本节的审核日期和数量。`npm run validate`
 会校验三项数量，防止 README 与实际清单不一致。
 

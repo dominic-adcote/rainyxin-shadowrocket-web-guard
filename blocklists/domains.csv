@@ -1,15 +1,7 @@
 category,domain,note
 ads,ads.example.test,演示广告域名
 ads,metrics.example.test,演示广告统计域名
-ads,googlesyndication.com,Google AdSense 广告投放
-ads,googleadservices.com,Google Ads 点击与转化请求
-ads,doubleclick.net,Google 广告投放与点击跟踪
-ads,adsensecustomsearchads.com,Google 搜索广告投放
 ads,syndicatedsearch.goog,Google 搜索广告投放
-ads,cdn.taboola.com,Taboola 内容推荐广告
-ads,trc.taboola.com,Taboola 推荐与广告请求
-ads,widgets.outbrain.com,Outbrain 推荐广告组件
-ads,bat.bing.com,Microsoft Advertising UET
 ads,cpro.baidu.com,百度联盟
 ads,cpro.baidustatic.com,百度联盟静态资源
 scam,phishing.example.test,演示诈骗域名

@@ -7,6 +7,7 @@ import {
   deduplicate,
   parseAppAdCsv,
   parseCsv,
+  parseDomainList,
   parseGamblingCsv,
 } from "../scripts/lib.mjs";
 
@@ -110,6 +111,38 @@ casino.example.test,stevenblack-mit+hagezi-cross-check,双源交叉确认`);
   assert.throws(
     () => parseGamblingCsv("domain,source,note\ncasino.example.test,,错误"),
     /来源为空/,
+  );
+});
+
+test("解析带注释的纯域名广告清单", () => {
+  const entries = parseDomainList(
+    "# 广告来源\nAD.EXAMPLE.TEST\n\ntracker.example.test.",
+    "ads",
+    "local-audit",
+  );
+
+  assert.deepEqual(
+    entries.map(({ category, domain, source }) => ({
+      category,
+      domain,
+      source,
+    })),
+    [
+      {
+        category: "ads",
+        domain: "ad.example.test",
+        source: "local-audit",
+      },
+      {
+        category: "ads",
+        domain: "tracker.example.test",
+        source: "local-audit",
+      },
+    ],
+  );
+  assert.throws(
+    () => parseDomainList("https://ads.example.test", "ads", "local-audit"),
+    /域名无效/,
   );
 });
 

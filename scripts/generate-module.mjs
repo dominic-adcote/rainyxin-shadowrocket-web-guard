@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
   buildModule,
   deduplicate,
+  readAdEntries,
   readAppAdEntries,
   readEntries,
   readGamblingEntries,
@@ -11,13 +12,15 @@ import {
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
+const adListPath = resolve(projectRoot, "blocklists/ad-domains.txt");
 const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const outputPath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
 
 const baseEntries = await readEntries(csvPath);
+const adEntries = await readAdEntries(adListPath);
 const gamblingEntries = await readGamblingEntries(gamblingCsvPath);
-const entries = deduplicate([...baseEntries, ...gamblingEntries]);
+const entries = deduplicate([...baseEntries, ...adEntries, ...gamblingEntries]);
 const appAdEntries = await readAppAdEntries(appAdCsvPath);
 const moduleText = buildModule(entries, appAdEntries);
 
@@ -26,5 +29,6 @@ await writeFile(outputPath, moduleText, "utf8");
 
 console.log(`已生成 ${outputPath}`);
 console.log(`已包含 ${entries.length} 个域名`);
+console.log(`其中包含 ${adEntries.length} 个本地导入广告域名`);
 console.log(`其中包含 ${gamblingEntries.length} 个双源复核博彩域名`);
 console.log(`已包含 ${appAdEntries.length} 条 App 广告静默拒绝规则`);

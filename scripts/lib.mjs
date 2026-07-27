@@ -132,6 +132,38 @@ export function parseGamblingCsv(text) {
   });
 }
 
+export function parseDomainList(text, category, source) {
+  if (!ALLOWED_CATEGORIES.includes(category)) {
+    throw new Error(`域名清单类别无效：${category}`);
+  }
+  if (!source?.trim()) {
+    throw new Error("域名清单来源为空");
+  }
+
+  return text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"))
+    .map((rawDomain, index) => {
+      const domain = rawDomain.toLowerCase().replace(/\.$/, "");
+
+      if (!DOMAIN_PATTERN.test(domain)) {
+        throw new Error(`第 ${index + 1} 条域名无效：${rawDomain}`);
+      }
+      if (domain === BLOCK_PAGE_HOST || BLOCK_PAGE_HOST.endsWith(`.${domain}`)) {
+        throw new Error(`第 ${index + 1} 条会拦截拦截页自身：${domain}`);
+      }
+
+      return {
+        category,
+        domain,
+        source: source.trim(),
+        note: "",
+      };
+    });
+}
+
 export function deduplicate(entries, key = ({ domain }) => domain) {
   const seen = new Set();
 
@@ -251,4 +283,11 @@ export async function readAppAdEntries(csvPath) {
 export async function readGamblingEntries(csvPath) {
   const text = await readFile(csvPath, "utf8");
   return deduplicate(parseGamblingCsv(text));
+}
+
+export async function readAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseDomainList(text, "ads", "user-local-audit-2026-07-27"),
+  );
 }
