@@ -2,8 +2,10 @@
 
 ## StevenBlack/hosts
 
-`blocklists/gambling-domains.csv` 中的 200 条域名均取自 StevenBlack/hosts 的
-`gambling-only` 数据，并使用 HaGeZi Gambling DNS Blocklist 做独立交叉复核。
+`blocklists/gambling-domains.csv` 中的 200 条域名取自 StevenBlack/hosts 的
+`gambling-only` 数据；`blocklists/overseas-ad-domains-100.txt` 中的 100 条域名
+取自 StevenBlack/hosts 主清单。两批数据分别使用 HaGeZi Gambling DNS Blocklist
+和 Multi LIGHT 做独立交叉复核。
 
 Source: <https://github.com/StevenBlack/hosts>
 

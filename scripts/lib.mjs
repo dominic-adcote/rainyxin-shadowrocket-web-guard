@@ -317,3 +317,10 @@ export async function readCnAdEntries(listPath) {
     parseDomainList(text, "ads", "user-cn-audit-2026-07-27"),
   );
 }
+
+export async function readOverseasAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseDomainList(text, "ads", "stevenblack-mit+hagezi-light-cross-check"),
+  );
+}
