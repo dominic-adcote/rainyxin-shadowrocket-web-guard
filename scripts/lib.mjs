@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
-export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}/blocked`;
+export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}:9999/blocked`;
 
 const DOMAIN_PATTERN =
   /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
@@ -71,8 +71,8 @@ export function buildModule(entries) {
     if (domains.length === 0) continue;
 
     const alternatives = domains.map(escapeRegex).join("|");
-    const pattern = `^https?://(?:[^./:]+\\.)*(?:${alternatives})(?::\\d+)?(?:/|$)`;
-    const target = `${BLOCK_PAGE_BASE}?category=${category}&source=shadowrocket`;
+    const pattern = `^(https?)://((?:[^./:]+\\.)*(?:${alternatives})(?::\\d+)?(?:[/?].*)?)$`;
+    const target = `${BLOCK_PAGE_BASE}?category=${category}&source=shadowrocket#target=$1://$2`;
     rewriteLines.push(`${pattern} ${target} 302`);
   }
 
@@ -81,9 +81,9 @@ export function buildModule(entries) {
     .sort();
 
   return [
-    "#!name=Rainyxin 网页安全拦截",
+    "#!name=Adcote 网页安全拦截",
     "#!desc=将域名清单中的广告、诈骗和博彩网站跳转到 block.rainyxin.cyou",
-    "#!author=Rainyxin",
+    "#!author=Adcote",
     "#!homepage=https://block.rainyxin.cyou",
     "#!category=Security",
     "",
