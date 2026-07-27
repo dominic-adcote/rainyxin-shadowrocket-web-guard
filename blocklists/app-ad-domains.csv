@@ -1,0 +1,31 @@
+provider,match,domain,note
+腾讯优量汇,exact,adsmind.apdcdn.tc.qq.com,广告素材分发
+腾讯优量汇,exact,adsmind.gdtimg.com,广告素材分发
+腾讯优量汇,exact,mi.gdt.qq.com,移动广告请求
+腾讯优量汇,exact,v2mi.gdt.qq.com,移动广告请求
+腾讯优量汇,exact,win.gdt.qq.com,移动广告请求
+腾讯优量汇,exact,pgdt.gtimg.cn,广告素材 CDN
+腾讯优量汇,exact,pgdt.ugdtimg.com,广告素材 CDN
+腾讯优量汇,exact,sdk.e.qq.com,广告 SDK 服务
+腾讯优量汇,exact,tangram.e.qq.com,广告 SDK 服务
+腾讯优量汇,exact,p.l.qq.com,广告投放服务
+腾讯优量汇,exact,us.l.qq.com,广告投放服务
+穿山甲,suffix,pangolin-dsp-toutiao.com,广告投放
+穿山甲,suffix,pangolin-dsp-toutiao-b.com,广告投放备用域名
+穿山甲,suffix,pangolin-sdk-toutiao.com,广告 SDK 服务
+穿山甲,suffix,pangolin-sdk-toutiao-b.com,广告 SDK 备用域名
+穿山甲,suffix,pangolin-sdk-toutiao1.com,广告 SDK 备用域名
+穿山甲,exact,pangolin.snssdk.com,广告 SDK 服务
+穿山甲,suffix,panplayable-toutiao.com,互动广告素材
+穿山甲,suffix,panplayable-toutiao-b.com,互动广告素材备用域名
+穿山甲,suffix,pglstatp-sdk-toutiao.com,广告 SDK 统计
+穿山甲,suffix,pglstatp-snssdk-toutiao.com,广告 SDK 统计
+穿山甲,suffix,pglstatp-toutiao.com,广告统计
+穿山甲,suffix,pglstatp-toutiao-b.com,广告统计备用域名
+百度百青藤,exact,afd.baidu.com,App 广告投放
+百度百青藤,exact,afdconf.baidu.com,App 广告配置
+百度百青藤,exact,mobads.baidu.com,移动广告服务
+百度百青藤,exact,mobads-logs.baidu.com,移动广告统计
+百度百青藤,exact,mobads-pre-config.cdn.bcebos.com,移动广告预配置
+Unity Ads,exact,iads.unity3d.com,移动广告服务
+Unity Ads,exact,unityads.unity3d.com,移动广告服务
