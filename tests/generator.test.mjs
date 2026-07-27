@@ -19,6 +19,8 @@ gambling,casino.example.test,博彩`);
   assert.match(moduleText, /category=ads&source=shadowrocket/);
   assert.match(moduleText, /category=scam&source=shadowrocket/);
   assert.match(moduleText, /category=gambling&source=shadowrocket/);
+  assert.match(moduleText, /block\.rainyxin\.cyou:9999\/blocked/);
+  assert.match(moduleText, /#target=\$1:\/\/\$2/);
   assert.match(moduleText, /hostname = %APPEND%/);
 });
 
@@ -34,6 +36,7 @@ test("匹配根域名和任意子域名", () => {
   assert.equal(regex.test("https://ads.example.test/"), true);
   assert.equal(regex.test("https://cdn.ads.example.test/banner"), true);
   assert.equal(regex.test("https://a.b.c.ads.example.test/banner"), true);
+  assert.equal(regex.test("https://ads.example.test?campaign=1"), true);
   assert.equal(regex.test("https://notads.example.test/"), false);
 });
 
