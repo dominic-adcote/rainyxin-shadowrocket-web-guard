@@ -21,6 +21,7 @@
 ```text
 blocklists/domains.csv              分类域名清单（人工维护）
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
+blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
 deploy/                             systemd 与 Nginx 部署模板
@@ -87,9 +88,15 @@ gambling,betting.example.test,示例博彩域名
 
 保存后运行 `npm run build` 重新生成模组。
 
+博彩域名单独维护在 `blocklists/gambling-domains.csv`，每条必须记录来源。当前批次以
+StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交叉确认；只有同时出现且
+域名名称含有明确博彩语义的条目才会加入。
+
 ## 已审核的广告网络域名
 
-当前仅加入服务商文档能够明确确认用途的主机：
+当前审核统计（2026-07-27）：网页广告域名 11 条，App 广告规则 30 条，博彩域名 200 条。
+
+广告部分仅加入服务商文档能够明确确认用途的主机：
 
 - Google AdSense/Ads：`googlesyndication.com`、`googleadservices.com`
 - Google DoubleClick：`doubleclick.net`
@@ -100,6 +107,21 @@ gambling,betting.example.test,示例博彩域名
 - 百度联盟：`cpro.baidu.com`、`cpro.baidustatic.com`
 
 广告域名通常作为第三方资源加载。命中后可阻止广告资源，但不保证每次都会触发顶层页面跳转。
+
+项目约定：每次修改 `domains.csv`、`app-ad-domains.csv` 或
+`gambling-domains.csv`，都必须同步更新本节的审核日期和数量。`npm run validate`
+会校验三项数量，防止 README 与实际清单不一致。
+
+## 已审核的博彩域名
+
+- 本批恰好 200 条，完整数据见 `blocklists/gambling-domains.csv`。
+- 收录来源：[StevenBlack gambling-only hosts](https://github.com/StevenBlack/hosts/tree/master/alternates/gambling-only)，许可证为 MIT。
+- 交叉复核：[HaGeZi Gambling DNS Blocklist](https://github.com/hagezi/dns-blocklists#gambling)，不导入只在 HaGeZi 中出现的条目。
+- 只保留名称中含 `bet`、`casino`、`poker`、`slot`、`bingo`、`lotto`、
+  `lottery`、`gambl`、`jackpot`、`roulette`、`sportsbook`、`bookmaker`
+  或 `wager` 的双源交集。
+- `91视频 / 91porn` 的公开分类是成人内容而非博彩，因此没有为凑数而归入博彩清单。
+- 规则按每 40 个域名拆分；命中后仍使用 `category=gambling` 跳转至拦截页。
 
 ## Google 搜索与 YouTube
 
@@ -140,10 +162,12 @@ npm run start:block-page
 
 ## 后续待办
 
-- 接入可信且有许可证的诈骗和博彩域名源。
+- 接入可信且有许可证的诈骗域名源。
+- 为博彩清单增加定期复核、失效域名清理和误报申诉流程。
 - 增加误报申诉、临时放行和清单回滚机制。
 - 用真实 iPhone + Shadowrocket 完成端到端测试。
 
 ## 许可证
 
-[MIT](LICENSE)
+[MIT](LICENSE)。第三方清单的来源与许可说明见
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

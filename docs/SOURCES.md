@@ -65,3 +65,21 @@ YouTube 的具体播放器 JSON 字段和同域广告路径属于客户端实现
 
 本项目没有整表导入第三方清单，只人工选取广告用途较明确的条目。腾讯旗下大量正常服务
 共用 `qq.com` 与 `gtimg.com`，因此只封锁清单列出的精确主机。
+
+## 博彩域名
+
+- 收录来源：StevenBlack `gambling-only` hosts：
+  <https://github.com/StevenBlack/hosts/tree/master/alternates/gambling-only>
+- 交叉复核：HaGeZi Gambling DNS Blocklist：
+  <https://github.com/hagezi/dns-blocklists#gambling>
+
+2026-07-27 批次从两份清单的 3,597 个交叉命中中选出 200 条。选取时进一步要求域名
+名称含明确博彩语义，并在 `casino`、`bet`、`poker`、`slot`、`bingo`、`lotto`、
+`lottery`、`gambl`、`jackpot`、`roulette`、`sportsbook`、`bookmaker` 和
+`wager` 关键词组之间轮换，减少单一站点镜像对清单的占用。
+
+StevenBlack 是这 200 条数据的许可来源；HaGeZi 只用于独立交叉复核，没有收录只存在于
+HaGeZi 的域名。第三方许可声明见 `THIRD_PARTY_NOTICES.md`。
+
+“91视频 / 91porn”的公开资料将其分类为成人视频网站，不是博彩网站。本项目没有因为
+关键词搜索而将其错误归入博彩类别；若将来增加成人内容类别，应另设清单和独立策略。

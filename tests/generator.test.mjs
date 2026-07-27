@@ -7,6 +7,7 @@ import {
   deduplicate,
   parseAppAdCsv,
   parseCsv,
+  parseGamblingCsv,
 } from "../scripts/lib.mjs";
 
 test("按类别生成三条重定向规则", () => {
@@ -94,6 +95,41 @@ test("拒绝网页跳转与 App 静默清单重叠", () => {
     () => assertNoCrossListOverlap(entries, appAdEntries),
     /清单重叠/,
   );
+});
+
+test("解析带来源的博彩清单并拒绝缺失来源", () => {
+  const entries = parseGamblingCsv(`domain,source,note
+casino.example.test,stevenblack-mit+hagezi-cross-check,双源交叉确认`);
+
+  assert.deepEqual(entries[0], {
+    category: "gambling",
+    domain: "casino.example.test",
+    source: "stevenblack-mit+hagezi-cross-check",
+    note: "双源交叉确认",
+  });
+  assert.throws(
+    () => parseGamblingCsv("domain,source,note\ncasino.example.test,,错误"),
+    /来源为空/,
+  );
+});
+
+test("大批量博彩域名按 40 条分段生成", () => {
+  const entries = Array.from({ length: 81 }, (_, index) => ({
+    category: "gambling",
+    domain: `casino-${index}.example.test`,
+    note: "测试",
+  }));
+  const moduleText = buildModule(entries);
+  const gamblingLines = moduleText
+    .split("\n")
+    .filter((line) => line.includes("category=gambling"));
+
+  assert.equal(gamblingLines.length, 3);
+  assert.match(gamblingLines[0], /casino-0\\\.example\\\.test/);
+  assert.match(moduleText, /casino-80\\\.example\\\.test/);
+  for (const line of gamblingLines) {
+    assert.ok((line.match(/casino-/g) ?? []).length <= 40);
+  }
 });
 
 test("匹配根域名和任意子域名", () => {

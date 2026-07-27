@@ -4,6 +4,7 @@ export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
 export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}:9999/blocked`;
 export const APP_AD_MATCH_TYPES = ["exact", "suffix"];
+export const REWRITE_DOMAIN_CHUNK_SIZE = 40;
 export const SCRIPT_BASE =
   "https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/scripts";
 
@@ -98,6 +99,39 @@ export function parseAppAdCsv(text) {
   });
 }
 
+export function parseGamblingCsv(text) {
+  const lines = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"));
+
+  if (lines.shift()?.toLowerCase() !== "domain,source,note") {
+    throw new Error(
+      "gambling-domains.csv 必须以 domain,source,note 作为表头",
+    );
+  }
+
+  return lines.map((line, index) => {
+    const [rawDomain, rawSource, ...noteParts] = line.split(",");
+    const domain = rawDomain?.trim().toLowerCase().replace(/\.$/, "");
+    const source = rawSource?.trim();
+    const note = noteParts.join(",").trim();
+
+    if (!domain || !DOMAIN_PATTERN.test(domain)) {
+      throw new Error(`第 ${index + 2} 行域名无效：${rawDomain ?? ""}`);
+    }
+    if (!source) {
+      throw new Error(`第 ${index + 2} 行来源为空`);
+    }
+    if (domain === BLOCK_PAGE_HOST || BLOCK_PAGE_HOST.endsWith(`.${domain}`)) {
+      throw new Error(`第 ${index + 2} 行会拦截拦截页自身：${domain}`);
+    }
+
+    return { category: "gambling", domain, source, note };
+  });
+}
+
 export function deduplicate(entries, key = ({ domain }) => domain) {
   const seen = new Set();
 
@@ -152,10 +186,20 @@ export function buildModule(entries, appAdEntries = []) {
     const domains = grouped[category];
     if (domains.length === 0) continue;
 
-    const alternatives = domains.map(escapeRegex).join("|");
-    const pattern = `^(https?)://((?:[^./:]+\\.)*(?:${alternatives})(?::\\d+)?(?:[/?].*)?)$`;
-    const target = `${BLOCK_PAGE_BASE}?category=${category}&source=shadowrocket#target=$1://$2`;
-    rewriteLines.push(`${pattern} ${target} 302`);
+    for (
+      let offset = 0;
+      offset < domains.length;
+      offset += REWRITE_DOMAIN_CHUNK_SIZE
+    ) {
+      const domainChunk = domains.slice(
+        offset,
+        offset + REWRITE_DOMAIN_CHUNK_SIZE,
+      );
+      const alternatives = domainChunk.map(escapeRegex).join("|");
+      const pattern = `^(https?)://((?:[^./:]+\\.)*(?:${alternatives})(?::\\d+)?(?:[/?].*)?)$`;
+      const target = `${BLOCK_PAGE_BASE}?category=${category}&source=shadowrocket#target=$1://$2`;
+      rewriteLines.push(`${pattern} ${target} 302`);
+    }
   }
 
   const hostnames = entries
@@ -202,4 +246,9 @@ export async function readAppAdEntries(csvPath) {
     parseAppAdCsv(text),
     ({ match, domain }) => `${match}:${domain}`,
   );
+}
+
+export async function readGamblingEntries(csvPath) {
+  const text = await readFile(csvPath, "utf8");
+  return deduplicate(parseGamblingCsv(text));
 }
