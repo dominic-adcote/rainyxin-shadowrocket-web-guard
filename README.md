@@ -14,11 +14,13 @@
 - Google 搜索网页会隐藏已识别的文字广告和购物广告容器。
 - YouTube 会拒绝独立广告统计端点，并从 JSON 播放器响应中移除已知广告字段。
 - 不封锁 `googlevideo.com`，因为它同时承载正常视频和广告媒体。
+- App 开屏广告使用 `[Rule]` 静默 `REJECT`，不会打开或加载拦截页。
 
 ## 项目结构
 
 ```text
 blocklists/domains.csv              分类域名清单（人工维护）
+blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
 deploy/                             systemd 与 Nginx 部署模板
@@ -108,6 +110,21 @@ gambling,betting.example.test,示例博彩域名
 - YouTube 官方可能检测广告拦截并限制播放。若出现播放器报错，可先停用模组确认。
 - 模组不会封锁 `youtube.com`、`youtubei.googleapis.com` 或 `googlevideo.com` 整个域名，
   只处理明确的路径与响应字段。
+
+## App 开屏广告
+
+开屏广告使用独立清单生成 Shadowrocket `[Rule]`：
+
+```text
+DOMAIN,mi.gdt.qq.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
+```
+
+- `exact` 只拒绝一个精确主机，适合腾讯等共用大型根域的服务。
+- `suffix` 拒绝专用广告根域及其子域，只用于用途明确的广告 SDK 域名。
+- 规则在域名路由层直接丢弃请求，不跳转 `block.rainyxin.cyou`，也不加入 MITM。
+- 首批覆盖腾讯优量汇、穿山甲、百度百青藤和 Unity Ads。
+- 屏蔽广告 SDK 可能同时影响激励视频；需要通过观看广告领取奖励的 App 可临时停用模组。
 
 ## 拦截页
 

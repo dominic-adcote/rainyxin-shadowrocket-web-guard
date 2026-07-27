@@ -1,8 +1,40 @@
 #!name=Adcote 网页安全拦截
-#!desc=将域名清单中的广告、诈骗和博彩网站跳转到 block.rainyxin.cyou
+#!desc=网页风险跳转到安全提示页，App 开屏广告静默拒绝
 #!author=Adcote
 #!homepage=https://block.rainyxin.cyou
 #!category=Security
+
+[Rule]
+DOMAIN,adsmind.apdcdn.tc.qq.com,REJECT
+DOMAIN,adsmind.gdtimg.com,REJECT
+DOMAIN,afd.baidu.com,REJECT
+DOMAIN,afdconf.baidu.com,REJECT
+DOMAIN,iads.unity3d.com,REJECT
+DOMAIN,mi.gdt.qq.com,REJECT
+DOMAIN,mobads-logs.baidu.com,REJECT
+DOMAIN,mobads-pre-config.cdn.bcebos.com,REJECT
+DOMAIN,mobads.baidu.com,REJECT
+DOMAIN,p.l.qq.com,REJECT
+DOMAIN,pangolin.snssdk.com,REJECT
+DOMAIN,pgdt.gtimg.cn,REJECT
+DOMAIN,pgdt.ugdtimg.com,REJECT
+DOMAIN,sdk.e.qq.com,REJECT
+DOMAIN,tangram.e.qq.com,REJECT
+DOMAIN,unityads.unity3d.com,REJECT
+DOMAIN,us.l.qq.com,REJECT
+DOMAIN,v2mi.gdt.qq.com,REJECT
+DOMAIN,win.gdt.qq.com,REJECT
+DOMAIN-SUFFIX,pangolin-dsp-toutiao-b.com,REJECT
+DOMAIN-SUFFIX,pangolin-dsp-toutiao.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao-b.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao1.com,REJECT
+DOMAIN-SUFFIX,panplayable-toutiao-b.com,REJECT
+DOMAIN-SUFFIX,panplayable-toutiao.com,REJECT
+DOMAIN-SUFFIX,pglstatp-sdk-toutiao.com,REJECT
+DOMAIN-SUFFIX,pglstatp-snssdk-toutiao.com,REJECT
+DOMAIN-SUFFIX,pglstatp-toutiao-b.com,REJECT
+DOMAIN-SUFFIX,pglstatp-toutiao.com,REJECT
 
 [URL Rewrite]
 ^https?:\/\/(?:www|s)\.youtube\.com\/api\/stats\/ads(?:\?|$) - reject

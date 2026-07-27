@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
 export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}:9999/blocked`;
+export const APP_AD_MATCH_TYPES = ["exact", "suffix"];
 export const SCRIPT_BASE =
   "https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/scripts";
 
@@ -60,23 +61,78 @@ export function parseCsv(text) {
   });
 }
 
-export function deduplicate(entries) {
+export function parseAppAdCsv(text) {
+  const lines = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"));
+
+  if (lines.shift()?.toLowerCase() !== "provider,match,domain,note") {
+    throw new Error(
+      "app-ad-domains.csv 必须以 provider,match,domain,note 作为表头",
+    );
+  }
+
+  return lines.map((line, index) => {
+    const [rawProvider, rawMatch, rawDomain, ...noteParts] = line.split(",");
+    const provider = rawProvider?.trim();
+    const match = rawMatch?.trim().toLowerCase();
+    const domain = rawDomain?.trim().toLowerCase().replace(/\.$/, "");
+    const note = noteParts.join(",").trim();
+
+    if (!provider) {
+      throw new Error(`第 ${index + 2} 行广告平台为空`);
+    }
+    if (!APP_AD_MATCH_TYPES.includes(match)) {
+      throw new Error(`第 ${index + 2} 行匹配方式无效：${rawMatch ?? ""}`);
+    }
+    if (!domain || !DOMAIN_PATTERN.test(domain)) {
+      throw new Error(`第 ${index + 2} 行域名无效：${rawDomain ?? ""}`);
+    }
+    if (domain === BLOCK_PAGE_HOST || BLOCK_PAGE_HOST.endsWith(`.${domain}`)) {
+      throw new Error(`第 ${index + 2} 行会拦截拦截页自身：${domain}`);
+    }
+
+    return { provider, match, domain, note };
+  });
+}
+
+export function deduplicate(entries, key = ({ domain }) => domain) {
   const seen = new Set();
 
-  return entries.filter(({ domain }) => {
-    if (seen.has(domain)) {
-      throw new Error(`域名重复：${domain}`);
+  return entries.filter((entry) => {
+    const value = key(entry);
+    if (seen.has(value)) {
+      throw new Error(`域名重复：${value}`);
     }
-    seen.add(domain);
+    seen.add(value);
     return true;
   });
+}
+
+export function assertNoCrossListOverlap(entries, appAdEntries) {
+  for (const { domain: webDomain } of entries) {
+    for (const { domain: appDomain, match } of appAdEntries) {
+      const appCoversWeb =
+        webDomain === appDomain ||
+        (match === "suffix" && webDomain.endsWith(`.${appDomain}`));
+      const webCoversApp = appDomain.endsWith(`.${webDomain}`);
+
+      if (appCoversWeb || webCoversApp) {
+        throw new Error(`网页与 App 广告清单重叠：${webDomain} / ${appDomain}`);
+      }
+    }
+  }
 }
 
 export function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function buildModule(entries) {
+export function buildModule(entries, appAdEntries = []) {
+  assertNoCrossListOverlap(entries, appAdEntries);
+
   const grouped = Object.fromEntries(
     ALLOWED_CATEGORIES.map((category) => [
       category,
@@ -109,10 +165,19 @@ export function buildModule(entries) {
 
   return [
     "#!name=Adcote 网页安全拦截",
-    "#!desc=将域名清单中的广告、诈骗和博彩网站跳转到 block.rainyxin.cyou",
+    "#!desc=网页风险跳转到安全提示页，App 开屏广告静默拒绝",
     "#!author=Adcote",
     "#!homepage=https://block.rainyxin.cyou",
     "#!category=Security",
+    "",
+    "[Rule]",
+    ...appAdEntries
+      .map(({ match, domain }) => [
+        match === "suffix" ? "DOMAIN-SUFFIX" : "DOMAIN",
+        domain,
+        "REJECT",
+      ].join(","))
+      .sort(),
     "",
     "[URL Rewrite]",
     ...rewriteLines,
@@ -129,4 +194,12 @@ export function buildModule(entries) {
 export async function readEntries(csvPath) {
   const text = await readFile(csvPath, "utf8");
   return deduplicate(parseCsv(text));
+}
+
+export async function readAppAdEntries(csvPath) {
+  const text = await readFile(csvPath, "utf8");
+  return deduplicate(
+    parseAppAdCsv(text),
+    ({ match, domain }) => `${match}:${domain}`,
+  );
 }

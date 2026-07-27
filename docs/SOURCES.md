@@ -50,3 +50,18 @@
 
 YouTube 的具体播放器 JSON 字段和同域广告路径属于客户端实现细节，可能随时变化。
 本项目只使用自编写的保守清理器，不复制第三方去广告脚本。
+
+## App 广告网络
+
+- 腾讯优量汇开发者协议确认优量汇 SDK 用于在 App 和网站中展示广告：
+  <https://public.gdtimg.com/adnet-web/static/agreement/%E8%85%BE%E8%AE%AF%E5%B9%BF%E5%91%8A%E4%BC%98%E9%87%8F%E6%B1%87%E5%BC%80%E5%8F%91%E8%80%85%E5%8D%8F%E8%AE%AE-20250514.pdf>
+- V2Fly 社区域名库将腾讯、字节跳动、百度和 Unity 的相关主机标记为广告/追踪用途：
+  <https://github.com/v2fly/domain-list-community/blob/master/data/tencent>
+  <https://github.com/v2fly/domain-list-community/blob/master/data/bytedance>
+  <https://github.com/v2fly/domain-list-community/blob/master/data/baidu>
+  <https://github.com/v2fly/domain-list-community/blob/master/data/unity>
+- 腾讯优量汇常见 GDT 精确请求主机与路径交叉参考：
+  <https://gist.github.com/Y123456-hzy/dd342a1a61daf8c250b112faa1381918>
+
+本项目没有整表导入第三方清单，只人工选取广告用途较明确的条目。腾讯旗下大量正常服务
+共用 `qq.com` 与 `gtimg.com`，因此只封锁清单列出的精确主机。

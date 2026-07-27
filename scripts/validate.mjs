@@ -5,16 +5,19 @@ import {
   ALLOWED_CATEGORIES,
   BLOCK_PAGE_HOST,
   buildModule,
+  readAppAdEntries,
   readEntries,
 } from "./lib.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
+const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
 const modulePath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
 
 const entries = await readEntries(csvPath);
+const appAdEntries = await readAppAdEntries(appAdCsvPath);
 const actual = await readFile(modulePath, "utf8");
-const expected = buildModule(entries);
+const expected = buildModule(entries, appAdEntries);
 
 if (actual !== expected) {
   throw new Error("模组不是由当前清单生成的，请先运行 npm run build");
@@ -33,8 +36,23 @@ if (actual.includes(`${BLOCK_PAGE_HOST},`) || actual.includes(`*.${BLOCK_PAGE_HO
   throw new Error("MITM 清单不得包含拦截页自身");
 }
 
-if (!actual.includes("[URL Rewrite]") || !actual.includes("[MITM]")) {
+if (
+  !actual.includes("[Rule]") ||
+  !actual.includes("[URL Rewrite]") ||
+  !actual.includes("[MITM]")
+) {
   throw new Error("模组缺少必要区段");
 }
 
-console.log(`校验通过：${entries.length} 个域名，${ALLOWED_CATEGORIES.length} 个类别`);
+for (const { match, domain } of appAdEntries) {
+  const ruleType = match === "suffix" ? "DOMAIN-SUFFIX" : "DOMAIN";
+  if (!actual.includes(`${ruleType},${domain},REJECT`)) {
+    throw new Error(`模组缺少 App 广告拒绝规则：${domain}`);
+  }
+}
+
+console.log(
+  `校验通过：${entries.length} 个网页域名，` +
+    `${appAdEntries.length} 条 App 广告规则，` +
+    `${ALLOWED_CATEGORIES.length} 个类别`,
+);
