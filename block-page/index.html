@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Adcote 网页安全提醒</title>
+    <meta
+      name="description"
+      content="Adcote Web Guard 检测到当前网页可能包含广告、诈骗或博彩风险。"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Adcote Web Guard 首页">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Adcote Web Guard</span>
+      </a>
+      <span class="privacy-note">本次检测不会上传原始网址</span>
+    </header>
+
+    <main class="page-shell">
+      <section class="guard-card" aria-labelledby="risk-title">
+        <div class="signal-wrap" aria-hidden="true">
+          <div class="signal-ring signal-ring-outer"></div>
+          <div class="signal-ring signal-ring-inner"></div>
+          <div class="signal-core">
+            <span class="signal-line"></span>
+          </div>
+        </div>
+
+        <p class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="category-label">安全提醒</span>
+        </p>
+
+        <h1 id="risk-title">这个网页已被暂停访问</h1>
+        <p id="risk-description" class="lead">
+          Adcote Web Guard 检测到该地址可能存在风险。建议返回上一页，不要输入密码、
+          验证码或付款信息。
+        </p>
+
+        <div class="target-panel" aria-label="检测详情">
+          <div>
+            <span class="target-label">检测到的目标</span>
+            <strong id="target-host">正在确认…</strong>
+          </div>
+          <span id="risk-chip" class="risk-chip">风险待确认</span>
+        </div>
+
+        <div id="standard-actions" class="actions">
+          <button id="safe-back" class="button button-primary" type="button">
+            返回安全页面
+          </button>
+          <button id="continue-risk" class="button button-quiet" type="button">
+            无视风险，继续访问
+          </button>
+        </div>
+
+        <div id="gambling-actions" class="gambling-actions" hidden>
+          <div class="redirect-progress" aria-hidden="true">
+            <span></span>
+          </div>
+          <p>正在前往浙江省官方违法和不良信息举报入口…</p>
+          <a
+            class="button button-primary"
+            href="https://www.zjjubao.com/report/none"
+            rel="noreferrer"
+          >
+            立即前往官方举报页
+          </a>
+        </div>
+
+        <p id="technical-note" class="technical-note">
+          如果你认为这是误报，可以返回后暂时关闭本模组并提交反馈。
+        </p>
+      </section>
+
+      <section class="trust-grid" aria-label="安全说明">
+        <article>
+          <span class="number">01</span>
+          <h2>先确认域名</h2>
+          <p>诈骗网站常用相似字母、额外连字符或陌生后缀伪装成正规服务。</p>
+        </article>
+        <article>
+          <span class="number">02</span>
+          <h2>不要提供验证码</h2>
+          <p>正规客服不会索要短信验证码，也不会要求通过屏幕共享完成转账。</p>
+        </article>
+        <article>
+          <span class="number">03</span>
+          <h2>保留判断权</h2>
+          <p>拦截基于本地清单，可能存在误报；继续访问前请自行核验来源。</p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <span>Adcote Web Guard</span>
+      <span>Privacy by design · No analytics</span>
+    </footer>
+
+    <dialog id="risk-dialog" aria-labelledby="dialog-title">
+      <form method="dialog">
+        <div class="dialog-icon" aria-hidden="true">!</div>
+        <h2 id="dialog-title">确认继续访问？</h2>
+        <p>
+          你将离开安全提醒页并打开被拦截的网址。该页面可能继续收集信息、诱导付款，
+          或展示高风险内容。
+        </p>
+        <div class="dialog-target">
+          <span>即将访问</span>
+          <strong id="dialog-host">未知地址</strong>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button-primary" value="cancel">取消</button>
+          <button
+            id="confirm-continue"
+            class="button button-danger"
+            value="continue"
+          >
+            我了解风险，继续
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
