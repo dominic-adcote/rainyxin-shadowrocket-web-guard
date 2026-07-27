@@ -1,4 +1,4 @@
-# Rainyxin Shadowrocket Web Guard
+# Adcote Shadowrocket Web Guard
 
 一个面向 Shadowrocket 的网页安全拦截模组。命中本地维护的广告、诈骗或博彩域名后，浏览器会被重定向到：
 
