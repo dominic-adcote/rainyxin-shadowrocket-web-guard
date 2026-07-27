@@ -2,8 +2,6 @@ category,domain,note
 ads,ads.example.test,演示广告域名
 ads,metrics.example.test,演示广告统计域名
 ads,syndicatedsearch.goog,Google 搜索广告投放
-ads,cpro.baidu.com,百度联盟
-ads,cpro.baidustatic.com,百度联盟静态资源
 scam,phishing.example.test,演示诈骗域名
 scam,fake-login.example.test,演示仿冒登录域名
 gambling,betting.example.test,演示博彩域名

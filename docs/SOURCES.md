@@ -63,6 +63,24 @@
 三个来源”或“零误报”结论。诸如 `taboola.com`、`outbrain.com`、`criteo.com`
 等根域可能同时承载广告商官网、文档或管理入口，用户主动访问时也会被拦截。
 
+## 用户提供的 333 条国内广告域名
+
+2026-07-27 导入的 `blocklists/cn-ad-domains.txt` 来自用户指定的本地文件。原文件
+注明参考 EasyList China、AdGuard Chinese Filter、anti-AD、AdRules、CJX's
+Annoyance List、domain-list-community、Peter Lowe 和 HaGeZi。
+
+本次导入完成了以下可复现检查：
+
+- 333 条有效 AdGuard `||domain^` 域名规则，精确重复为 0。
+- 与已有网页清单精确重叠 2 条；这些百度联盟条目已迁移到国内来源清单。
+- 清单内部有 48 组子域已被同清单父域覆盖，为保留来源记录没有删除。
+- 17 个来源域名会与 App 静默规则重叠，因此不加入网页跳转或 MITM。
+- 最终有 316 条国内来源规则进入网页模块，网页广告唯一域名合计 517 条。
+
+被排除出网页规则的条目包括现有腾讯优量汇、穿山甲和百度移动广告规则，以及过宽的
+`gdt.qq.com`、`e.qq.com`。这样可以保留 App 开屏广告静默失败的行为，避免其请求
+加载 HTML 拦截页。原文件同样没有逐条证据或生成脚本，本项目不作“零误报”承诺。
+
 ## YouTube 边界
 
 - Google Ads 官方说明列出 YouTube 搜索、首页、订阅和播放页中的视频广告位置：

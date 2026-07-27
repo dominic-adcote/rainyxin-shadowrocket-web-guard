@@ -144,12 +144,19 @@ export function parseDomainList(text, category, source) {
     .replace(/^\uFEFF/, "")
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"))
-    .map((rawDomain, index) => {
+    .filter(
+      (line) =>
+        line &&
+        !line.startsWith("#") &&
+        !line.startsWith("!"),
+    )
+    .map((rawLine, index) => {
+      const adGuardMatch = rawLine.match(/^\|\|([^^/]+)\^$/);
+      const rawDomain = adGuardMatch?.[1] ?? rawLine;
       const domain = rawDomain.toLowerCase().replace(/\.$/, "");
 
       if (!DOMAIN_PATTERN.test(domain)) {
-        throw new Error(`第 ${index + 1} 条域名无效：${rawDomain}`);
+        throw new Error(`第 ${index + 1} 条域名无效：${rawLine}`);
       }
       if (domain === BLOCK_PAGE_HOST || BLOCK_PAGE_HOST.endsWith(`.${domain}`)) {
         throw new Error(`第 ${index + 1} 条会拦截拦截页自身：${domain}`);
@@ -272,6 +279,18 @@ export async function readEntries(csvPath) {
   return deduplicate(parseCsv(text));
 }
 
+export function filterAppOverlaps(entries, appAdEntries) {
+  return entries.filter(({ domain: webDomain }) =>
+    !appAdEntries.some(({ domain: appDomain, match }) => {
+      const appCoversWeb =
+        webDomain === appDomain ||
+        (match === "suffix" && webDomain.endsWith(`.${appDomain}`));
+      const webCoversApp = appDomain.endsWith(`.${webDomain}`);
+      return appCoversWeb || webCoversApp;
+    }),
+  );
+}
+
 export async function readAppAdEntries(csvPath) {
   const text = await readFile(csvPath, "utf8");
   return deduplicate(
@@ -289,5 +308,12 @@ export async function readAdEntries(listPath) {
   const text = await readFile(listPath, "utf8");
   return deduplicate(
     parseDomainList(text, "ads", "user-local-audit-2026-07-27"),
+  );
+}
+
+export async function readCnAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseDomainList(text, "ads", "user-cn-audit-2026-07-27"),
   );
 }

@@ -21,6 +21,7 @@
 ```text
 blocklists/domains.csv              分类域名清单（人工维护）
 blocklists/ad-domains.txt           本地导入的 200 条网页广告域名
+blocklists/cn-ad-domains.txt        本地导入的 333 条国内广告来源清单
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
@@ -96,16 +97,22 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
 批量网页广告域名维护在 `blocklists/ad-domains.txt`。文件允许空行和以 `#` 开头的
 注释，其余每行必须是一个纯域名。构建时会与 `domains.csv` 合并并进行全局精确去重。
 
+国内广告来源维护在 `blocklists/cn-ad-domains.txt`，支持 AdGuard
+`||domain^` 格式和以 `!` 开头的注释。与 App 静默清单重叠的条目会保留在来源文件中，
+但不会加入网页跳转或 MITM。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-27）：网页广告域名 203 条，App 广告规则 30 条，博彩域名 200 条。
+当前审核统计（2026-07-27）：网页广告域名 517 条，App 广告规则 30 条，博彩域名 200 条。
 
 网页广告清单由两部分组成：
 
 - 本地导入清单 200 条，覆盖 Google、Meta、Amazon、Microsoft、Xandr、Criteo、
   Taboola、Outbrain、程序化交易平台、测量追踪、视频广告、移动广告和联盟营销等。
-- 原人工清单还有 3 条未包含在导入文件中的独立域名：
-  `syndicatedsearch.goog`、`cpro.baidu.com`、`cpro.baidustatic.com`。
+- 国内来源清单共 333 条，其中 316 条进入网页规则；17 条因与 App 静默规则冲突而不
+  进入网页跳转/MITM。该批与已有清单精确重叠 2 条，因此净增 314 条网页广告域名。
+- 原人工清单还有 1 条未包含在两份导入文件中的独立域名：
+  `syndicatedsearch.goog`。
 
 以下是原人工审核中用途经服务商资料确认的代表性域名：
 
@@ -119,14 +126,15 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
 
 广告域名通常作为第三方资源加载。命中后可阻止广告资源，但不保证每次都会触发顶层页面跳转。
 
-导入文件自述参考 EasyList、AdGuard DNS Filter、Peter Lowe、HaGeZi、OISD 和
-StevenBlack。本项目已确认其包含 200 个合法格式的唯一域名、与现有 App 清单无冲突，
-但没有采纳原文件的“零误报”承诺。部分根域同时承载广告商官网或管理后台，启用后访问
-这些页面也会被拦截。
+海外导入文件自述参考 EasyList、AdGuard DNS Filter、Peter Lowe、HaGeZi、OISD 和
+StevenBlack；国内文件自述参考 EasyList China、AdGuard Chinese Filter、anti-AD、
+AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认了格式、
+数量、重复和跨清单冲突，但没有采纳原文件的“零误报”承诺。部分根域同时承载广告商
+官网或管理后台，启用后访问这些页面也会被拦截。
 
-项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`app-ad-domains.csv` 或
-`gambling-domains.csv`，都必须同步更新本节的审核日期和数量。`npm run validate`
-会校验三项数量，防止 README 与实际清单不一致。
+项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`cn-ad-domains.txt`、
+`app-ad-domains.csv` 或 `gambling-domains.csv`，都必须同步更新本节的审核日期
+和数量。`npm run validate` 会校验三项数量，防止 README 与实际清单不一致。
 
 ## 已审核的博彩域名
 
@@ -162,6 +170,7 @@ DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
 - `suffix` 拒绝专用广告根域及其子域，只用于用途明确的广告 SDK 域名。
 - 规则在域名路由层直接丢弃请求，不跳转 `block.rainyxin.cyou`，也不加入 MITM。
 - 首批覆盖腾讯优量汇、穿山甲、百度百青藤和 Unity Ads。
+- 国内广告来源中与本节规则重叠的 17 条不会生成网页跳转或进入 MITM。
 - 屏蔽广告 SDK 可能同时影响激励视频；需要通过观看广告领取奖励的 App 可临时停用模组。
 
 ## 拦截页

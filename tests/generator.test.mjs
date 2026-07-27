@@ -5,6 +5,7 @@ import {
   assertNoCrossListOverlap,
   buildModule,
   deduplicate,
+  filterAppOverlaps,
   parseAppAdCsv,
   parseCsv,
   parseDomainList,
@@ -116,7 +117,7 @@ casino.example.test,stevenblack-mit+hagezi-cross-check,双源交叉确认`);
 
 test("解析带注释的纯域名广告清单", () => {
   const entries = parseDomainList(
-    "# 广告来源\nAD.EXAMPLE.TEST\n\ntracker.example.test.",
+    "# 广告来源\n! AdGuard 标题\n||AD.EXAMPLE.TEST^\n\ntracker.example.test.",
     "ads",
     "local-audit",
   );
@@ -143,6 +144,22 @@ test("解析带注释的纯域名广告清单", () => {
   assert.throws(
     () => parseDomainList("https://ads.example.test", "ads", "local-audit"),
     /域名无效/,
+  );
+});
+
+test("国内广告清单保留 App 静默拦截语义", () => {
+  const webEntries = parseDomainList(
+    "||gdt.qq.com^\n||safe-ad.example.test^",
+    "ads",
+    "cn-audit",
+  );
+  const appEntries = parseAppAdCsv(`provider,match,domain,note
+腾讯优量汇,exact,mi.gdt.qq.com,移动广告请求`);
+  const filtered = filterAppOverlaps(webEntries, appEntries);
+
+  assert.deepEqual(
+    filtered.map(({ domain }) => domain),
+    ["safe-ad.example.test"],
   );
 });
 

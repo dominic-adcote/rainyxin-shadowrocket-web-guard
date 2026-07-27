@@ -6,8 +6,10 @@ import {
   BLOCK_PAGE_HOST,
   buildModule,
   deduplicate,
+  filterAppOverlaps,
   readAdEntries,
   readAppAdEntries,
+  readCnAdEntries,
   readEntries,
   readGamblingEntries,
 } from "./lib.mjs";
@@ -15,6 +17,7 @@ import {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
 const adListPath = resolve(projectRoot, "blocklists/ad-domains.txt");
+const cnAdListPath = resolve(projectRoot, "blocklists/cn-ad-domains.txt");
 const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const modulePath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
@@ -22,9 +25,16 @@ const readmePath = resolve(projectRoot, "README.md");
 
 const baseEntries = await readEntries(csvPath);
 const adEntries = await readAdEntries(adListPath);
+const cnAdEntries = await readCnAdEntries(cnAdListPath);
 const gamblingEntries = await readGamblingEntries(gamblingCsvPath);
-const entries = deduplicate([...baseEntries, ...adEntries, ...gamblingEntries]);
 const appAdEntries = await readAppAdEntries(appAdCsvPath);
+const activeCnAdEntries = filterAppOverlaps(cnAdEntries, appAdEntries);
+const entries = deduplicate([
+  ...baseEntries,
+  ...adEntries,
+  ...activeCnAdEntries,
+  ...gamblingEntries,
+]);
 const actual = await readFile(modulePath, "utf8");
 const readme = await readFile(readmePath, "utf8");
 const expected = buildModule(entries, appAdEntries);
@@ -69,9 +79,16 @@ if (adEntries.length !== 200) {
   throw new Error(`本地导入广告域名必须恰好为 200 条，当前为 ${adEntries.length} 条`);
 }
 
+if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 316) {
+  throw new Error(
+    `国内广告清单应为 333 条，其中 316 条进入网页规则；` +
+      `当前为 ${cnAdEntries.length}/${activeCnAdEntries.length}`,
+  );
+}
+
 const auditedAdCount = baseEntries.filter(
   ({ category, domain }) => category === "ads" && !domain.endsWith(".test"),
-).length + adEntries.length;
+).length + adEntries.length + activeCnAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
     `App 广告规则 ${appAdEntries.length} 条，博彩域名 ${gamblingEntries.length} 条。`,
