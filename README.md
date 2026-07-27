@@ -22,6 +22,7 @@
 blocklists/domains.csv              分类域名清单（人工维护）
 blocklists/ad-domains.txt           本地导入的 200 条网页广告域名
 blocklists/cn-ad-domains.txt        本地导入的 333 条国内广告来源清单
+blocklists/overseas-ad-domains-100.txt 双源复核的 100 条海外广告增补
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
@@ -101,9 +102,12 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
 `||domain^` 格式和以 `!` 开头的注释。与 App 静默清单重叠的条目会保留在来源文件中，
 但不会加入网页跳转或 MITM。
 
+海外增补批次维护在 `blocklists/overseas-ad-domains-100.txt`。每条必须同时出现在
+StevenBlack/hosts 与 HaGeZi Multi LIGHT，并带有明确广告或追踪语义。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-27）：网页广告域名 517 条，App 广告规则 30 条，博彩域名 200 条。
+当前审核统计（2026-07-27）：网页广告域名 617 条，App 广告规则 30 条，博彩域名 200 条。
 
 网页广告清单由两部分组成：
 
@@ -111,6 +115,8 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
   Taboola、Outbrain、程序化交易平台、测量追踪、视频广告、移动广告和联盟营销等。
 - 国内来源清单共 333 条，其中 316 条进入网页规则；17 条因与 App 静默规则冲突而不
   进入网页跳转/MITM。该批与已有清单精确重叠 2 条，因此净增 314 条网页广告域名。
+- 海外增补批次 100 条，以 StevenBlack/hosts 为 MIT 许可收录来源，并经 HaGeZi
+  Multi LIGHT 交叉确认；该批与现有清单没有覆盖或冲突。
 - 原人工清单还有 1 条未包含在两份导入文件中的独立域名：
   `syndicatedsearch.goog`。
 
@@ -133,8 +139,9 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 官网或管理后台，启用后访问这些页面也会被拦截。
 
 项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`cn-ad-domains.txt`、
-`app-ad-domains.csv` 或 `gambling-domains.csv`，都必须同步更新本节的审核日期
-和数量。`npm run validate` 会校验三项数量，防止 README 与实际清单不一致。
+`overseas-ad-domains-100.txt`、`app-ad-domains.csv` 或
+`gambling-domains.csv`，都必须同步更新本节的审核日期和数量。
+`npm run validate` 会校验三项数量，防止 README 与实际清单不一致。
 
 ## 已审核的博彩域名
 

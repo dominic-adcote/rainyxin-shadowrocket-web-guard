@@ -81,6 +81,23 @@ Annoyance List、domain-list-community、Peter Lowe 和 HaGeZi。
 `gdt.qq.com`、`e.qq.com`。这样可以保留 App 开屏广告静默失败的行为，避免其请求
 加载 HTML 拦截页。原文件同样没有逐条证据或生成脚本，本项目不作“零误报”承诺。
 
+## 海外广告增补 100 条
+
+2026-07-27 增补批次保存在 `blocklists/overseas-ad-domains-100.txt`：
+
+- 收录来源：StevenBlack/hosts：
+  <https://github.com/StevenBlack/hosts>
+- 交叉复核：HaGeZi Multi LIGHT：
+  <https://github.com/hagezi/dns-blocklists>
+
+筛选流程从两份清单的 4,203 个交叉命中开始，排除现有网页、App 和博彩清单的自身及
+父子域覆盖项、中国域名、成人或博彩站点广告主机，再要求名称含 `ad`、`ads`、
+`adserver`、`advertising`、`banner`、`pixel`、`affiliate`、`click`、
+`promo` 或 `tracking` 等明确语义。最终人工选取 100 个不同广告基础设施主体。
+
+StevenBlack/hosts 是这 100 条数据的 MIT 许可来源；HaGeZi Multi LIGHT 仅用于独立
+交叉复核，没有加入只存在于 HaGeZi 的条目。
+
 ## YouTube 边界
 
 - Google Ads 官方说明列出 YouTube 搜索、首页、订阅和播放页中的视频广告位置：

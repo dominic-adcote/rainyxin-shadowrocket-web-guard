@@ -12,12 +12,17 @@ import {
   readCnAdEntries,
   readEntries,
   readGamblingEntries,
+  readOverseasAdEntries,
 } from "./lib.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
 const adListPath = resolve(projectRoot, "blocklists/ad-domains.txt");
 const cnAdListPath = resolve(projectRoot, "blocklists/cn-ad-domains.txt");
+const overseasAdListPath = resolve(
+  projectRoot,
+  "blocklists/overseas-ad-domains-100.txt",
+);
 const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const modulePath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
@@ -26,6 +31,7 @@ const readmePath = resolve(projectRoot, "README.md");
 const baseEntries = await readEntries(csvPath);
 const adEntries = await readAdEntries(adListPath);
 const cnAdEntries = await readCnAdEntries(cnAdListPath);
+const overseasAdEntries = await readOverseasAdEntries(overseasAdListPath);
 const gamblingEntries = await readGamblingEntries(gamblingCsvPath);
 const appAdEntries = await readAppAdEntries(appAdCsvPath);
 const activeCnAdEntries = filterAppOverlaps(cnAdEntries, appAdEntries);
@@ -33,6 +39,7 @@ const entries = deduplicate([
   ...baseEntries,
   ...adEntries,
   ...activeCnAdEntries,
+  ...overseasAdEntries,
   ...gamblingEntries,
 ]);
 const actual = await readFile(modulePath, "utf8");
@@ -86,9 +93,18 @@ if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 316) {
   );
 }
 
+if (overseasAdEntries.length !== 100) {
+  throw new Error(
+    `双源复核海外广告域名必须恰好为 100 条，当前为 ${overseasAdEntries.length} 条`,
+  );
+}
+
 const auditedAdCount = baseEntries.filter(
   ({ category, domain }) => category === "ads" && !domain.endsWith(".test"),
-).length + adEntries.length + activeCnAdEntries.length;
+).length +
+  adEntries.length +
+  activeCnAdEntries.length +
+  overseasAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
     `App 广告规则 ${appAdEntries.length} 条，博彩域名 ${gamblingEntries.length} 条。`,
