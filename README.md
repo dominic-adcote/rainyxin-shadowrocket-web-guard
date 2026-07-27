@@ -1,10 +1,8 @@
 # Adcote Shadowrocket Web Guard
 
-一个面向 Shadowrocket 的网页安全拦截模组。命中本地维护的广告、诈骗或博彩域名后，浏览器会被重定向到：
+一个面向 Shadowrocket 的网页安全拦截模组。命中本地维护的广告、诈骗或博彩域名后，浏览器会被重定向到拦截页。
 
-`https://block.rainyxin.cyou:9999/blocked?category=<类别>&source=shadowrocket`
-
-项目包含可生成、可校验、可导入的 Shadowrocket 模组，以及由英国服务器 `9999` 端口提供 HTTPS 的拦截页。
+项目包含可生成、可校验、可导入的 Shadowrocket 模组，以及由自有服务器提供的 HTTPS 的拦截页。
 
 ## 当前设计
 
@@ -12,9 +10,7 @@
 - 按 `ads`、`scam`、`gambling` 三类生成独立规则。
 - 原始目标只保存在浏览器 URL 片段（`#target=`）中，不会发送给拦截页服务器。
 - “无视风险，继续访问”需要二次确认，并只接受 `http` 或 `https` 目标。
-- 博彩类别会自动转到浙江省互联网违法和不良信息举报中心的匿名举报页。
-- `block.rainyxin.cyou` 永远不会进入拦截清单，避免重定向循环。
-- 清单中的 `.test` 域名只是演示项；部署前应替换或扩充为经审核的正式域名源。
+- 博彩类别会自动转到互联网违法和不良信息举报中心的匿名举报页。
 
 ## 项目结构
 
@@ -111,7 +107,6 @@ npm run start:block-page
 
 ## 后续待办
 
-- 为 `block.rainyxin.cyou:9999` 配置 DNS、HTTPS 并完成服务器部署。
 - 接入可信且有许可证的诈骗和博彩域名源。
 - 增加误报申诉、临时放行和清单回滚机制。
 - 用真实 iPhone + Shadowrocket 完成端到端测试。
