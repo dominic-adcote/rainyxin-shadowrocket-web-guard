@@ -3,6 +3,28 @@ import { readFile } from "node:fs/promises";
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
 export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}:9999/blocked`;
+export const SCRIPT_BASE =
+  "https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/scripts";
+
+const YOUTUBE_AD_ENDPOINTS = [
+  String.raw`^https?:\/\/(?:www|s)\.youtube\.com\/api\/stats\/ads(?:\?|$)`,
+  String.raw`^https?:\/\/www\.youtube\.com\/(?:pagead|ptracking|get_midroll_info)(?:\/|\?|$)`,
+];
+
+const SCRIPT_LINES = [
+  `Adcote Google 搜索广告清理 = type=http-response,requires-body=1,max-size=2097152,engine=jsc,script-path=${SCRIPT_BASE}/google-search-ad-cleaner.js,pattern=^https?:\\/\\/www\\.google\\.(?:com|co\\.uk|com\\.hk|com\\.sg)\\/search(?:\\?|$)`,
+  `Adcote YouTube 播放器广告清理 = type=http-response,requires-body=1,max-size=0,engine=webview,script-path=${SCRIPT_BASE}/youtube-ad-cleaner.js,pattern=^https?:\\/\\/youtubei\\.googleapis\\.com\\/youtubei\\/v1\\/player(?:\\?|$)`,
+];
+
+const SCRIPT_HOSTNAMES = [
+  "s.youtube.com",
+  "www.google.co.uk",
+  "www.google.com",
+  "www.google.com.hk",
+  "www.google.com.sg",
+  "www.youtube.com",
+  "youtubei.googleapis.com",
+];
 
 const DOMAIN_PATTERN =
   /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
@@ -66,6 +88,10 @@ export function buildModule(entries) {
   );
 
   const rewriteLines = [];
+  rewriteLines.push(
+    ...YOUTUBE_AD_ENDPOINTS.map((pattern) => `${pattern} - reject`),
+  );
+
   for (const category of ALLOWED_CATEGORIES) {
     const domains = grouped[category];
     if (domains.length === 0) continue;
@@ -78,6 +104,7 @@ export function buildModule(entries) {
 
   const hostnames = entries
     .flatMap(({ domain }) => [domain, `*.${domain}`])
+    .concat(SCRIPT_HOSTNAMES)
     .sort();
 
   return [
@@ -89,6 +116,9 @@ export function buildModule(entries) {
     "",
     "[URL Rewrite]",
     ...rewriteLines,
+    "",
+    "[Script]",
+    ...SCRIPT_LINES,
     "",
     "[MITM]",
     `hostname = %APPEND% ${hostnames.join(", ")}`,

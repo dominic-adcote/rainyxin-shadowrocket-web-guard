@@ -1,13 +1,13 @@
 {
   "name": "rainyxin-shadowrocket-web-guard",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Shadowrocket module that redirects listed ad, scam, and gambling domains to block.rainyxin.cyou.",
   "type": "module",
   "scripts": {
     "build": "node scripts/generate-module.mjs",
     "validate": "node scripts/validate.mjs",
-    "test": "node --test tests/generator.test.mjs tests/block-page.test.mjs",
+    "test": "node --test tests/generator.test.mjs tests/block-page.test.mjs tests/ad-cleaners.test.mjs",
     "start:block-page": "node block-page/server.mjs",
     "check": "npm run build && npm run validate && npm test"
   },

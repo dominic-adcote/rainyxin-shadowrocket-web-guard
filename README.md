@@ -6,11 +6,14 @@
 
 ## 当前设计
 
-- 使用 Shadowrocket 原生 `[URL Rewrite]` 和 `[MITM]`。
+- 使用 Shadowrocket 原生 `[URL Rewrite]`、`[Script]` 和 `[MITM]`。
 - 按 `ads`、`scam`、`gambling` 三类生成独立规则。
 - 原始目标只保存在浏览器 URL 片段（`#target=`）中，不会发送给拦截页服务器。
 - “无视风险，继续访问”需要二次确认，并只接受 `http` 或 `https` 目标。
 - 博彩类别会自动转到互联网违法和不良信息举报中心的匿名举报页。
+- Google 搜索网页会隐藏已识别的文字广告和购物广告容器。
+- YouTube 会拒绝独立广告统计端点，并从 JSON 播放器响应中移除已知广告字段。
+- 不封锁 `googlevideo.com`，因为它同时承载正常视频和广告媒体。
 
 ## 项目结构
 
@@ -23,6 +26,7 @@ scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
 tests/generator.test.mjs            自动化测试
 tests/block-page.test.mjs           拦截页安全逻辑测试
+tests/ad-cleaners.test.mjs          Google 与 YouTube 清理脚本测试
 docs/THREAT-MODEL.md                能力、隐私和边界说明
 docs/SOURCES.md                     官方跳转和广告域名来源
 ```
@@ -85,13 +89,25 @@ gambling,betting.example.test,示例博彩域名
 
 当前仅加入服务商文档能够明确确认用途的主机：
 
-- Google AdSense：`pagead2.googlesyndication.com`
+- Google AdSense/Ads：`googlesyndication.com`、`googleadservices.com`
+- Google DoubleClick：`doubleclick.net`
+- Google 搜索广告：`adsensecustomsearchads.com`、`syndicatedsearch.goog`
 - Taboola：`cdn.taboola.com`、`trc.taboola.com`
 - Outbrain：`widgets.outbrain.com`
 - Microsoft Advertising：`bat.bing.com`
 - 百度联盟：`cpro.baidu.com`、`cpro.baidustatic.com`
 
 广告域名通常作为第三方资源加载。命中后可阻止广告资源，但不保证每次都会触发顶层页面跳转。
+
+## Google 搜索与 YouTube
+
+- Google 搜索广告清理适用于 `google.com`、`google.co.uk`、`google.com.hk` 和
+  `google.com.sg` 的网页搜索结果。Google 调整页面结构后，选择器可能需要更新。
+- YouTube 清理覆盖网页和 App 常见的 JSON 播放器响应；服务端插入广告、加密/二进制
+  响应或接口变化时可能无法移除。
+- YouTube 官方可能检测广告拦截并限制播放。若出现播放器报错，可先停用模组确认。
+- 模组不会封锁 `youtube.com`、`youtubei.googleapis.com` 或 `googlevideo.com` 整个域名，
+  只处理明确的路径与响应字段。
 
 ## 拦截页
 

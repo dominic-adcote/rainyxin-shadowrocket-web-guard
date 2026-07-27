@@ -5,9 +5,15 @@
 #!category=Security
 
 [URL Rewrite]
-^(https?)://((?:[^./:]+\.)*(?:ads\.example\.test|bat\.bing\.com|cdn\.taboola\.com|cpro\.baidu\.com|cpro\.baidustatic\.com|metrics\.example\.test|pagead2\.googlesyndication\.com|trc\.taboola\.com|widgets\.outbrain\.com)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=ads&source=shadowrocket#target=$1://$2 302
+^https?:\/\/(?:www|s)\.youtube\.com\/api\/stats\/ads(?:\?|$) - reject
+^https?:\/\/www\.youtube\.com\/(?:pagead|ptracking|get_midroll_info)(?:\/|\?|$) - reject
+^(https?)://((?:[^./:]+\.)*(?:ads\.example\.test|adsensecustomsearchads\.com|bat\.bing\.com|cdn\.taboola\.com|cpro\.baidu\.com|cpro\.baidustatic\.com|doubleclick\.net|googleadservices\.com|googlesyndication\.com|metrics\.example\.test|syndicatedsearch\.goog|trc\.taboola\.com|widgets\.outbrain\.com)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=ads&source=shadowrocket#target=$1://$2 302
 ^(https?)://((?:[^./:]+\.)*(?:fake-login\.example\.test|phishing\.example\.test)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=scam&source=shadowrocket#target=$1://$2 302
 ^(https?)://((?:[^./:]+\.)*(?:betting\.example\.test|casino\.example\.test)(?::\d+)?(?:[/?].*)?)$ https://block.rainyxin.cyou:9999/blocked?category=gambling&source=shadowrocket#target=$1://$2 302
 
+[Script]
+Adcote Google 搜索广告清理 = type=http-response,requires-body=1,max-size=2097152,engine=jsc,script-path=https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/scripts/google-search-ad-cleaner.js,pattern=^https?:\/\/www\.google\.(?:com|co\.uk|com\.hk|com\.sg)\/search(?:\?|$)
+Adcote YouTube 播放器广告清理 = type=http-response,requires-body=1,max-size=0,engine=webview,script-path=https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/scripts/youtube-ad-cleaner.js,pattern=^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/player(?:\?|$)
+
 [MITM]
-hostname = %APPEND% *.ads.example.test, *.bat.bing.com, *.betting.example.test, *.casino.example.test, *.cdn.taboola.com, *.cpro.baidu.com, *.cpro.baidustatic.com, *.fake-login.example.test, *.metrics.example.test, *.pagead2.googlesyndication.com, *.phishing.example.test, *.trc.taboola.com, *.widgets.outbrain.com, ads.example.test, bat.bing.com, betting.example.test, casino.example.test, cdn.taboola.com, cpro.baidu.com, cpro.baidustatic.com, fake-login.example.test, metrics.example.test, pagead2.googlesyndication.com, phishing.example.test, trc.taboola.com, widgets.outbrain.com
+hostname = %APPEND% *.ads.example.test, *.adsensecustomsearchads.com, *.bat.bing.com, *.betting.example.test, *.casino.example.test, *.cdn.taboola.com, *.cpro.baidu.com, *.cpro.baidustatic.com, *.doubleclick.net, *.fake-login.example.test, *.googleadservices.com, *.googlesyndication.com, *.metrics.example.test, *.phishing.example.test, *.syndicatedsearch.goog, *.trc.taboola.com, *.widgets.outbrain.com, ads.example.test, adsensecustomsearchads.com, bat.bing.com, betting.example.test, casino.example.test, cdn.taboola.com, cpro.baidu.com, cpro.baidustatic.com, doubleclick.net, fake-login.example.test, googleadservices.com, googlesyndication.com, metrics.example.test, phishing.example.test, s.youtube.com, syndicatedsearch.goog, trc.taboola.com, widgets.outbrain.com, www.google.co.uk, www.google.com, www.google.com.hk, www.google.com.sg, www.youtube.com, youtubei.googleapis.com

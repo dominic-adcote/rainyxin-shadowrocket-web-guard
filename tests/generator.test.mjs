@@ -21,6 +21,11 @@ gambling,casino.example.test,博彩`);
   assert.match(moduleText, /category=gambling&source=shadowrocket/);
   assert.match(moduleText, /block\.rainyxin\.cyou:9999\/blocked/);
   assert.match(moduleText, /#target=\$1:\/\/\$2/);
+  assert.match(moduleText, /www\|s\)\\\.youtube\\\.com/);
+  assert.match(moduleText, /\[Script\]/);
+  assert.match(moduleText, /google-search-ad-cleaner\.js/);
+  assert.match(moduleText, /youtube-ad-cleaner\.js/);
+  assert.match(moduleText, /youtubei\.googleapis\.com/);
   assert.match(moduleText, /hostname = %APPEND%/);
 });
 
