@@ -1,0 +1,7 @@
+category,domain,note
+ads,ads.example.test,演示广告域名
+ads,metrics.example.test,演示广告统计域名
+scam,phishing.example.test,演示诈骗域名
+scam,fake-login.example.test,演示仿冒登录域名
+gambling,betting.example.test,演示博彩域名
+gambling,casino.example.test,演示博彩域名

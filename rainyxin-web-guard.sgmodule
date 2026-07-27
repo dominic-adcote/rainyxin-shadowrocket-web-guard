@@ -1,0 +1,13 @@
+#!name=Rainyxin 网页安全拦截
+#!desc=将域名清单中的广告、诈骗和博彩网站跳转到 block.rainyxin.cyou
+#!author=Rainyxin
+#!homepage=https://block.rainyxin.cyou
+#!category=Security
+
+[URL Rewrite]
+^https?://(?:[^./:]+\.)*(?:ads\.example\.test|metrics\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=ads&source=shadowrocket 302
+^https?://(?:[^./:]+\.)*(?:fake-login\.example\.test|phishing\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=scam&source=shadowrocket 302
+^https?://(?:[^./:]+\.)*(?:betting\.example\.test|casino\.example\.test)(?::\d+)?(?:/|$) https://block.rainyxin.cyou/blocked?category=gambling&source=shadowrocket 302
+
+[MITM]
+hostname = %APPEND% *.ads.example.test, *.betting.example.test, *.casino.example.test, *.fake-login.example.test, *.metrics.example.test, *.phishing.example.test, ads.example.test, betting.example.test, casino.example.test, fake-login.example.test, metrics.example.test, phishing.example.test
