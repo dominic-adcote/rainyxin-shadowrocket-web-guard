@@ -159,7 +159,6 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 - 只保留名称中含 `bet`、`casino`、`poker`、`slot`、`bingo`、`lotto`、
   `lottery`、`gambl`、`jackpot`、`roulette`、`sportsbook`、`bookmaker`
   或 `wager` 的双源交集。
-- `91视频 / 91porn` 的公开分类是成人内容而非博彩，因此没有为凑数而归入博彩清单。
 - 规则按每 40 个域名拆分；命中后仍使用 `category=gambling` 跳转至拦截页。
 
 ## Google 搜索与 YouTube
