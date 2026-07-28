@@ -34,6 +34,7 @@ blocklists/overseas-ad-domains-100.txt 双源复核的 100 条海外广告增补
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 blocklists/imported-app-ad-domains.txt 用户提供的 286 条 App 广告净新增
 blocklists/imported-special-app-ad-domains.csv QQ 音乐/京东/墨迹天气 43 条精确规则
+blocklists/imported-qqmusic-extra-app-ad-domains.csv TME 生态 17 条补充精确规则
 blocklists/imported-global-ad-domains.txt 用户提供的 525 条全球广告净新增
 blocklists/imported-niche-local-ad-domains.txt 159 条小众及港美本地广告净新增
 blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
@@ -134,6 +135,9 @@ StevenBlack/hosts 与 HaGeZi Multi LIGHT，并带有明确广告或追踪语义�
 - `imported-special-app-ad-domains.csv`：QQ 音乐、京东和墨迹天气原始 51 条；
   去除 8 条已被现有静默规则覆盖的记录后保存 43 条。全部使用精确 `DOMAIN`，
   避免把 `qq.com`、`jd.com`、`mojichina.com` 等第一方根域整体封锁。
+- `imported-qqmusic-extra-app-ad-domains.csv`：QQ 音乐、全民 K 歌、酷狗和酷我音乐
+  原始 46 条；29 条已被现有静默规则覆盖，净保存 17 条精确 `DOMAIN`。
+  `btrace.qq.com` 原为网页广告来源，现按遥测用途改为静默拒绝。
 - `imported-niche-local-ad-domains.txt`：原始 200 条小众、香港和美国本地广告源；
   与所有现有网页及静默清单精确去重 41 条后保存 159 条网页广告域名。
 - 原始文件未附逐条证据或明确许可证；项目只确认格式、数量、重复和规则冲突，
@@ -141,14 +145,14 @@ StevenBlack/hosts 与 HaGeZi Multi LIGHT，并带有明确广告或追踪语义�
 
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-28）：网页广告域名 1133 条，App 广告来源规则 359 条，追踪器规则 500 条，博彩域名 200 条。
+当前审核统计（2026-07-28）：网页广告域名 1132 条，App 广告来源规则 376 条，追踪器规则 500 条，博彩域名 200 条。
 
 网页广告清单由多批来源组成：
 
 - 本地导入清单 200 条，覆盖 Google、Meta、Amazon、Microsoft、Xandr、Criteo、
   Taboola、Outbrain、程序化交易平台、测量追踪、视频广告、移动广告和联盟营销等。
-- 国内来源清单共 333 条；加入专项 App 广告和追踪器静默清单后，当前有 151 条进入
-  网页规则，182 条因静默规则优先而不进入网页跳转/MITM。
+- 国内来源清单共 333 条；加入专项 App 广告和追踪器静默清单后，当前有 150 条进入
+  网页规则，183 条因静默规则优先而不进入网页跳转/MITM。
 - 海外增补批次 100 条，以 StevenBlack/hosts 为 MIT 许可收录来源，并经 HaGeZi
   Multi LIGHT 交叉确认；该批与现有清单没有覆盖或冲突。
 - 新全球广告批次净保存 525 条，其中 522 条进入网页规则；3 条因与 App 广告或追踪器
@@ -179,6 +183,7 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`cn-ad-domains.txt`、
 `overseas-ad-domains-100.txt`、`app-ad-domains.csv` 或
 `imported-app-ad-domains.txt`、`imported-special-app-ad-domains.csv`、
+`imported-qqmusic-extra-app-ad-domains.csv`、
 `imported-global-ad-domains.txt`、`imported-niche-local-ad-domains.txt`、
 `imported-tracker-domains.txt`、`gambling-domains.csv`，都必须同步更新本节的
 审核日期和数量。`npm run validate` 会校验四项数量，防止 README 与实际清单不一致。
@@ -219,7 +224,9 @@ DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
 - 2026-07-28 批次净增 286 条国内开屏、应用内及广告 SDK 后端来源规则。
 - QQ 音乐、京东和墨迹天气专项批次净增 43 条精确主机规则；其中 `api`、`cdn`、
   `policy` 等名称可能承载正常功能，因此不扩展为后缀规则。
-- 国内广告来源中与全部静默清单存在覆盖的 182 条不会生成网页跳转或进入 MITM。
+- TME 生态补充批次净增 17 条精确主机规则，覆盖 QQ 音乐、全民 K 歌和酷我音乐；
+  酷狗文件中的 5 条记录已由现有规则覆盖，没有重复保存。
+- 国内广告来源中与全部静默清单存在覆盖的 183 条不会生成网页跳转或进入 MITM。
 - 屏蔽广告 SDK 可能同时影响激励视频；需要通过观看广告领取奖励的 App 可临时停用模组。
 
 ## 追踪器

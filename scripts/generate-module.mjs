@@ -38,6 +38,10 @@ const specialAppAdCsvPath = resolve(
   projectRoot,
   "blocklists/imported-special-app-ad-domains.csv",
 );
+const qqMusicExtraAppAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/imported-qqmusic-extra-app-ad-domains.csv",
+);
 const nicheLocalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-niche-local-ad-domains.txt",
@@ -62,6 +66,9 @@ const importedGlobalAdEntries = await readImportedGlobalAdEntries(
   importedGlobalAdListPath,
 );
 const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
+const qqMusicExtraAppAdEntries = await readAppAdEntries(
+  qqMusicExtraAppAdCsvPath,
+);
 const nicheLocalAdEntries = await readNicheLocalAdEntries(
   nicheLocalAdListPath,
 );
@@ -71,6 +78,7 @@ const silentEntries = deduplicate(
     ...appAdEntries,
     ...importedAppAdEntries,
     ...specialAppAdEntries,
+    ...qqMusicExtraAppAdEntries,
     ...trackerEntries,
   ],
   ({ domain }) => domain,
@@ -121,7 +129,8 @@ console.log(
   `已包含 ${
     appAdEntries.length +
     importedAppAdEntries.length +
-    specialAppAdEntries.length
+    specialAppAdEntries.length +
+    qqMusicExtraAppAdEntries.length
   } 条 App 广告来源规则`,
 );
 console.log(`已包含 ${trackerEntries.length} 条追踪器静默拒绝规则`);

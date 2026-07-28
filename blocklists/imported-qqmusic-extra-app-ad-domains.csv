@@ -1,0 +1,18 @@
+provider,match,domain,note
+Tencent Music / QQ Music,exact,adcdn6.tencentmusic.com,用户提供的 TME 广告分发补充主机
+Tencent Music / QQ Music,exact,tmead.y.qq.com,用户提供的 QQ 音乐广告补充主机
+Tencent Music / QQ Music,exact,tmeadbak.y.qq.com,用户提供的 QQ 音乐广告备用主机
+Tencent Music / QQ Music,exact,tmeadquic.y.qq.com,用户提供的 QQ 音乐广告 QUIC 主机
+Tencent Music / QQ Music,exact,ad-stat.y.qq.com,用户提供的 QQ 音乐广告统计主机
+Tencent Music / QQ Music,exact,ads.y.qq.com,用户提供的 QQ 音乐广告补充主机
+Tencent Music / QQ Music,exact,splash.y.qq.com,用户提供的 QQ 音乐开屏广告主机
+Tencent Music / QQ Music,exact,monitor.music.qq.com,用户提供的 QQ 音乐监控主机
+Tencent Music / QQ Music,exact,btrace.qq.com,用户提供的腾讯音乐遥测主机
+Tencent Music / QQ Music,exact,pingma.qq.com,用户提供的腾讯遥测主机
+WeSing / 全民K歌,exact,ad.wesingapp.com,用户提供的 WeSing 广告主机
+WeSing / 全民K歌,exact,ads.wesingapp.com,用户提供的 WeSing 广告补充主机
+WeSing / 全民K歌,exact,ad.kg.qq.com,用户提供的全民K歌广告主机
+WeSing / 全民K歌,exact,adstat.kg.qq.com,用户提供的全民K歌广告统计主机
+Kuwo Music,exact,ad.kuwo.cn,用户提供的酷我音乐广告主机
+Kuwo Music,exact,adstat.kuwo.cn,用户提供的酷我音乐广告统计主机
+Kuwo Music,exact,mobilead.kuwo.cn,用户提供的酷我音乐移动广告主机
