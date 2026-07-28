@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
-export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}:9999/blocked`;
+export const BLOCK_PAGE_BASE = `https://${BLOCK_PAGE_HOST}/blocked`;
 export const APP_AD_MATCH_TYPES = ["exact", "suffix"];
 export const REWRITE_DOMAIN_CHUNK_SIZE = 40;
 export const SCRIPT_BASE =
