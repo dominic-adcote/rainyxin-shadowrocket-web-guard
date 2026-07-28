@@ -32,8 +32,50 @@ gambling,casino.example.test,博彩`);
   assert.match(moduleText, /\[Script\]/);
   assert.match(moduleText, /google-search-ad-cleaner\.js/);
   assert.match(moduleText, /youtube-ad-cleaner\.js/);
+  assert.match(moduleText, /x-ad-cleaner\.js/);
+  assert.match(moduleText, /youtubei\\\.googleapis\\\.com/);
+  assert.match(moduleText, /browse\|next\|search/);
+  assert.match(moduleText, /api\\\.\(\?:x\|twitter\)\\\.com/);
+  assert.match(moduleText, /api\.twitter\.com/);
+  assert.match(moduleText, /api\.x\.com/);
   assert.match(moduleText, /youtubei\.googleapis\.com/);
   assert.match(moduleText, /hostname = %APPEND%/);
+
+  const youtubeScriptLine = moduleText
+    .split("\n")
+    .find((line) => line.startsWith("Adcote YouTube "));
+  const xScriptLine = moduleText
+    .split("\n")
+    .find((line) => line.startsWith("Adcote X "));
+  const youtubePattern = youtubeScriptLine.split(",pattern=")[1];
+  const xPattern = xScriptLine.split(",pattern=")[1];
+  const youtubeRegex = new RegExp(youtubePattern);
+  const xRegex = new RegExp(xPattern);
+
+  assert.equal(
+    youtubeRegex.test(
+      "https://youtubei.googleapis.com/youtubei/v1/browse?key=test",
+    ),
+    true,
+  );
+  assert.equal(
+    youtubeRegex.test(
+      "https://youtubei.googleapis.com/youtubei/v1/account/get_setting?key=test",
+    ),
+    false,
+  );
+  assert.equal(
+    xRegex.test(
+      "https://api.twitter.com/2/timeline/home.json?count=20",
+    ),
+    true,
+  );
+  assert.equal(
+    xRegex.test(
+      "https://x.com/i/api/graphql/query/UserTweets?variables=test",
+    ),
+    false,
+  );
 });
 
 test("App 广告域名生成静默 REJECT 规则", () => {

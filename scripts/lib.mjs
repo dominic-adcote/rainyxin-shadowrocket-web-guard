@@ -13,18 +13,26 @@ const YOUTUBE_AD_ENDPOINTS = [
   String.raw`^https?:\/\/www\.youtube\.com\/(?:pagead|ptracking|get_midroll_info)(?:\/|\?|$)`,
 ];
 
+const YOUTUBE_SCRIPT_PATTERN = String.raw`^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:player|browse|next|search|reel\/reel_item_watch)(?:\?|$)`;
+const X_SCRIPT_PATTERN = String.raw`^https?:\/\/(?:(?:x\.com|twitter\.com)\/i\/api|api\.(?:x|twitter)\.com)\/(?:graphql\/[^/?]+\/(?:HomeTimeline|HomeLatestTimeline|HomeTimelineV2|HomeLatestTimelineV2|ListLatestTweetsTimeline|SearchTimeline)|2\/timeline\/(?:home|search)(?:\.json|\/[^?]*)?)(?:\?|$)`;
+
 const SCRIPT_LINES = [
   `Adcote Google 搜索广告清理 = type=http-response,requires-body=1,max-size=2097152,engine=jsc,script-path=${SCRIPT_BASE}/google-search-ad-cleaner.js,pattern=^https?:\\/\\/www\\.google\\.(?:com|co\\.uk|com\\.hk|com\\.sg)\\/search(?:\\?|$)`,
-  `Adcote YouTube 播放器广告清理 = type=http-response,requires-body=1,max-size=0,engine=webview,script-path=${SCRIPT_BASE}/youtube-ad-cleaner.js,pattern=^https?:\\/\\/youtubei\\.googleapis\\.com\\/youtubei\\/v1\\/player(?:\\?|$)`,
+  `Adcote YouTube 应用内广告清理 = type=http-response,requires-body=1,max-size=0,engine=webview,script-path=${SCRIPT_BASE}/youtube-ad-cleaner.js,pattern=${YOUTUBE_SCRIPT_PATTERN}`,
+  `Adcote X 信息流广告清理 = type=http-response,requires-body=1,max-size=0,engine=jsc,script-path=${SCRIPT_BASE}/x-ad-cleaner.js,pattern=${X_SCRIPT_PATTERN}`,
 ];
 
 const SCRIPT_HOSTNAMES = [
+  "api.twitter.com",
+  "api.x.com",
   "s.youtube.com",
+  "twitter.com",
   "www.google.co.uk",
   "www.google.com",
   "www.google.com.hk",
   "www.google.com.sg",
   "www.youtube.com",
+  "x.com",
   "youtubei.googleapis.com",
 ];
 
