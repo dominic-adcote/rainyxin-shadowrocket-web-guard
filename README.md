@@ -1,7 +1,7 @@
 # Adcote 全场景广告、诈骗与追踪器拦截
 
 Adcote Shadowrocket Web Guard 定位为面向 Shadowrocket 的全场景广告、诈骗与
-追踪器拦截项目。它统一处理网页广告、Google 搜索广告、YouTube 已知广告接口、
+追踪器拦截项目。它统一处理网页广告、Google 搜索广告、YouTube 与 X 应用内广告、
 App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像素和跨站追踪域名。
 
 项目包含可生成、可校验、可导入的 Shadowrocket 模组，以及通过 EdgeOne CDN
@@ -20,7 +20,9 @@ App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像
 - “无视风险，继续访问”需要二次确认，并只接受 `http` 或 `https` 目标。
 - 博彩类别会自动转到互联网违法和不良信息举报中心的匿名举报页。
 - Google 搜索网页会隐藏已识别的文字广告和购物广告容器。
-- YouTube 会拒绝独立广告统计端点，并从 JSON 播放器响应中移除已知广告字段。
+- YouTube 会拒绝独立广告统计端点，并从播放器、首页、搜索、相关推荐和 Shorts
+  JSON 响应中移除明确广告字段与渲染器。
+- X 会从首页、搜索和列表时间线 JSON 中移除带明确推广标记的条目。
 - 不封锁 `googlevideo.com`，因为它同时承载正常视频和广告媒体。
 - App 开屏广告、广告 SDK 与不适合网页跳转的追踪请求使用 `[Rule]` 静默 `REJECT`，不会打开或加载拦截页。
 
@@ -44,9 +46,11 @@ block-page/                         拦截页、交互逻辑和 9999 端口服�
 deploy/                             systemd 与 Nginx 部署模板
 scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
+scripts/youtube-ad-cleaner.js       YouTube 播放与信息流广告清理器
+scripts/x-ad-cleaner.js             X 时间线推广内容清理器
 tests/generator.test.mjs            自动化测试
 tests/block-page.test.mjs           拦截页安全逻辑测试
-tests/ad-cleaners.test.mjs          Google 与 YouTube 清理脚本测试
+tests/ad-cleaners.test.mjs          Google、YouTube 与 X 清理脚本测试
 docs/THREAT-MODEL.md                能力、隐私和边界说明
 docs/SOURCES.md                     官方跳转和广告域名来源
 ```
@@ -198,15 +202,20 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
   或 `wager` 的双源交集。
 - 规则按每 40 个域名拆分；命中后仍使用 `category=gambling` 跳转至拦截页。
 
-## Google 搜索与 YouTube
+## Google 搜索、YouTube 与 X
 
 - Google 搜索广告清理适用于 `google.com`、`google.co.uk`、`google.com.hk` 和
   `google.com.sg` 的网页搜索结果。Google 调整页面结构后，选择器可能需要更新。
-- YouTube 清理覆盖网页和 App 常见的 JSON 播放器响应；服务端插入广告、加密/二进制
-  响应或接口变化时可能无法移除。
+- YouTube 清理覆盖网页和 App 常见的 `player`、`browse`、`next`、`search` 与
+  Shorts JSON 响应，处理播放前/中/后广告以及首页、搜索、相关推荐、订阅和 Shorts
+  中的明确广告容器。
 - YouTube 官方可能检测广告拦截并限制播放。若出现播放器报错，可先停用模组确认。
 - 模组不会封锁 `youtube.com`、`youtubei.googleapis.com` 或 `googlevideo.com` 整个域名，
   只处理明确的路径与响应字段。
+- X 清理覆盖网页及 App 常见的 GraphQL 首页、搜索和列表时间线，只删除 entry ID
+  或结构化元数据明确标记为推广的条目；帖子正文出现“promoted”等普通文字不会触发。
+- X 或 YouTube 若改用证书固定、QUIC、加密/二进制响应、服务端合成广告或更改接口，
+  脚本可能无法处理。若 App 出现连接或时间线加载异常，应先关闭 HTTPS 解密或本模组确认。
 
 ## App 开屏广告
 

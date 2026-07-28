@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.3.0 - 2026-07-28
+
+- YouTube 响应清理从播放器扩展到 `browse`、`next`、`search` 和 Shorts
+  JSON 接口，移除明确的首页、搜索、相关推荐和 Shorts 广告渲染器。
+- 新增 X 时间线响应清理器，移除带推广 entry ID 或推广元数据的首页、搜索和列表条目。
+- 只对 YouTube 与 X 的精确接口路径启用脚本，不封锁 `googlevideo.com`、
+  `x.com`、`twitter.com` 或其正常内容域名。
+- MITM 增加 `x.com`、`twitter.com`、`api.x.com` 和 `api.twitter.com`
+  精确主机；证书固定或非 JSON 响应仍可能无法处理。
+- 自动测试增加到 26 项，覆盖普通内容保留、信息流广告移除和非 JSON 回退。
+
 ## 1.2.0 - 2026-07-28
 
 - 导入 QQ 音乐、全民 K 歌、酷狗和酷我音乐补充清单：原始 46 条，去除 29 条

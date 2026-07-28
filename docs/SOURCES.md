@@ -98,15 +98,22 @@ Annoyance List、domain-list-community、Peter Lowe 和 HaGeZi。
 StevenBlack/hosts 是这 100 条数据的 MIT 许可来源；HaGeZi Multi LIGHT 仅用于独立
 交叉复核，没有加入只存在于 HaGeZi 的条目。
 
-## YouTube 边界
+## YouTube 与 X 应用内广告边界
 
 - Google Ads 官方说明列出 YouTube 搜索、首页、订阅和播放页中的视频广告位置：
   <https://support.google.com/google-ads/answer/2375464>
 - YouTube 官方说明广告拦截器可能导致视频播放被限制：
   <https://support.google.com/youtube/answer/14129599>
+- X 官方说明首页时间线可能出现推广帖：
+  <https://help.x.com/en/using-x/x-timeline>
+- X 官方术语表说明推广帖会出现在首页、搜索结果及平台其他位置：
+  <https://help.x.com/en/resources/glossary>
+- X 官方广告举报说明广告由推广标识区分，不能仅凭帖子文字判断：
+  <https://help.x.com/en/safety-and-security/reporting-x-ads>
 
-YouTube 的具体播放器 JSON 字段和同域广告路径属于客户端实现细节，可能随时变化。
-本项目只使用自编写的保守清理器，不复制第三方去广告脚本。
+YouTube 的播放器/信息流 JSON 字段、X 的 GraphQL 时间线结构和同域广告路径属于
+客户端实现细节，可能随时变化。本项目只使用自编写的保守清理器，不复制第三方去广告
+脚本；X 清理器只认 entry ID 和结构化推广元数据，不扫描帖子正文关键词。
 
 ## App 广告网络
 
