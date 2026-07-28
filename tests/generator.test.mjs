@@ -261,3 +261,15 @@ test("拒绝 URL、通配符和非法类别", () => {
     /类别无效/,
   );
 });
+
+test("专项 App 第一方主机只生成精确静默规则", () => {
+  const specialEntries = parseAppAdCsv(`provider,match,domain,note
+Moji Weather,exact,api.mojichina.com,专项广告与统计主机
+JD.com,exact,policy.jd.com,专项广告与统计主机`);
+  const moduleText = buildModule([], specialEntries);
+
+  assert.match(moduleText, /DOMAIN,api\.mojichina\.com,REJECT/);
+  assert.match(moduleText, /DOMAIN,policy\.jd\.com,REJECT/);
+  assert.doesNotMatch(moduleText, /DOMAIN-SUFFIX,mojichina\.com,REJECT/);
+  assert.doesNotMatch(moduleText, /DOMAIN-SUFFIX,jd\.com,REJECT/);
+});

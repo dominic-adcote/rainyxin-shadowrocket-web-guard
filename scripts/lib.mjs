@@ -345,6 +345,13 @@ export async function readImportedGlobalAdEntries(listPath) {
   );
 }
 
+export async function readNicheLocalAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseDomainList(text, "ads", "user-niche-hk-us-local-ads-2026-07-28"),
+  );
+}
+
 export async function readImportedAppAdEntries(listPath) {
   const text = await readFile(listPath, "utf8");
   return deduplicate(
