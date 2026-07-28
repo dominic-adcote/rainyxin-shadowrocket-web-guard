@@ -40,6 +40,10 @@ const specialAppAdCsvPath = resolve(
   projectRoot,
   "blocklists/imported-special-app-ad-domains.csv",
 );
+const qqMusicExtraAppAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/imported-qqmusic-extra-app-ad-domains.csv",
+);
 const nicheLocalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-niche-local-ad-domains.txt",
@@ -65,6 +69,9 @@ const importedGlobalAdEntries = await readImportedGlobalAdEntries(
   importedGlobalAdListPath,
 );
 const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
+const qqMusicExtraAppAdEntries = await readAppAdEntries(
+  qqMusicExtraAppAdCsvPath,
+);
 const nicheLocalAdEntries = await readNicheLocalAdEntries(
   nicheLocalAdListPath,
 );
@@ -74,6 +81,7 @@ const silentEntries = deduplicate(
     ...appAdEntries,
     ...importedAppAdEntries,
     ...specialAppAdEntries,
+    ...qqMusicExtraAppAdEntries,
     ...trackerEntries,
   ],
   ({ domain }) => domain,
@@ -141,9 +149,9 @@ if (adEntries.length !== 200) {
   throw new Error(`本地导入广告域名必须恰好为 200 条，当前为 ${adEntries.length} 条`);
 }
 
-if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 151) {
+if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 150) {
   throw new Error(
-    `国内广告清单应为 333 条，其中 151 条进入网页规则；` +
+    `国内广告清单应为 333 条，其中 150 条进入网页规则；` +
       `当前为 ${cnAdEntries.length}/${activeCnAdEntries.length}`,
   );
 }
@@ -176,6 +184,16 @@ if (specialAppAdEntries.some(({ match }) => match !== "exact")) {
   throw new Error("专项 App 广告主机必须全部使用 exact，禁止扩大到第一方根域");
 }
 
+if (qqMusicExtraAppAdEntries.length !== 17) {
+  throw new Error(
+    `QQ 音乐补充 App 广告净新增清单必须恰好为 17 条，当前为 ${qqMusicExtraAppAdEntries.length}`,
+  );
+}
+
+if (qqMusicExtraAppAdEntries.some(({ match }) => match !== "exact")) {
+  throw new Error("QQ 音乐补充 App 广告主机必须全部使用 exact");
+}
+
 if (
   nicheLocalAdEntries.length !== 159 ||
   activeNicheLocalAdEntries.length !== 159
@@ -203,7 +221,8 @@ const auditedAdCount = baseEntries.filter(
 const appAdRuleCount =
   appAdEntries.length +
   importedAppAdEntries.length +
-  specialAppAdEntries.length;
+  specialAppAdEntries.length +
+  qqMusicExtraAppAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
     `App 广告来源规则 ${appAdRuleCount} 条，追踪器规则 ${trackerEntries.length} 条，` +
