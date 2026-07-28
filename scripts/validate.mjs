@@ -14,6 +14,7 @@ import {
   readGamblingEntries,
   readImportedAppAdEntries,
   readImportedGlobalAdEntries,
+  readNicheLocalAdEntries,
   readOverseasAdEntries,
   readTrackerEntries,
 } from "./lib.mjs";
@@ -35,6 +36,14 @@ const importedGlobalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-global-ad-domains.txt",
 );
+const specialAppAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/imported-special-app-ad-domains.csv",
+);
+const nicheLocalAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-niche-local-ad-domains.txt",
+);
 const trackerListPath = resolve(
   projectRoot,
   "blocklists/imported-tracker-domains.txt",
@@ -55,9 +64,18 @@ const importedAppAdEntries = await readImportedAppAdEntries(
 const importedGlobalAdEntries = await readImportedGlobalAdEntries(
   importedGlobalAdListPath,
 );
+const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
+const nicheLocalAdEntries = await readNicheLocalAdEntries(
+  nicheLocalAdListPath,
+);
 const trackerEntries = await readTrackerEntries(trackerListPath);
 const silentEntries = deduplicate(
-  [...appAdEntries, ...importedAppAdEntries, ...trackerEntries],
+  [
+    ...appAdEntries,
+    ...importedAppAdEntries,
+    ...specialAppAdEntries,
+    ...trackerEntries,
+  ],
   ({ domain }) => domain,
 );
 const unfilteredEntries = deduplicate([
@@ -66,12 +84,17 @@ const unfilteredEntries = deduplicate([
   ...cnAdEntries,
   ...overseasAdEntries,
   ...importedGlobalAdEntries,
+  ...nicheLocalAdEntries,
   ...gamblingEntries,
 ]);
 const entries = filterAppOverlaps(unfilteredEntries, silentEntries);
 const activeCnAdEntries = filterAppOverlaps(cnAdEntries, silentEntries);
 const activeImportedGlobalAdEntries = filterAppOverlaps(
   importedGlobalAdEntries,
+  silentEntries,
+);
+const activeNicheLocalAdEntries = filterAppOverlaps(
+  nicheLocalAdEntries,
   silentEntries,
 );
 const actual = await readFile(modulePath, "utf8");
@@ -118,9 +141,9 @@ if (adEntries.length !== 200) {
   throw new Error(`本地导入广告域名必须恰好为 200 条，当前为 ${adEntries.length} 条`);
 }
 
-if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 161) {
+if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 151) {
   throw new Error(
-    `国内广告清单应为 333 条，其中 161 条进入网页规则；` +
+    `国内广告清单应为 333 条，其中 151 条进入网页规则；` +
       `当前为 ${cnAdEntries.length}/${activeCnAdEntries.length}`,
   );
 }
@@ -143,6 +166,26 @@ if (importedGlobalAdEntries.length !== 525) {
   );
 }
 
+if (specialAppAdEntries.length !== 43) {
+  throw new Error(
+    `QQ 音乐、京东和墨迹天气专项 App 广告净新增清单必须恰好为 43 条，当前为 ${specialAppAdEntries.length}`,
+  );
+}
+
+if (specialAppAdEntries.some(({ match }) => match !== "exact")) {
+  throw new Error("专项 App 广告主机必须全部使用 exact，禁止扩大到第一方根域");
+}
+
+if (
+  nicheLocalAdEntries.length !== 159 ||
+  activeNicheLocalAdEntries.length !== 159
+) {
+  throw new Error(
+    `小众及港美本地广告净新增清单应为 159 条且全部进入网页规则；` +
+      `当前为 ${nicheLocalAdEntries.length}/${activeNicheLocalAdEntries.length}`,
+  );
+}
+
 if (trackerEntries.length !== 500) {
   throw new Error(
     `用户提供的追踪器清单必须恰好为 500 条，当前为 ${trackerEntries.length}`,
@@ -155,8 +198,12 @@ const auditedAdCount = baseEntries.filter(
   adEntries.length +
   activeCnAdEntries.length +
   overseasAdEntries.length +
-  activeImportedGlobalAdEntries.length;
-const appAdRuleCount = appAdEntries.length + importedAppAdEntries.length;
+  activeImportedGlobalAdEntries.length +
+  activeNicheLocalAdEntries.length;
+const appAdRuleCount =
+  appAdEntries.length +
+  importedAppAdEntries.length +
+  specialAppAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
     `App 广告来源规则 ${appAdRuleCount} 条，追踪器规则 ${trackerEntries.length} 条，` +

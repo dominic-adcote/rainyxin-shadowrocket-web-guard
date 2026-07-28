@@ -12,6 +12,7 @@ import {
   readGamblingEntries,
   readImportedAppAdEntries,
   readImportedGlobalAdEntries,
+  readNicheLocalAdEntries,
   readOverseasAdEntries,
   readTrackerEntries,
 } from "./lib.mjs";
@@ -33,6 +34,14 @@ const importedGlobalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-global-ad-domains.txt",
 );
+const specialAppAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/imported-special-app-ad-domains.csv",
+);
+const nicheLocalAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-niche-local-ad-domains.txt",
+);
 const trackerListPath = resolve(
   projectRoot,
   "blocklists/imported-tracker-domains.txt",
@@ -52,9 +61,18 @@ const importedAppAdEntries = await readImportedAppAdEntries(
 const importedGlobalAdEntries = await readImportedGlobalAdEntries(
   importedGlobalAdListPath,
 );
+const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
+const nicheLocalAdEntries = await readNicheLocalAdEntries(
+  nicheLocalAdListPath,
+);
 const trackerEntries = await readTrackerEntries(trackerListPath);
 const silentEntries = deduplicate(
-  [...appAdEntries, ...importedAppAdEntries, ...trackerEntries],
+  [
+    ...appAdEntries,
+    ...importedAppAdEntries,
+    ...specialAppAdEntries,
+    ...trackerEntries,
+  ],
   ({ domain }) => domain,
 );
 const unfilteredEntries = deduplicate([
@@ -63,12 +81,17 @@ const unfilteredEntries = deduplicate([
   ...cnAdEntries,
   ...overseasAdEntries,
   ...importedGlobalAdEntries,
+  ...nicheLocalAdEntries,
   ...gamblingEntries,
 ]);
 const entries = filterAppOverlaps(unfilteredEntries, silentEntries);
 const activeCnAdEntries = filterAppOverlaps(cnAdEntries, silentEntries);
 const activeImportedGlobalAdEntries = filterAppOverlaps(
   importedGlobalAdEntries,
+  silentEntries,
+);
+const activeNicheLocalAdEntries = filterAppOverlaps(
+  nicheLocalAdEntries,
   silentEntries,
 );
 const moduleText = buildModule(entries, silentEntries);
@@ -89,9 +112,17 @@ console.log(
   `全球广告增补 ${importedGlobalAdEntries.length} 条，` +
     `${activeImportedGlobalAdEntries.length} 条进入网页规则`,
 );
+console.log(
+  `小众及港美本地广告 ${nicheLocalAdEntries.length} 条，` +
+    `${activeNicheLocalAdEntries.length} 条进入网页规则`,
+);
 console.log(`其中包含 ${gamblingEntries.length} 个双源复核博彩域名`);
 console.log(
-  `已包含 ${appAdEntries.length + importedAppAdEntries.length} 条 App 广告来源规则`,
+  `已包含 ${
+    appAdEntries.length +
+    importedAppAdEntries.length +
+    specialAppAdEntries.length
+  } 条 App 广告来源规则`,
 );
 console.log(`已包含 ${trackerEntries.length} 条追踪器静默拒绝规则`);
 console.log(`静默拒绝规则合计 ${silentEntries.length} 条`);

@@ -50,3 +50,17 @@ The supplied files did not include per-entry provenance, a reproducible
 collection script, or a third-party license statement. They are therefore
 identified separately from the StevenBlack-derived MIT data above and are not
 represented as independently verified or covered by StevenBlack's license.
+
+## User-provided special App and niche/local advertising lists
+
+The repository owner also directed the inclusion of two 2026-07-28 local
+files covering QQ Music, JD.com, Moji Weather, niche advertising networks,
+and Hong Kong and United States local advertising hosts. The normalized,
+deduplicated outputs are stored in
+`blocklists/imported-special-app-ad-domains.csv` and
+`blocklists/imported-niche-local-ad-domains.txt`.
+
+The supplied files did not include per-entry provenance, a reproducible
+collection script, or a third-party license statement. These entries are not
+represented as independently verified or covered by the third-party licenses
+listed above.
