@@ -1,6 +1,6 @@
 {
   "name": "rainyxin-shadowrocket-web-guard",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Shadowrocket module that redirects listed ad, scam, and gambling domains to block.rainyxin.cyou.",
   "type": "module",
