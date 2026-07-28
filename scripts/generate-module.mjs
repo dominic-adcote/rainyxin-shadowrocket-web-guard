@@ -10,7 +10,10 @@ import {
   readCnAdEntries,
   readEntries,
   readGamblingEntries,
+  readImportedAppAdEntries,
+  readImportedGlobalAdEntries,
   readOverseasAdEntries,
+  readTrackerEntries,
 } from "./lib.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -22,6 +25,18 @@ const overseasAdListPath = resolve(
   "blocklists/overseas-ad-domains-100.txt",
 );
 const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
+const importedAppAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-app-ad-domains.txt",
+);
+const importedGlobalAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-global-ad-domains.txt",
+);
+const trackerListPath = resolve(
+  projectRoot,
+  "blocklists/imported-tracker-domains.txt",
+);
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const outputPath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
 
@@ -31,15 +46,32 @@ const cnAdEntries = await readCnAdEntries(cnAdListPath);
 const overseasAdEntries = await readOverseasAdEntries(overseasAdListPath);
 const gamblingEntries = await readGamblingEntries(gamblingCsvPath);
 const appAdEntries = await readAppAdEntries(appAdCsvPath);
-const activeCnAdEntries = filterAppOverlaps(cnAdEntries, appAdEntries);
-const entries = deduplicate([
+const importedAppAdEntries = await readImportedAppAdEntries(
+  importedAppAdListPath,
+);
+const importedGlobalAdEntries = await readImportedGlobalAdEntries(
+  importedGlobalAdListPath,
+);
+const trackerEntries = await readTrackerEntries(trackerListPath);
+const silentEntries = deduplicate(
+  [...appAdEntries, ...importedAppAdEntries, ...trackerEntries],
+  ({ domain }) => domain,
+);
+const unfilteredEntries = deduplicate([
   ...baseEntries,
   ...adEntries,
-  ...activeCnAdEntries,
+  ...cnAdEntries,
   ...overseasAdEntries,
+  ...importedGlobalAdEntries,
   ...gamblingEntries,
 ]);
-const moduleText = buildModule(entries, appAdEntries);
+const entries = filterAppOverlaps(unfilteredEntries, silentEntries);
+const activeCnAdEntries = filterAppOverlaps(cnAdEntries, silentEntries);
+const activeImportedGlobalAdEntries = filterAppOverlaps(
+  importedGlobalAdEntries,
+  silentEntries,
+);
+const moduleText = buildModule(entries, silentEntries);
 
 await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, moduleText, "utf8");
@@ -53,5 +85,13 @@ console.log(
     `${cnAdEntries.length - activeCnAdEntries.length} 条保留 App 静默语义`,
 );
 console.log(`其中包含 ${overseasAdEntries.length} 个双源复核海外广告域名`);
+console.log(
+  `全球广告增补 ${importedGlobalAdEntries.length} 条，` +
+    `${activeImportedGlobalAdEntries.length} 条进入网页规则`,
+);
 console.log(`其中包含 ${gamblingEntries.length} 个双源复核博彩域名`);
-console.log(`已包含 ${appAdEntries.length} 条 App 广告静默拒绝规则`);
+console.log(
+  `已包含 ${appAdEntries.length + importedAppAdEntries.length} 条 App 广告来源规则`,
+);
+console.log(`已包含 ${trackerEntries.length} 条追踪器静默拒绝规则`);
+console.log(`静默拒绝规则合计 ${silentEntries.length} 条`);

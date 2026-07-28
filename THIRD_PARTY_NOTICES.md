@@ -41,3 +41,12 @@ Source: <https://github.com/hagezi/dns-blocklists>
 
 HaGeZi DNS Blocklists are distributed under the GNU General Public License
 version 3. See the upstream repository for the full license text.
+
+## User-provided full domain collection
+
+The repository owner directed the inclusion of the 2026-07-28 advertising and
+tracker collection documented in `docs/FULL_DOMAIN_COLLECTION_REPORT.md`.
+The supplied files did not include per-entry provenance, a reproducible
+collection script, or a third-party license statement. They are therefore
+identified separately from the StevenBlack-derived MIT data above and are not
+represented as independently verified or covered by StevenBlack's license.
