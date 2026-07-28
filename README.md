@@ -32,6 +32,9 @@ blocklists/ad-domains.txt           本地导入的 200 条网页广告域名
 blocklists/cn-ad-domains.txt        本地导入的 333 条国内广告来源清单
 blocklists/overseas-ad-domains-100.txt 双源复核的 100 条海外广告增补
 blocklists/app-ad-domains.csv       App 广告静默拒绝清单
+blocklists/imported-app-ad-domains.txt 用户提供的 286 条 App 广告净新增
+blocklists/imported-global-ad-domains.txt 用户提供的 525 条全球广告净新增
+blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
@@ -113,18 +116,31 @@ StevenBlack 的 MIT 许可清单为收录来源，再与 HaGeZi 博彩清单交�
 海外增补批次维护在 `blocklists/overseas-ad-domains-100.txt`。每条必须同时出现在
 StevenBlack/hosts 与 HaGeZi Multi LIGHT，并带有明确广告或追踪语义。
 
+2026-07-28 用户提供的 1,546 行广告与追踪器集合按用途拆分保存：
+
+- `imported-app-ad-domains.txt`：删除 15 条与现有 App 清单精确重复的记录后为 286 条，
+  生成静默 `DOMAIN-SUFFIX` 拒绝规则。
+- `imported-global-ad-domains.txt`：删除与现有网页及静默清单精确重复的记录后为 525 条；
+  其中与静默规则存在父子域覆盖的条目不会进入网页跳转或 MITM。
+- `imported-tracker-domains.txt`：500 条追踪器域名，生成静默
+  `DOMAIN-SUFFIX` 拒绝规则。
+- 三份原始清单合计 1,546 行，但 Part 2 与 Part 3 有 46 条精确重复，因此原始集合实际
+  包含 1,500 个精确唯一域名；结合项目已有清单后净保存 1,311 条来源规则。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-27）：网页广告域名 617 条，App 广告规则 30 条，博彩域名 200 条。
+当前审核统计（2026-07-28）：网页广告域名 984 条，App 广告来源规则 316 条，追踪器规则 500 条，博彩域名 200 条。
 
 网页广告清单由两部分组成：
 
 - 本地导入清单 200 条，覆盖 Google、Meta、Amazon、Microsoft、Xandr、Criteo、
   Taboola、Outbrain、程序化交易平台、测量追踪、视频广告、移动广告和联盟营销等。
-- 国内来源清单共 333 条，其中 316 条进入网页规则；17 条因与 App 静默规则冲突而不
-  进入网页跳转/MITM。该批与已有清单精确重叠 2 条，因此净增 314 条网页广告域名。
+- 国内来源清单共 333 条；加入完整 App 广告和追踪器静默清单后，当前有 161 条进入
+  网页规则，172 条因静默规则优先而不进入网页跳转/MITM。
 - 海外增补批次 100 条，以 StevenBlack/hosts 为 MIT 许可收录来源，并经 HaGeZi
   Multi LIGHT 交叉确认；该批与现有清单没有覆盖或冲突。
+- 新全球广告批次净保存 525 条，其中 522 条进入网页规则；3 条因与 App 广告或追踪器
+  静默规则存在父子域覆盖而不进入跳转/MITM。
 - 原人工清单还有 1 条未包含在两份导入文件中的独立域名：
   `syndicatedsearch.goog`。
 
@@ -148,8 +164,9 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 
 项目约定：每次修改 `domains.csv`、`ad-domains.txt`、`cn-ad-domains.txt`、
 `overseas-ad-domains-100.txt`、`app-ad-domains.csv` 或
-`gambling-domains.csv`，都必须同步更新本节的审核日期和数量。
-`npm run validate` 会校验三项数量，防止 README 与实际清单不一致。
+`imported-app-ad-domains.txt`、`imported-global-ad-domains.txt`、
+`imported-tracker-domains.txt`、`gambling-domains.csv`，都必须同步更新本节的
+审核日期和数量。`npm run validate` 会校验四项数量，防止 README 与实际清单不一致。
 
 ## 已审核的博彩域名
 
@@ -185,8 +202,17 @@ DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
 - `suffix` 拒绝专用广告根域及其子域，只用于用途明确的广告 SDK 域名。
 - 规则在域名路由层直接丢弃请求，不跳转 `block.rainyxin.cyou`，也不加入 MITM。
 - 首批覆盖腾讯优量汇、穿山甲、百度百青藤和 Unity Ads。
-- 国内广告来源中与本节规则重叠的 17 条不会生成网页跳转或进入 MITM。
+- 2026-07-28 批次净增 286 条国内开屏、应用内及广告 SDK 后端来源规则。
+- 国内广告来源中与全部静默清单存在覆盖的 172 条不会生成网页跳转或进入 MITM。
 - 屏蔽广告 SDK 可能同时影响激励视频；需要通过观看广告领取奖励的 App 可临时停用模组。
+
+## 追踪器
+
+- 500 条用户提供的全球追踪器域名使用 `DOMAIN-SUFFIX,...,REJECT` 静默拒绝。
+- 覆盖分析、会话录制、热力图、A/B 测试、归因、设备指纹、社交像素和遥测等类别。
+- 追踪器不进入 MITM，也不会加载 HTML 拦截页；因此适用于网页和 App 的后台请求。
+- 部分分析、崩溃报告、功能开关和遥测域名也可能承载站点功能。若网页或 App 出现异常，
+  应临时停用模组并根据命中日志建立白名单。
 
 ## 拦截页
 

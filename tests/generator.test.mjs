@@ -10,6 +10,7 @@ import {
   parseCsv,
   parseDomainList,
   parseGamblingCsv,
+  parseSilentDomainList,
 } from "../scripts/lib.mjs";
 
 test("按类别生成三条重定向规则", () => {
@@ -64,6 +65,34 @@ test("App 广告规则不进入跳转与 MITM 清单", () => {
 
   assert.doesNotMatch(rewriteSection, /mi\.gdt\.qq\.com/);
   assert.doesNotMatch(mitmSection, /mi\.gdt\.qq\.com/);
+});
+
+test("追踪器清单生成静默后缀拒绝规则", () => {
+  const trackers = parseSilentDomainList(
+    "! trackers\n||analytics.example.test^\n",
+    "用户追踪器集合",
+    "追踪器静默拒绝",
+  );
+  const moduleText = buildModule([], trackers);
+
+  assert.deepEqual(trackers[0], {
+    provider: "用户追踪器集合",
+    match: "suffix",
+    domain: "analytics.example.test",
+    note: "追踪器静默拒绝",
+  });
+  assert.match(
+    moduleText,
+    /DOMAIN-SUFFIX,analytics\.example\.test,REJECT/,
+  );
+  assert.doesNotMatch(
+    moduleText.split("[URL Rewrite]")[1].split("[Script]")[0],
+    /analytics\.example\.test/,
+  );
+  assert.doesNotMatch(
+    moduleText.split("[MITM]")[1],
+    /analytics\.example\.test/,
+  );
 });
 
 test("拒绝无效或重复的 App 广告清单项", () => {

@@ -12,7 +12,10 @@ import {
   readCnAdEntries,
   readEntries,
   readGamblingEntries,
+  readImportedAppAdEntries,
+  readImportedGlobalAdEntries,
   readOverseasAdEntries,
+  readTrackerEntries,
 } from "./lib.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,6 +27,18 @@ const overseasAdListPath = resolve(
   "blocklists/overseas-ad-domains-100.txt",
 );
 const appAdCsvPath = resolve(projectRoot, "blocklists/app-ad-domains.csv");
+const importedAppAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-app-ad-domains.txt",
+);
+const importedGlobalAdListPath = resolve(
+  projectRoot,
+  "blocklists/imported-global-ad-domains.txt",
+);
+const trackerListPath = resolve(
+  projectRoot,
+  "blocklists/imported-tracker-domains.txt",
+);
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const modulePath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
 const readmePath = resolve(projectRoot, "README.md");
@@ -34,17 +49,34 @@ const cnAdEntries = await readCnAdEntries(cnAdListPath);
 const overseasAdEntries = await readOverseasAdEntries(overseasAdListPath);
 const gamblingEntries = await readGamblingEntries(gamblingCsvPath);
 const appAdEntries = await readAppAdEntries(appAdCsvPath);
-const activeCnAdEntries = filterAppOverlaps(cnAdEntries, appAdEntries);
-const entries = deduplicate([
+const importedAppAdEntries = await readImportedAppAdEntries(
+  importedAppAdListPath,
+);
+const importedGlobalAdEntries = await readImportedGlobalAdEntries(
+  importedGlobalAdListPath,
+);
+const trackerEntries = await readTrackerEntries(trackerListPath);
+const silentEntries = deduplicate(
+  [...appAdEntries, ...importedAppAdEntries, ...trackerEntries],
+  ({ domain }) => domain,
+);
+const unfilteredEntries = deduplicate([
   ...baseEntries,
   ...adEntries,
-  ...activeCnAdEntries,
+  ...cnAdEntries,
   ...overseasAdEntries,
+  ...importedGlobalAdEntries,
   ...gamblingEntries,
 ]);
+const entries = filterAppOverlaps(unfilteredEntries, silentEntries);
+const activeCnAdEntries = filterAppOverlaps(cnAdEntries, silentEntries);
+const activeImportedGlobalAdEntries = filterAppOverlaps(
+  importedGlobalAdEntries,
+  silentEntries,
+);
 const actual = await readFile(modulePath, "utf8");
 const readme = await readFile(readmePath, "utf8");
-const expected = buildModule(entries, appAdEntries);
+const expected = buildModule(entries, silentEntries);
 
 if (actual !== expected) {
   throw new Error("模组不是由当前清单生成的，请先运行 npm run build");
@@ -71,10 +103,10 @@ if (
   throw new Error("模组缺少必要区段");
 }
 
-for (const { match, domain } of appAdEntries) {
+for (const { match, domain } of silentEntries) {
   const ruleType = match === "suffix" ? "DOMAIN-SUFFIX" : "DOMAIN";
   if (!actual.includes(`${ruleType},${domain},REJECT`)) {
-    throw new Error(`模组缺少 App 广告拒绝规则：${domain}`);
+    throw new Error(`模组缺少静默拒绝规则：${domain}`);
   }
 }
 
@@ -86,9 +118,9 @@ if (adEntries.length !== 200) {
   throw new Error(`本地导入广告域名必须恰好为 200 条，当前为 ${adEntries.length} 条`);
 }
 
-if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 316) {
+if (cnAdEntries.length !== 333 || activeCnAdEntries.length !== 161) {
   throw new Error(
-    `国内广告清单应为 333 条，其中 316 条进入网页规则；` +
+    `国内广告清单应为 333 条，其中 161 条进入网页规则；` +
       `当前为 ${cnAdEntries.length}/${activeCnAdEntries.length}`,
   );
 }
@@ -99,15 +131,36 @@ if (overseasAdEntries.length !== 100) {
   );
 }
 
+if (importedAppAdEntries.length !== 286) {
+  throw new Error(
+    `用户提供的 App 广告净新增清单必须恰好为 286 条，当前为 ${importedAppAdEntries.length}`,
+  );
+}
+
+if (importedGlobalAdEntries.length !== 525) {
+  throw new Error(
+    `用户提供的全球广告净新增清单必须恰好为 525 条，当前为 ${importedGlobalAdEntries.length}`,
+  );
+}
+
+if (trackerEntries.length !== 500) {
+  throw new Error(
+    `用户提供的追踪器清单必须恰好为 500 条，当前为 ${trackerEntries.length}`,
+  );
+}
+
 const auditedAdCount = baseEntries.filter(
   ({ category, domain }) => category === "ads" && !domain.endsWith(".test"),
 ).length +
   adEntries.length +
   activeCnAdEntries.length +
-  overseasAdEntries.length;
+  overseasAdEntries.length +
+  activeImportedGlobalAdEntries.length;
+const appAdRuleCount = appAdEntries.length + importedAppAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
-    `App 广告规则 ${appAdEntries.length} 条，博彩域名 ${gamblingEntries.length} 条。`,
+    `App 广告来源规则 ${appAdRuleCount} 条，追踪器规则 ${trackerEntries.length} 条，` +
+    `博彩域名 ${gamblingEntries.length} 条。`,
 );
 
 if (!readmeAuditPattern.test(readme)) {
@@ -116,6 +169,6 @@ if (!readmeAuditPattern.test(readme)) {
 
 console.log(
   `校验通过：${entries.length} 个网页域名，` +
-    `${appAdEntries.length} 条 App 广告规则，` +
+    `${silentEntries.length} 条静默拒绝规则，` +
     `${ALLOWED_CATEGORIES.length} 个类别`,
 );

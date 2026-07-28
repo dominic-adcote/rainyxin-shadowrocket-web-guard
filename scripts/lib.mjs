@@ -184,16 +184,16 @@ export function deduplicate(entries, key = ({ domain }) => domain) {
   });
 }
 
-export function assertNoCrossListOverlap(entries, appAdEntries) {
+export function assertNoCrossListOverlap(entries, silentEntries) {
   for (const { domain: webDomain } of entries) {
-    for (const { domain: appDomain, match } of appAdEntries) {
-      const appCoversWeb =
-        webDomain === appDomain ||
-        (match === "suffix" && webDomain.endsWith(`.${appDomain}`));
-      const webCoversApp = appDomain.endsWith(`.${webDomain}`);
+    for (const { domain: silentDomain, match } of silentEntries) {
+      const silentCoversWeb =
+        webDomain === silentDomain ||
+        (match === "suffix" && webDomain.endsWith(`.${silentDomain}`));
+      const webCoversSilent = silentDomain.endsWith(`.${webDomain}`);
 
-      if (appCoversWeb || webCoversApp) {
-        throw new Error(`网页与 App 广告清单重叠：${webDomain} / ${appDomain}`);
+      if (silentCoversWeb || webCoversSilent) {
+        throw new Error(`网页与静默拒绝清单重叠：${webDomain} / ${silentDomain}`);
       }
     }
   }
@@ -203,8 +203,8 @@ export function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function buildModule(entries, appAdEntries = []) {
-  assertNoCrossListOverlap(entries, appAdEntries);
+export function buildModule(entries, silentEntries = []) {
+  assertNoCrossListOverlap(entries, silentEntries);
 
   const grouped = Object.fromEntries(
     ALLOWED_CATEGORIES.map((category) => [
@@ -247,14 +247,14 @@ export function buildModule(entries, appAdEntries = []) {
     .sort();
 
   return [
-    "#!name=Adcote 网页安全拦截",
-    "#!desc=网页风险跳转到安全提示页，App 开屏广告静默拒绝",
+    "#!name=Adcote 全广告诈骗追踪拦截",
+    "#!desc=网页风险跳转到安全提示页，App 广告与追踪器静默拒绝",
     "#!author=Adcote",
     "#!homepage=https://block.rainyxin.cyou",
     "#!category=Security",
     "",
     "[Rule]",
-    ...appAdEntries
+    ...silentEntries
       .map(({ match, domain }) => [
         match === "suffix" ? "DOMAIN-SUFFIX" : "DOMAIN",
         domain,
@@ -279,16 +279,29 @@ export async function readEntries(csvPath) {
   return deduplicate(parseCsv(text));
 }
 
-export function filterAppOverlaps(entries, appAdEntries) {
+export function filterAppOverlaps(entries, silentEntries) {
   return entries.filter(({ domain: webDomain }) =>
-    !appAdEntries.some(({ domain: appDomain, match }) => {
-      const appCoversWeb =
-        webDomain === appDomain ||
-        (match === "suffix" && webDomain.endsWith(`.${appDomain}`));
-      const webCoversApp = appDomain.endsWith(`.${webDomain}`);
-      return appCoversWeb || webCoversApp;
+    !silentEntries.some(({ domain: silentDomain, match }) => {
+      const silentCoversWeb =
+        webDomain === silentDomain ||
+        (match === "suffix" && webDomain.endsWith(`.${silentDomain}`));
+      const webCoversSilent = silentDomain.endsWith(`.${webDomain}`);
+      return silentCoversWeb || webCoversSilent;
     }),
   );
+}
+
+export function parseSilentDomainList(text, provider, note) {
+  if (!provider?.trim()) {
+    throw new Error("静默拒绝清单来源为空");
+  }
+
+  return parseDomainList(text, "ads", provider).map(({ domain }) => ({
+    provider: provider.trim(),
+    match: "suffix",
+    domain,
+    note: note?.trim() ?? "",
+  }));
 }
 
 export async function readAppAdEntries(csvPath) {
@@ -322,5 +335,36 @@ export async function readOverseasAdEntries(listPath) {
   const text = await readFile(listPath, "utf8");
   return deduplicate(
     parseDomainList(text, "ads", "stevenblack-mit+hagezi-light-cross-check"),
+  );
+}
+
+export async function readImportedGlobalAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseDomainList(text, "ads", "user-full-collection-global-ads-2026-07-28"),
+  );
+}
+
+export async function readImportedAppAdEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseSilentDomainList(
+      text,
+      "用户提供的国内开屏与应用内广告集合",
+      "App 广告静默拒绝",
+    ),
+    ({ domain }) => domain,
+  );
+}
+
+export async function readTrackerEntries(listPath) {
+  const text = await readFile(listPath, "utf8");
+  return deduplicate(
+    parseSilentDomainList(
+      text,
+      "用户提供的全球追踪器集合",
+      "追踪器静默拒绝",
+    ),
+    ({ domain }) => domain,
   );
 }
