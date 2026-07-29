@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   BLOCK_PAGE_HOST,
   assertNoCrossListOverlap,
@@ -369,4 +370,27 @@ Bilibili,exact,dataflow.biliapi.com,数据流与归因采集`);
   assert.doesNotMatch(mitmSection, /data\.bilibili\.com/);
   assert.doesNotMatch(moduleText, /DOMAIN,api\.bilibili\.com,REJECT/);
   assert.doesNotMatch(moduleText, /DOMAIN,mcdn\.bilivideo\.com,REJECT/);
+});
+
+test("微信广告专项清单只保存 60 条精确主机并保护核心功能", async () => {
+  const text = await readFile(
+    new URL("../blocklists/wechat-ad-domains-60.list", import.meta.url),
+    "utf8",
+  );
+  const domains = parseExactRuleSet(text);
+
+  assert.equal(domains.length, 60);
+  assert.equal(new Set(domains).size, 60);
+  assert.ok(domains.includes("ad.weixin.qq.com"));
+  assert.ok(domains.includes("wxsnsad.tc.qq.com"));
+  assert.ok(domains.every((domain) => !domain.includes("*")));
+  for (const coreHost of [
+    "login.weixin.qq.com",
+    "mp.weixin.qq.com",
+    "pay.weixin.qq.com",
+    "weixin.qq.com",
+    "wx.qq.com",
+  ]) {
+    assert.ok(!domains.includes(coreHost));
+  }
 });

@@ -20,12 +20,15 @@ import {
 import {
   AUDITED_ALL_RULESET_PATH,
   CN_AD_CDN_RULESET_PATH,
+  WECHAT_AD_RULESET_PATH,
   isCnProtectedDomain,
   isCnSensitiveDomain,
 } from "./audited-list-policy.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const TARGET_COUNT = 2000;
+const BASE_TARGET_COUNT = 2000;
+const WECHAT_SUPPLEMENT_COUNT = 60;
+const TOTAL_TARGET_COUNT = BASE_TARGET_COUNT + WECHAT_SUPPLEMENT_COUNT;
 const CHINA_RELEVANT_TARGET = 800;
 const CDN_TARGET = 300;
 const ANTI_AD_URL =
@@ -52,8 +55,25 @@ const MULTI_LABEL_SUFFIXES = new Set([
 const sha256 = (text) =>
   createHash("sha256").update(text, "utf8").digest("hex");
 
+const fetchWithRetry = async (url, options = {}) => {
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await fetch(url, options);
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) {
+        await new Promise((resolveDelay) =>
+          setTimeout(resolveDelay, attempt * 500),
+        );
+      }
+    }
+  }
+  throw lastError;
+};
+
 const fetchText = async (url) => {
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     headers: { "user-agent": "Adcote-Web-Guard-Auditor/1.0" },
   });
   if (!response.ok) {
@@ -209,11 +229,31 @@ const selectDiverse = (candidates, count) => {
   return selected.sort();
 };
 
-const [antiAdText, adRulesText, existing] = await Promise.all([
+const [
+  antiAdText,
+  adRulesText,
+  existing,
+  wechatSupplementText,
+  wechatSupplementReport,
+] = await Promise.all([
   fetchText(ANTI_AD_URL),
   fetchText(ADRULES_URL),
   readExistingEntries(),
+  readFile(resolve(projectRoot, WECHAT_AD_RULESET_PATH), "utf8"),
+  readFile(
+    resolve(projectRoot, "blocklists/wechat-ad-domains-60.audit.json"),
+    "utf8",
+  ).then(JSON.parse),
 ]);
+const wechatSupplement = parseExactRuleSet(wechatSupplementText);
+if (
+  wechatSupplement.length !== WECHAT_SUPPLEMENT_COUNT ||
+  new Set(wechatSupplement).size !== wechatSupplement.length ||
+  wechatSupplementReport.selectedExactDomains !== wechatSupplement.length ||
+  wechatSupplementReport.rulesetSha256 !== sha256(wechatSupplementText)
+) {
+  throw new Error("微信公众号与朋友圈广告专项清单数量或 SHA-256 不一致");
+}
 const antiAdDomains = parseAntiAd(antiAdText);
 const adRulesDomains = parseAdRules(adRulesText);
 const sourceUnion = new Set([...antiAdDomains, ...adRulesDomains]);
@@ -239,9 +279,9 @@ const eligible = [...sourceUnion].filter(
 const dualEligible = eligible.filter((domain) => dualSourceSet.has(domain));
 const singleEligible = eligible.filter((domain) => !dualSourceSet.has(domain));
 
-if (eligible.length < TARGET_COUNT) {
+if (eligible.length < BASE_TARGET_COUNT) {
   throw new Error(
-    `通过审核的中国广告/CDN候选不足 ${TARGET_COUNT} 条：${eligible.length}`,
+    `通过审核的中国广告/CDN候选不足 ${BASE_TARGET_COUNT} 条：${eligible.length}`,
   );
 }
 
@@ -270,19 +310,29 @@ addSelected(selectDiverse(chinaRelevantCandidates, CHINA_RELEVANT_TARGET));
 addSelected(
   selectDiverse(
     dualEligible.filter((domain) => !selectedSet.has(domain)),
-    TARGET_COUNT - selectedSet.size,
+    BASE_TARGET_COUNT - selectedSet.size,
   ),
 );
 addSelected(
   selectDiverse(
     singleEligible.filter((domain) => !selectedSet.has(domain)),
-    TARGET_COUNT - selectedSet.size,
+    BASE_TARGET_COUNT - selectedSet.size,
   ),
 );
-const selected = [...selectedSet].sort();
+const selectedBase = [...selectedSet].sort();
+const supplementOverlaps = wechatSupplement.filter((domain) =>
+  selectedSet.has(domain),
+);
+if (supplementOverlaps.length > 0) {
+  throw new Error(
+    `微信广告专项清单与基础批次重复：${supplementOverlaps.join(", ")}`,
+  );
+}
+const selected = [...selectedBase, ...wechatSupplement].sort();
 const rulesetText = [
   "# Adcote audited China advertising and ad-CDN exact rules",
-  "# Sources: anti-AD and AdRules; dual-source matches are selected first",
+  "# Base sources: anti-AD and AdRules; dual-source matches are selected first",
+  "# Supplement: 60 audited WeChat Official Accounts/Moments GDT/SSP hosts",
   "# Selection: China/platform/ad/CDN semantics with root-domain diversity",
   "# Match type: DOMAIN (exact only; no suffix expansion)",
   ...selected.map((domain) => `DOMAIN,${domain}`),
@@ -291,9 +341,10 @@ const rulesetText = [
 
 const report = {
   generatedAt: new Date().toISOString(),
-  targetCount: TARGET_COUNT,
+  targetCount: TOTAL_TARGET_COUNT,
+  baseTargetCount: BASE_TARGET_COUNT,
   policy:
-    "anti-AD and AdRules union with dual-source priority; existing/protected exclusion; China-region sources with .cn/China-platform/ad/CDN semantics; root-domain diversity",
+    "2,000-domain anti-AD and AdRules base with dual-source priority, plus 60 exact audited Tencent GDT/SSP and WeChat advertising hosts; existing/protected exclusion; no suffix expansion",
   verificationSources: [
     {
       name: "anti-AD",
@@ -324,10 +375,22 @@ const report = {
     adCdn: CDN_TARGET,
   },
   selectedExactDomains: selected.length,
-  selectedDualSource: selected.filter((domain) => dualSourceSet.has(domain))
-    .length,
-  selectedSingleSource: selected.filter((domain) => !dualSourceSet.has(domain))
-    .length,
+  selectedBaseExactDomains: selectedBase.length,
+  selectedDualSource: selectedBase.filter((domain) =>
+    dualSourceSet.has(domain),
+  ).length,
+  selectedSingleSource: selectedBase.filter(
+    (domain) => !dualSourceSet.has(domain),
+  ).length,
+  wechatSupplement: {
+    path: WECHAT_AD_RULESET_PATH,
+    selectedExactDomains: wechatSupplement.length,
+    highConfidenceDomains: wechatSupplementReport.highConfidenceDomains,
+    experimentalDomains: wechatSupplementReport.experimentalDomains,
+    directWechatAdvertisingHosts:
+      wechatSupplementReport.directWechatAdvertisingHosts,
+    rulesetSha256: wechatSupplementReport.rulesetSha256,
+  },
   selectedCnTld: selected.filter((domain) => domain.endsWith(".cn")).length,
   selectedChinaPlatform: selected.filter((domain) =>
     CHINA_PLATFORM_PATTERN.test(domain),

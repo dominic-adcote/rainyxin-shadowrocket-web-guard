@@ -1,5 +1,6 @@
 # Adcote audited China advertising and ad-CDN exact rules
-# Sources: anti-AD and AdRules; dual-source matches are selected first
+# Base sources: anti-AD and AdRules; dual-source matches are selected first
+# Supplement: 60 audited WeChat Official Accounts/Moments GDT/SSP hosts
 # Selection: China/platform/ad/CDN semantics with root-domain diversity
 # Match type: DOMAIN (exact only; no suffix expansion)
 DOMAIN,0512pifa.com.cn
@@ -235,6 +236,7 @@ DOMAIN,ad.tradertimerz.media
 DOMAIN,ad.us.sinaimg.cn
 DOMAIN,ad.video-mech.ru
 DOMAIN,ad.walkgame.com
+DOMAIN,ad.weixin.qq.com
 DOMAIN,ad.where.com
 DOMAIN,ad.wretch.cc
 DOMAIN,ad.wurangxian.top
@@ -260,10 +262,13 @@ DOMAIN,admost-banner.b-cdn.net
 DOMAIN,adncdn.net
 DOMAIN,adnewnc.app.autohome.com.cn
 DOMAIN,adpai.thepaper.cn
+DOMAIN,adping.qq.com
+DOMAIN,adpm.app.qq.com
 DOMAIN,adpro.cn
 DOMAIN,adproxy.autohome.com.cn
 DOMAIN,adpush.cn
 DOMAIN,adquire.us.cdn-world.net
+DOMAIN,adrdir.qq.com
 DOMAIN,adreal.cn
 DOMAIN,adres.wpscdn.cn
 DOMAIN,ads-6686.top
@@ -290,6 +295,7 @@ DOMAIN,ads-trk.vidible.tv
 DOMAIN,ads-video-al.xhscdn.com
 DOMAIN,ads-video-qc.xhscdn.com
 DOMAIN,ads-yallo-production.imgix.net
+DOMAIN,ads.app.wechat.com
 DOMAIN,ads.b10f.jp
 DOMAIN,ads.ccstock.cn
 DOMAIN,ads.cdn.bndlapi.com
@@ -324,17 +330,31 @@ DOMAIN,ads.zascdn.me
 DOMAIN,ads360.cn
 DOMAIN,adsame1.cnr.cn
 DOMAIN,adscdn.baidu.cn
+DOMAIN,adsclick.qq.com
 DOMAIN,adsclick.yx.js.cn
 DOMAIN,adsence.sogou.com
 DOMAIN,adsense.google.cn
+DOMAIN,adsgroup.qq.com
+DOMAIN,adshmct.qq.com
+DOMAIN,adshmmsg.qq.com
 DOMAIN,adsinteractive-794b.kxcdn.com
+DOMAIN,adslvseed.qq.com
+DOMAIN,adsmind.gdtimg.com.tcdn.qq.com
+DOMAIN,adsmind.ugdtimg.com.tcdn.qq.com
+DOMAIN,adsqqclick.qq.com
+DOMAIN,adsrich.qq.com
+DOMAIN,adstextview.qq.com
+DOMAIN,adsview.qq.com
+DOMAIN,adsview2.qq.com
 DOMAIN,adsys.chinacloudapp.cn
 DOMAIN,adtrcdn.io
 DOMAIN,adups.cn
 DOMAIN,aduu.cn
 DOMAIN,adv-sv-show.focus.cn
 DOMAIN,adv-sv-stat.focus.cn
+DOMAIN,adv.app.qq.com
 DOMAIN,advapi.ahtv.cn
+DOMAIN,adver.qq.com
 DOMAIN,advert.api.thejoyrun.com
 DOMAIN,advertising-cdn.com
 DOMAIN,advice-ads-cdn.vice.com
@@ -455,7 +475,9 @@ DOMAIN,bdm.ye-su.cn
 DOMAIN,bdstatic.eastmoney.com
 DOMAIN,bdu.focus.cn
 DOMAIN,bdx.playnext.cn
+DOMAIN,beacon.cdn.qq.com
 DOMAIN,beacon.cdnma.com
+DOMAIN,beaconcdn.qq.com
 DOMAIN,beamanalytics.b-cdn.net
 DOMAIN,befirstcdn.com
 DOMAIN,beijinglvyou.net.cn
@@ -508,11 +530,16 @@ DOMAIN,c.autohome.com.cn
 DOMAIN,c.baidu.cn
 DOMAIN,c.booksir.com.cn
 DOMAIN,c.sayhi.360.cn
+DOMAIN,c.ssp.qq.com
 DOMAIN,c.wechat.jx.cn
 DOMAIN,c1.china.cn
 DOMAIN,c1.czcol.cn
+DOMAIN,c2.gdt.qq.com
+DOMAIN,c3.gdt.qq.com
 DOMAIN,c41.clicki.cn
 DOMAIN,campaign.hach.com.cn
+DOMAIN,canvas-cdn.gdt.qq.com
+DOMAIN,canvas.gdt.qq.com
 DOMAIN,casee.cn
 DOMAIN,cash-ads.com
 DOMAIN,cb.baidu.cn
@@ -701,6 +728,7 @@ DOMAIN,cuqpi.cn
 DOMAIN,d.517sccts.cn
 DOMAIN,d.biboi.cn
 DOMAIN,d.cntv.cn
+DOMAIN,d.gdt.qq.com
 DOMAIN,d0.xcar.com.cn
 DOMAIN,d1.3158.cn
 DOMAIN,da-ads.com
@@ -899,6 +927,7 @@ DOMAIN,er.5ykj.cn
 DOMAIN,etqu.cn
 DOMAIN,euuh.cn
 DOMAIN,evcustom-ad.xyz
+DOMAIN,event.gdt.qq.com
 DOMAIN,event.raise3d.cn
 DOMAIN,event.stat.wedobest.com.cn
 DOMAIN,event.thermoscientific.cn
@@ -996,6 +1025,8 @@ DOMAIN,h.b5qpg.cn
 DOMAIN,h.baminw.cn
 DOMAIN,h1.18sd.cn
 DOMAIN,h1.cfxinxi.cn
+DOMAIN,h5.gdt.qq.com
+DOMAIN,h5.ssp.qq.com
 DOMAIN,hbfpml.cn
 DOMAIN,hbid.ams3.cdn.digitaloceanspaces.com
 DOMAIN,hc-ssp.sm.cn
@@ -1031,6 +1062,7 @@ DOMAIN,ibqh.cn
 DOMAIN,icast.cn
 DOMAIN,iclickcdn.com
 DOMAIN,idm.api.autohome.com.cn
+DOMAIN,ii.gdt.qq.com
 DOMAIN,iiid.bluescream.cn
 DOMAIN,ijxi.cn
 DOMAIN,image-ad.sm.cn
@@ -1070,6 +1102,7 @@ DOMAIN,intely.cn
 DOMAIN,ios-informationplatform.wps.cn
 DOMAIN,ip186269007.ahcdn.com
 DOMAIN,ipad.pc899.cn
+DOMAIN,ipv4.gdt.qq.com
 DOMAIN,iqoi.cn
 DOMAIN,itcj.cn
 DOMAIN,ivy.pconline.com.cn
@@ -1108,6 +1141,7 @@ DOMAIN,jxal.cn
 DOMAIN,jynv.cn
 DOMAIN,k.85wa.cn
 DOMAIN,k.cao86789.cn
+DOMAIN,k.ssp.qq.com
 DOMAIN,kacq.cn
 DOMAIN,kawf.cn
 DOMAIN,kcdnbeczdhqea.space
@@ -1261,6 +1295,7 @@ DOMAIN,m.cepga.cn
 DOMAIN,m.chshsc.cn
 DOMAIN,m.cjjcby.cn
 DOMAIN,m.color6.cn
+DOMAIN,m.gdt.qq.com
 DOMAIN,m5.66077.cn
 DOMAIN,ma.baidu.cn
 DOMAIN,magicwindow.cn
@@ -1342,11 +1377,13 @@ DOMAIN,myhug.cn
 DOMAIN,mythdev.b-cdn.net
 DOMAIN,n.baminw.com.cn
 DOMAIN,n.cosbot.cn
+DOMAIN,n.ssp.qq.com
 DOMAIN,n0v1cdn.com
 DOMAIN,naszig.cn
 DOMAIN,native-ads-events-api.c4s-rd.services
 DOMAIN,native-ads-events-api2.c4s-rd.services
 DOMAIN,native-adserver.com
+DOMAIN,nc.gdt.qq.com
 DOMAIN,nc004x.corp.youdao.com
 DOMAIN,nc045x.corp.youdao.com
 DOMAIN,ndja.cn
@@ -1356,6 +1393,8 @@ DOMAIN,netstat.yunnan.cn
 DOMAIN,new.915yzt.cn
 DOMAIN,news.qcyz.cn
 DOMAIN,news.reedexpo.com.cn
+DOMAIN,news.ssp.qq.com
+DOMAIN,newsad.ssp.qq.com
 DOMAIN,newspush.sinajs.cn
 DOMAIN,newvoice.chiq5.smart-tv.cn
 DOMAIN,nextacdn.com
@@ -1393,6 +1432,7 @@ DOMAIN,olpv.cn
 DOMAIN,om.hotels.cn
 DOMAIN,omni-ads.com
 DOMAIN,online.cphi.cn
+DOMAIN,op.ssp.qq.com
 DOMAIN,open.e.kuaishou.cn
 DOMAIN,openfpcdn.io
 DOMAIN,openrtb-banner.com
@@ -1403,6 +1443,7 @@ DOMAIN,orbk.cn
 DOMAIN,organiccdn.io
 DOMAIN,oss-asq-static.11222.cn
 DOMAIN,otme.cn
+DOMAIN,p.ssp.qq.com
 DOMAIN,p.vq6nsu.cn
 DOMAIN,p.zol-img.com.cn
 DOMAIN,p0y.cn
@@ -1463,6 +1504,7 @@ DOMAIN,ptengine.cn
 DOMAIN,ptga.cn
 DOMAIN,pub.se.360.cn
 DOMAIN,pubfuture-ad.com
+DOMAIN,public.gdtimg.com
 DOMAIN,pups.baidu.cn
 DOMAIN,purge.fb-cdn.net
 DOMAIN,push.app.autohome.com.cn
@@ -1476,6 +1518,7 @@ DOMAIN,pvtest.zol.com.cn
 DOMAIN,pvx.autohome.com.cn
 DOMAIN,pvx.xcar.com.cn
 DOMAIN,q.baminw.com.cn
+DOMAIN,q.i.gdt.qq.com
 DOMAIN,qchannel03.cn
 DOMAIN,qchannel0d.cn
 DOMAIN,qde.chinaqirun.cn
@@ -1511,6 +1554,7 @@ DOMAIN,resolver.msg.global.xiaomi.net.iberostar.com
 DOMAIN,ressource.gdpr-banner.awsmpsa.com
 DOMAIN,retrack.q-divisioncdn.de
 DOMAIN,revampcdn.com
+DOMAIN,review.gdtimg.com
 DOMAIN,revive-adserver.net
 DOMAIN,rhiolf.cn
 DOMAIN,rhrrf.cn
@@ -1520,8 +1564,10 @@ DOMAIN,rj.baidu.cn
 DOMAIN,rkoi.cn
 DOMAIN,rlkx.cn
 DOMAIN,rlogs.youdao.com
+DOMAIN,rm.gdt.qq.com
 DOMAIN,rp.baidu.cn
 DOMAIN,rpox.cn
+DOMAIN,rpt.gdt.qq.com
 DOMAIN,rs.sinajs.cn
 DOMAIN,rt.cdnmedia.tv
 DOMAIN,rtb-1.jizzberry.com
@@ -1614,6 +1660,7 @@ DOMAIN,ssp.hinet.net
 DOMAIN,ssp.kdnet.net
 DOMAIN,ssp.kssws.ks-cdn.com
 DOMAIN,ssp.moeli.net
+DOMAIN,ssp.qq.com
 DOMAIN,ssp.zf313.com
 DOMAIN,st.appsad.cn
 DOMAIN,st.cdnco.us
@@ -1674,6 +1721,7 @@ DOMAIN,ta.trs.cn
 DOMAIN,tag.aticdn.net
 DOMAIN,tag.brandcdn.com
 DOMAIN,tag.cdnmaster.cn
+DOMAIN,tangram-config.gdt.qq.com
 DOMAIN,tapjoy.cn
 DOMAIN,tb060x.corp.youdao.com
 DOMAIN,tb104x.corp.youdao.com
@@ -1738,6 +1786,7 @@ DOMAIN,trmn.cn
 DOMAIN,truyoproductionuscdn.truyo.com
 DOMAIN,trx-cdn.zip.co
 DOMAIN,tsuh.cn
+DOMAIN,ttc.gdt.qq.com
 DOMAIN,tuia.cn
 DOMAIN,tuisong.baidu.cn
 DOMAIN,turncdn.com
@@ -1776,6 +1825,7 @@ DOMAIN,union.56.com
 DOMAIN,union.6.cn
 DOMAIN,union.baidu.cn
 DOMAIN,union.china.com.cn
+DOMAIN,union.gdtimg.com
 DOMAIN,union.star-media.cn
 DOMAIN,union.yihaodian.com
 DOMAIN,up-cookiemon.wavecdn.net
@@ -1808,7 +1858,10 @@ DOMAIN,v.76768hwj.cn
 DOMAIN,v.adintl.cn
 DOMAIN,v1-ad.video.yximgs.com
 DOMAIN,v2-ad.video.yximgs.com
+DOMAIN,v2ii.gdt.qq.com
 DOMAIN,v3-ad.video.yximgs.com
+DOMAIN,v3.gdt.qq.com
+DOMAIN,v6ii.gdt.qq.com
 DOMAIN,vbjmrh.cn
 DOMAIN,vdnh.cn
 DOMAIN,vdxu.cn
@@ -1832,6 +1885,7 @@ DOMAIN,vmyv.cn
 DOMAIN,voodoo-ads.io
 DOMAIN,vpvq.cn
 DOMAIN,vqia.cn
+DOMAIN,vr.gdt.qq.com
 DOMAIN,vrrm.cn
 DOMAIN,vungle.cn
 DOMAIN,vurr.cn
@@ -1932,14 +1986,21 @@ DOMAIN,www.ttcdn.cn
 DOMAIN,www.wowjs.1www.cn
 DOMAIN,www2.info.renesas.cn
 DOMAIN,wx.uc.downcdn.top
+DOMAIN,wxadliteapp.gdt.qq.com
+DOMAIN,wxsnsad.tc.qq.com
 DOMAIN,wy.ce22d.cn
 DOMAIN,wysa.2wxb5.cn
 DOMAIN,wzccrzcdntskz.space
+DOMAIN,x.adnet.qq.com
+DOMAIN,xc.gdt.qq.com
 DOMAIN,xc.macd.cn
 DOMAIN,xffg.1x26q3.cn
 DOMAIN,xiaoshuoyun.cn
+DOMAIN,xj-landing.gdtimg.com
 DOMAIN,xkum.cn
 DOMAIN,xn--wgvp78a61swpe6zdozj.cn
+DOMAIN,xs.gdt.qq.com
+DOMAIN,xscdn.gdt.qq.com
 DOMAIN,xsyhy.cn
 DOMAIN,xszcdn.com
 DOMAIN,xtsk.6yush.cn

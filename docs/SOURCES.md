@@ -148,12 +148,27 @@ YouTube 的播放器/信息流 JSON 字段、X 的 GraphQL 时间线结构和同
 86,639 个。脚本 `scripts/audit-cn-ad-cdn-import.mjs` 排除现有覆盖、第一方平台、
 公共机构，以及登录、支付、银行、下载、DNS 和更新等敏感功能主机，再按 `.cn`、
 中国平台、广告与 CDN 语义筛选，并按根域分散取样。通过语义审核的双源候选共
-1,416 个，全部收录；其余 584 条从单源候选中按相同保护策略补足。最终 2,000 条均为
-精确 `DOMAIN`，其中 1,326 条为 `.cn`、402 条含 CDN 语义；不使用
+1,416 个，全部收录；其余 584 条从单源候选中按相同保护策略补足。基础 2,000 条均为
+精确 `DOMAIN`，其中 1,326 条为 `.cn`、402 条含 CDN 语义；加入下述 60 条微信
+广告专项条目后总数为 2,060 条。不使用
 `DOMAIN-SUFFIX`，不加入 URL Rewrite 或 MITM。
 
 `blocklists/cn-ad-cdn-2000.audit.json` 记录上游 URL、许可证、采集时 SHA-256、全部
 筛选数量和输出 SHA-256。上游列表持续更新，因此重复采集的数量和哈希可能变化。
+
+## 微信公众号与朋友圈广告专项域名
+
+专项审核脚本从 anti-AD、AdRules、HaGeZi Multi Pro、217heidai China、
+SukkaW reject、NobyDa AdRule 和 V2Fly Tencent 七个来源检索腾讯广告主机，并通过
+Cloudflare DoH 确认候选当前存在 A 或 CNAME 记录。60 条中 41 条至少获得两个来源
+支持，19 条为单源 experimental 候选；3 条是微信直接广告主机，其余是 GDT/SSP
+投放、素材 CDN、点击、曝光和归因共享链路。
+
+25 条 GDT/AdNet 子主机已经被历史 `gdt.qq.com` 或 `adnet.qq.com` 后缀规则间接
+覆盖，本次将它们显式列入精确清单以建立可复核的专项目录，报告不把它们描述为新的
+有效覆盖。审核排除登录、支付、消息、公众号正文、小程序和通用媒体主机。逐域名来源、
+DNS 答案、宽规则覆盖关系与 SHA-256 见
+`blocklists/wechat-ad-domains-60.audit.json`。
 
 ## 哔哩哔哩专项域名
 

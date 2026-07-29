@@ -142,3 +142,24 @@ script, or expression is copied into this repository.
 
 Per-source snapshot hashes, per-domain matches, and DNS answers are recorded
 in `blocklists/bilibili-ad-domains.audit.json`.
+
+## WeChat advertising specialist verification sources
+
+The exact hosts in `blocklists/wechat-ad-domains-60.list` were manually
+selected after comparison against public advertising/tracking rule projects
+and live DNS. They are merged into `blocklists/cn-ad-cdn-2000.list`; no
+complete upstream list, script, or expression is copied into this repository.
+
+- anti-AD, MIT: <https://github.com/privacy-protection-tools/anti-AD>
+- AdRules, 0BSD: <https://github.com/Cats-Team/AdRules>
+- HaGeZi DNS Blocklists, GPL-3.0:
+  <https://github.com/hagezi/dns-blocklists>
+- 217heidai/adblockfilters, GPL-3.0:
+  <https://github.com/217heidai/adblockfilters>
+- SukkaW/Surge, AGPL-3.0: <https://github.com/SukkaW/Surge>
+- NobyDa/Script, GPL-3.0: <https://github.com/NobyDa/Script>
+- V2Fly domain-list-community, MIT:
+  <https://github.com/v2fly/domain-list-community/blob/master/data/tencent>
+
+Per-source hashes, per-domain matches, DNS answers, and broader-rule coverage
+are recorded in `blocklists/wechat-ad-domains-60.audit.json`.
