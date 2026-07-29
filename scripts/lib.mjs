@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { AUDITED_ALL_RULESET_URL } from "./audited-list-policy.mjs";
 
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
@@ -14,29 +15,23 @@ const YOUTUBE_AD_ENDPOINTS = [
 ];
 
 const YOUTUBE_SCRIPT_PATTERN = String.raw`^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(?:player|browse|next|search|reel\/reel_item_watch)(?:\?|$)`;
-const X_SCRIPT_PATTERN = String.raw`^https?:\/\/(?:(?:x\.com|twitter\.com)\/i\/api|api\.(?:x|twitter)\.com)\/(?:graphql\/[^/?]+\/(?:HomeTimeline|HomeLatestTimeline|HomeTimelineV2|HomeLatestTimelineV2|ListLatestTweetsTimeline|SearchTimeline)|2\/timeline\/(?:home|search)(?:\.json|\/[^?]*)?)(?:\?|$)`;
 
 const SCRIPT_LINES = [
   `Adcote Google 搜索广告清理 = type=http-response,requires-body=1,max-size=2097152,engine=jsc,script-path=${SCRIPT_BASE}/google-search-ad-cleaner.js,pattern=^https?:\\/\\/www\\.google\\.(?:com|co\\.uk|com\\.hk|com\\.sg)\\/search(?:\\?|$)`,
   `Adcote YouTube 应用内广告清理 = type=http-response,requires-body=1,max-size=0,engine=webview,script-path=${SCRIPT_BASE}/youtube-ad-cleaner.js,pattern=${YOUTUBE_SCRIPT_PATTERN}`,
-  `Adcote X 信息流广告清理 = type=http-response,requires-body=1,max-size=0,engine=jsc,script-path=${SCRIPT_BASE}/x-ad-cleaner.js,pattern=${X_SCRIPT_PATTERN}`,
 ];
 
 const SCRIPT_HOSTNAMES = [
-  "api.twitter.com",
-  "api.x.com",
   "s.youtube.com",
-  "twitter.com",
   "www.google.co.uk",
   "www.google.com",
   "www.google.com.hk",
   "www.google.com.sg",
   "www.youtube.com",
-  "x.com",
   "youtubei.googleapis.com",
 ];
 
-const DOMAIN_PATTERN =
+export const DOMAIN_PATTERN =
   /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
 export function parseCsv(text) {
@@ -179,6 +174,30 @@ export function parseDomainList(text, category, source) {
     });
 }
 
+export function parseExactRuleSet(text) {
+  const domains = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"))
+    .map((line, index) => {
+      const match = line.match(/^DOMAIN,([^,]+)$/);
+      const domain = match?.[1]?.toLowerCase().replace(/\.$/, "");
+
+      if (!domain || !DOMAIN_PATTERN.test(domain)) {
+        throw new Error(`第 ${index + 1} 条精确规则无效：${line}`);
+      }
+      if (domain === BLOCK_PAGE_HOST || BLOCK_PAGE_HOST.endsWith(`.${domain}`)) {
+        throw new Error(`第 ${index + 1} 条精确规则会拦截拦截页自身：${domain}`);
+      }
+
+      return domain;
+    });
+
+  deduplicate(domains, (domain) => domain);
+  return domains;
+}
+
 export function deduplicate(entries, key = ({ domain }) => domain) {
   const seen = new Set();
 
@@ -269,6 +288,7 @@ export function buildModule(entries, silentEntries = []) {
         "REJECT",
       ].join(","))
       .sort(),
+    `RULE-SET,${AUDITED_ALL_RULESET_URL},REJECT`,
     "",
     "[URL Rewrite]",
     ...rewriteLines,

@@ -113,7 +113,27 @@ StevenBlack/hosts 是这 100 条数据的 MIT 许可来源；HaGeZi Multi LIGHT 
 
 YouTube 的播放器/信息流 JSON 字段、X 的 GraphQL 时间线结构和同域广告路径属于
 客户端实现细节，可能随时变化。本项目只使用自编写的保守清理器，不复制第三方去广告
-脚本；X 清理器只认 entry ID 和结构化推广元数据，不扫描帖子正文关键词。
+脚本。X 清理器曾因空推广字段和 MITM 兼容问题影响正常帖子加载，1.3.1 起不再由正式
+模组执行，也不再加入 X/Twitter MITM 主机。
+
+## 2026-07-29 全量广告与追踪域名核验
+
+用户提供的 `all_ad_and_tracking_domains.txt` 有 324,059 条精确唯一记录，但没有
+逐条来源或许可证说明，而且包含正常基础设施根域，不能直接整包封锁。审核脚本
+`scripts/audit-all-ad-tracking-import.mjs` 执行以下流程：
+
+- 过滤 2 条无效记录；
+- 只保留同时精确出现于
+  [HaGeZi Multi Pro](https://github.com/hagezi/dns-blocklists) 和
+  [StevenBlack unified hosts](https://github.com/StevenBlack/hosts) 的 25,721 条；
+- 排除 178 条 Apple、Google、Microsoft、X、支付、CDN 等受保护第一方/基础设施项；
+- 排除 2,645 条已经被项目网页或静默规则覆盖的记录；
+- 输出 22,898 条精确 `DOMAIN` 规则，不使用 `DOMAIN-SUFFIX`。
+
+核验结果保存在 `blocklists/audited-all-ad-tracking.list`，完整数量、输入 SHA-256、
+两个实时核验源的 SHA-256 和输出 SHA-256 保存在
+`blocklists/audited-all-ad-tracking.audit.json`。正式模组通过远程 `RULE-SET`
+加载该文件，因此不会把这批域名加入 HTTPS MITM。
 
 ## App 广告网络
 

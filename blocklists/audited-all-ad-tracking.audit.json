@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-07-29T07:25:47.732Z",
+  "policy": "exact intersection of user source, HaGeZi Multi Pro, and StevenBlack",
+  "source": {
+    "pathHint": "all_ad_and_tracking_domains.txt",
+    "sha256": "4d403fa92278fcd0aa1eefcd320a9a67758469905898bc9984530225f23dd391",
+    "rawLines": 324059,
+    "uniqueLines": 324059,
+    "validDomains": 324057,
+    "invalidEntries": [
+      "0.0.0.0",
+      "philadelphia_cbslocal.us.intellitxt.com"
+    ]
+  },
+  "verificationSources": [
+    {
+      "name": "HaGeZi Multi Pro",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt",
+      "sha256": "a5804f028fae7603c60997b9cf9f265313caa8d911dd845f13c98424a30d9934",
+      "parsedDomains": 549516
+    },
+    {
+      "name": "StevenBlack unified hosts",
+      "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+      "sha256": "09107a972a0f72600fa0f04036b23951d7cbfcfbbe5239369084476afc548eab",
+      "parsedDomains": 96769
+    }
+  ],
+  "dualSourceMatches": 25721,
+  "excludedProtected": 178,
+  "excludedAlreadyCovered": 2645,
+  "acceptedExactDomains": 22898,
+  "rulesetSha256": "8a8baec31ba49bb40d5b0d0559f4b471e548a68e3411018fec6bd2fa27639e9e"
+}

@@ -65,3 +65,13 @@ The supplied files did not include per-entry provenance, a reproducible
 collection script, or a third-party license statement. These entries are not
 represented as independently verified or covered by the third-party licenses
 listed above.
+
+## User-provided 2026-07-29 all-domain collection
+
+The repository owner supplied `all_ad_and_tracking_domains.txt`. The source
+file did not include per-entry provenance or a license statement, so it was
+not imported wholesale. `blocklists/audited-all-ad-tracking.list` contains
+only exact domains that also appeared in both HaGeZi Multi Pro and the
+StevenBlack unified hosts file at audit time, after protected infrastructure
+and existing coverage were removed. The audit hashes and counts are recorded
+in `blocklists/audited-all-ad-tracking.audit.json`.

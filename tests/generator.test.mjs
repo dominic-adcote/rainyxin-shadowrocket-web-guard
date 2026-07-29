@@ -9,9 +9,11 @@ import {
   parseAppAdCsv,
   parseCsv,
   parseDomainList,
+  parseExactRuleSet,
   parseGamblingCsv,
   parseSilentDomainList,
 } from "../scripts/lib.mjs";
+import { AUDITED_ALL_RULESET_URL } from "../scripts/audited-list-policy.mjs";
 
 test("按类别生成三条重定向规则", () => {
   const entries = parseCsv(`category,domain,note
@@ -32,25 +34,26 @@ gambling,casino.example.test,博彩`);
   assert.match(moduleText, /\[Script\]/);
   assert.match(moduleText, /google-search-ad-cleaner\.js/);
   assert.match(moduleText, /youtube-ad-cleaner\.js/);
-  assert.match(moduleText, /x-ad-cleaner\.js/);
+  assert.doesNotMatch(moduleText, /x-ad-cleaner\.js/);
   assert.match(moduleText, /youtubei\\\.googleapis\\\.com/);
   assert.match(moduleText, /browse\|next\|search/);
-  assert.match(moduleText, /api\\\.\(\?:x\|twitter\)\\\.com/);
-  assert.match(moduleText, /api\.twitter\.com/);
-  assert.match(moduleText, /api\.x\.com/);
+  assert.doesNotMatch(moduleText, /api\\\.\(\?:x\|twitter\)\\\.com/);
+  assert.doesNotMatch(moduleText, /api\.twitter\.com/);
+  assert.doesNotMatch(moduleText, /api\.x\.com/);
   assert.match(moduleText, /youtubei\.googleapis\.com/);
+  assert.match(
+    moduleText,
+    new RegExp(
+      `RULE-SET,${AUDITED_ALL_RULESET_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")},REJECT`,
+    ),
+  );
   assert.match(moduleText, /hostname = %APPEND%/);
 
   const youtubeScriptLine = moduleText
     .split("\n")
     .find((line) => line.startsWith("Adcote YouTube "));
-  const xScriptLine = moduleText
-    .split("\n")
-    .find((line) => line.startsWith("Adcote X "));
   const youtubePattern = youtubeScriptLine.split(",pattern=")[1];
-  const xPattern = xScriptLine.split(",pattern=")[1];
   const youtubeRegex = new RegExp(youtubePattern);
-  const xRegex = new RegExp(xPattern);
 
   assert.equal(
     youtubeRegex.test(
@@ -64,17 +67,23 @@ gambling,casino.example.test,博彩`);
     ),
     false,
   );
-  assert.equal(
-    xRegex.test(
-      "https://api.twitter.com/2/timeline/home.json?count=20",
-    ),
-    true,
+});
+
+test("解析双源复核精确规则并拒绝后缀和重复项", () => {
+  assert.deepEqual(
+    parseExactRuleSet("# exact rules\nDOMAIN,ads.example.test\n"),
+    ["ads.example.test"],
   );
-  assert.equal(
-    xRegex.test(
-      "https://x.com/i/api/graphql/query/UserTweets?variables=test",
-    ),
-    false,
+  assert.throws(
+    () => parseExactRuleSet("DOMAIN-SUFFIX,example.test"),
+    /精确规则无效/,
+  );
+  assert.throws(
+    () =>
+      parseExactRuleSet(
+        "DOMAIN,ads.example.test\nDOMAIN,ads.example.test\n",
+      ),
+    /域名重复/,
   );
 });
 

@@ -23,7 +23,14 @@
     }
 
     for (const [key, child] of Object.entries(value)) {
-      if (promotionKeys.has(key)) return true;
+      if (
+        promotionKeys.has(key) &&
+        child !== null &&
+        child !== undefined &&
+        child !== false
+      ) {
+        return true;
+      }
       if (hasPromotionMarker(child, depth + 1)) return true;
     }
     return false;
@@ -42,7 +49,15 @@
       return true;
     }
 
-    if (Object.keys(value).some((key) => promotionKeys.has(key))) {
+    if (
+      Object.entries(value).some(
+        ([key, child]) =>
+          promotionKeys.has(key) &&
+          child !== null &&
+          child !== undefined &&
+          child !== false,
+      )
+    ) {
       return true;
     }
 
@@ -71,7 +86,13 @@
 
     for (const key of Object.keys(value)) {
       if (promotionKeys.has(key)) {
-        delete value[key];
+        if (
+          value[key] !== null &&
+          value[key] !== undefined &&
+          value[key] !== false
+        ) {
+          delete value[key];
+        }
       } else {
         clean(value[key]);
       }
