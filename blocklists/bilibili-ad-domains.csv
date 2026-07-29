@@ -1,0 +1,9 @@
+provider,match,domain,note
+Bilibili,exact,ali-web-player-tracker.biliapi.net,播放器追踪；high；2 个公开规则源
+Bilibili,exact,data.bilibili.com,广告投放与数据采集；high；4 个公开规则源
+Bilibili,exact,data.bilibili.tv,国际站数据采集测试候选；experimental；1 个公开规则源
+Bilibili,exact,dataflow.biliapi.com,数据流与归因采集；high；4 个公开规则源
+Bilibili,exact,hw-v2-web-player-tracker.biliapi.net,播放器追踪；high；2 个公开规则源
+Bilibili,exact,line1-log.biligame.net,游戏日志与广告归因；high；5 个公开规则源
+Bilibili,exact,line3-adscore-api.biligame.net,游戏广告评分接口；high；2 个公开规则源
+Bilibili,exact,tracker.chat.bilibili.com,聊天追踪测试候选；experimental；1 个公开规则源

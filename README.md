@@ -25,6 +25,8 @@ App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像
 - X 响应清理因正常帖子加载兼容问题暂时停用，模组不再解密 X/Twitter 主机。
 - 不封锁 `googlevideo.com`，因为它同时承载正常视频和广告媒体。
 - App 开屏广告、广告 SDK 与不适合网页跳转的追踪请求使用 `[Rule]` 静默 `REJECT`，不会打开或加载拦截页。
+- 哔哩哔哩专项规则仅拒绝精确广告、归因和追踪主机；主 API、直播、HTTPDNS、
+  视频 CDN、静态资源和小程序主机保持可用。
 - 双源复核的大批量广告与追踪器使用远程 `RULE-SET` 和精确 `DOMAIN`，不加入
   URL Rewrite 或 MITM。
 - 中国广告与广告 CDN 增补也使用独立远程 `RULE-SET`；只拦截精确主机，不扩大到
@@ -41,6 +43,8 @@ blocklists/app-ad-domains.csv       App 广告静默拒绝清单
 blocklists/imported-app-ad-domains.txt 用户提供的 286 条 App 广告净新增
 blocklists/imported-special-app-ad-domains.csv QQ 音乐/京东/墨迹天气 43 条精确规则
 blocklists/imported-qqmusic-extra-app-ad-domains.csv TME 生态 17 条补充精确规则
+blocklists/bilibili-ad-domains.csv 哔哩哔哩 8 条新增精确测试规则
+blocklists/bilibili-ad-domains.audit.json 哔哩哔哩来源、DNS 与排除项审核
 blocklists/imported-global-ad-domains.txt 用户提供的 525 条全球广告净新增
 blocklists/imported-niche-local-ad-domains.txt 159 条小众及港美本地广告净新增
 blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
@@ -56,6 +60,7 @@ scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
 scripts/audit-all-ad-tracking-import.mjs 大清单双源复核工具
 scripts/audit-cn-ad-cdn-import.mjs  中国广告/CDN 双源复核与抽样工具
+scripts/audit-bilibili-ad-domains.mjs 哔哩哔哩专项复核工具
 scripts/youtube-ad-cleaner.js       YouTube 播放与信息流广告清理器
 scripts/x-ad-cleaner.js             已停用的 X 清理器兼容性参考
 tests/generator.test.mjs            自动化测试
@@ -63,6 +68,7 @@ tests/block-page.test.mjs           拦截页安全逻辑测试
 tests/ad-cleaners.test.mjs          Google、YouTube 与 X 清理脚本测试
 docs/THREAT-MODEL.md                能力、隐私和边界说明
 docs/SOURCES.md                     官方跳转和广告域名来源
+docs/BILIBILI-TESTING.md            哔哩哔哩专项测试与回报清单
 ```
 
 ## 本地生成与校验
@@ -175,9 +181,17 @@ DNS、更新等敏感主机后，有 7,645 个候选通过语义审核；最终�
 `blocklists/cn-ad-cdn-2000.audit.json`。可运行 `npm run audit:cn-ad-cdn` 重新采集；
 上游实时清单变化会使结果与哈希变化，正式发布前必须再次运行完整校验。
 
+哔哩哔哩专项批次从 6 个公开广告/追踪规则源中检索 B 站自有域名，并要求候选当前
+仍有公共 DNS 记录。`cm.bilibili.com` 已被现有规则覆盖，本次净新增 8 条精确静默
+规则：6 条至少获得两个来源支持，另有 `data.bilibili.tv` 和
+`tracker.chat.bilibili.com` 两条单源测试候选。`app.bilibili.com`、
+`api.bilibili.com`、直播接口、HTTPDNS、视频 CDN、静态资源和小程序主机均明确排除。
+可运行 `npm run audit:bilibili` 刷新审核报告；测试步骤见
+`docs/BILIBILI-TESTING.md`。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-29）：网页广告域名 1132 条，App 广告来源规则 376 条，追踪器规则 500 条，博彩域名 200 条。
+当前审核统计（2026-07-29）：网页广告域名 1132 条，App 广告来源规则 384 条，追踪器规则 500 条，博彩域名 200 条。
 
 双源复核精确广告/追踪域名 22898 条，通过独立远程规则集加载。
 

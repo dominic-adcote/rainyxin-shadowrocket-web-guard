@@ -56,6 +56,14 @@ const qqMusicExtraAppAdCsvPath = resolve(
   projectRoot,
   "blocklists/imported-qqmusic-extra-app-ad-domains.csv",
 );
+const bilibiliAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/bilibili-ad-domains.csv",
+);
+const bilibiliAdReportPath = resolve(
+  projectRoot,
+  "blocklists/bilibili-ad-domains.audit.json",
+);
 const nicheLocalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-niche-local-ad-domains.txt",
@@ -98,6 +106,7 @@ const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
 const qqMusicExtraAppAdEntries = await readAppAdEntries(
   qqMusicExtraAppAdCsvPath,
 );
+const bilibiliAdEntries = await readAppAdEntries(bilibiliAdCsvPath);
 const nicheLocalAdEntries = await readNicheLocalAdEntries(
   nicheLocalAdListPath,
 );
@@ -108,6 +117,7 @@ const silentEntries = deduplicate(
     ...importedAppAdEntries,
     ...specialAppAdEntries,
     ...qqMusicExtraAppAdEntries,
+    ...bilibiliAdEntries,
     ...trackerEntries,
   ],
   ({ domain }) => domain,
@@ -140,6 +150,10 @@ const auditedReport = JSON.parse(await readFile(auditedReportPath, "utf8"));
 const cnAdCdnRuleSetText = await readFile(cnAdCdnRuleSetPath, "utf8");
 const cnAdCdnRuleDomains = parseExactRuleSet(cnAdCdnRuleSetText);
 const cnAdCdnReport = JSON.parse(await readFile(cnAdCdnReportPath, "utf8"));
+const bilibiliAdCsvText = await readFile(bilibiliAdCsvPath, "utf8");
+const bilibiliAdReport = JSON.parse(
+  await readFile(bilibiliAdReportPath, "utf8"),
+);
 const expected = buildModule(entries, silentEntries);
 
 if (actual !== expected) {
@@ -325,6 +339,62 @@ if (qqMusicExtraAppAdEntries.some(({ match }) => match !== "exact")) {
 }
 
 if (
+  bilibiliAdEntries.length !== 8 ||
+  bilibiliAdEntries.some(({ match }) => match !== "exact")
+) {
+  throw new Error("哔哩哔哩专项清单必须恰好为 8 条精确 DOMAIN 规则");
+}
+const bilibiliAdCsvSha256 = rulesetSha256(bilibiliAdCsvText);
+if (
+  bilibiliAdReport.selectedExactDomains !== bilibiliAdEntries.length ||
+  bilibiliAdReport.highConfidenceDomains !== 6 ||
+  bilibiliAdReport.experimentalDomains !== 2 ||
+  bilibiliAdReport.rulesetSha256 !== bilibiliAdCsvSha256
+) {
+  throw new Error("哔哩哔哩专项清单数量、分级或 SHA-256 与审核报告不一致");
+}
+const bilibiliReportDomains = new Set(
+  bilibiliAdReport.selected.map(({ domain }) => domain),
+);
+const bilibiliProtectedHosts = new Set([
+  "api.bilibili.com",
+  "api.live.bilibili.com",
+  "app.bilibili.com",
+  "httpdns.bilivideo.com",
+  "interface.bilibili.com",
+  "mcdn.bilivideo.cn",
+  "mcdn.bilivideo.com",
+  "miniapp.bilibili.com",
+  "static.hdslb.com",
+  "upos-sz-mirrorhw.bilivideo.com",
+]);
+for (const { domain } of bilibiliAdEntries) {
+  if (
+    !bilibiliReportDomains.has(domain) ||
+    bilibiliProtectedHosts.has(domain) ||
+    auditedRuleDomainSet.has(domain) ||
+    cnAdCdnRuleDomains.includes(domain)
+  ) {
+    throw new Error(`哔哩哔哩专项域名未通过独立审核：${domain}`);
+  }
+  const audit = bilibiliAdReport.selected.find(
+    ({ domain: current }) => current === domain,
+  );
+  if (
+    audit.dns.status !== 0 ||
+    audit.dns.answers.length === 0 ||
+    audit.matchedSources.length === 0
+  ) {
+    throw new Error(`哔哩哔哩专项域名缺少来源或有效 DNS：${domain}`);
+  }
+}
+const mitmLine =
+  actual.split("\n").find((line) => line.startsWith("hostname = ")) ?? "";
+if (bilibiliAdEntries.some(({ domain }) => mitmLine.includes(domain))) {
+  throw new Error("哔哩哔哩专项域名不得进入 MITM");
+}
+
+if (
   nicheLocalAdEntries.length !== 159 ||
   activeNicheLocalAdEntries.length !== 159
 ) {
@@ -352,7 +422,8 @@ const appAdRuleCount =
   appAdEntries.length +
   importedAppAdEntries.length +
   specialAppAdEntries.length +
-  qqMusicExtraAppAdEntries.length;
+  qqMusicExtraAppAdEntries.length +
+  bilibiliAdEntries.length;
 const readmeAuditPattern = new RegExp(
   `当前审核统计（\\d{4}-\\d{2}-\\d{2}）：网页广告域名 ${auditedAdCount} 条，` +
     `App 广告来源规则 ${appAdRuleCount} 条，追踪器规则 ${trackerEntries.length} 条，` +

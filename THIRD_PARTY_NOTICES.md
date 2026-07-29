@@ -123,3 +123,22 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+
+## Bilibili specialist verification sources
+
+The exact hosts in `blocklists/bilibili-ad-domains.csv` were manually selected
+after comparison against several public rule projects and live DNS. The
+upstream lists are used as verification evidence; no complete upstream list,
+script, or expression is copied into this repository.
+
+- anti-AD, MIT: <https://github.com/privacy-protection-tools/anti-AD>
+- AdRules, 0BSD: <https://github.com/Cats-Team/AdRules>
+- HaGeZi DNS Blocklists, GPL-3.0:
+  <https://github.com/hagezi/dns-blocklists>
+- 217heidai/adblockfilters, GPL-3.0:
+  <https://github.com/217heidai/adblockfilters>
+- SukkaW/Surge, AGPL-3.0: <https://github.com/SukkaW/Surge>
+- NobyDa/Script, GPL-3.0: <https://github.com/NobyDa/Script>
+
+Per-source snapshot hashes, per-domain matches, and DNS answers are recorded
+in `blocklists/bilibili-ad-domains.audit.json`.
