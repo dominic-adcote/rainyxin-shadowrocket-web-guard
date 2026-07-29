@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-07-29T10:24:24.211Z",
+  "targetCount": 2000,
+  "policy": "anti-AD and AdRules union with dual-source priority; existing/protected exclusion; China-region sources with .cn/China-platform/ad/CDN semantics; root-domain diversity",
+  "verificationSources": [
+    {
+      "name": "anti-AD",
+      "repository": "https://github.com/privacy-protection-tools/anti-AD",
+      "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt",
+      "license": "MIT",
+      "sha256": "9ed93edc88557c7c6b4e00491407f2fe26f5234cb1ebf10af8630a7bca368874",
+      "parsedDomains": 109311
+    },
+    {
+      "name": "AdRules",
+      "repository": "https://github.com/Cats-Team/AdRules",
+      "url": "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules_domainset.txt",
+      "license": "0BSD",
+      "sha256": "be48eeba470d5300f16649093fa89150accc2ce26800c16da3a87a6f976e3d1b",
+      "parsedDomains": 180761
+    }
+  ],
+  "sourceUnionDomains": 203433,
+  "dualSourceMatches": 86639,
+  "excludedProtected": 3370,
+  "excludedAlreadyCovered": 8171,
+  "eligibleAfterSemanticAudit": 7645,
+  "eligibleDualSource": 1416,
+  "eligibleSingleSource": 6229,
+  "selectionTargets": {
+    "chinaRelevant": 800,
+    "adCdn": 300
+  },
+  "selectedExactDomains": 2000,
+  "selectedDualSource": 1416,
+  "selectedSingleSource": 584,
+  "selectedCnTld": 1326,
+  "selectedChinaPlatform": 162,
+  "selectedAdSemantic": 337,
+  "selectedTrackingSemantic": 85,
+  "selectedCdnSemantic": 402,
+  "selectedRootGroups": 1639,
+  "rulesetSha256": "afa4e7a7e131069d3a1cbb082db8c6fb58ad035cb06855e8656fb6842a5328be"
+}

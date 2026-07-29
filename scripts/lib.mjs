@@ -1,5 +1,8 @@
 import { readFile } from "node:fs/promises";
-import { AUDITED_ALL_RULESET_URL } from "./audited-list-policy.mjs";
+import {
+  AUDITED_ALL_RULESET_URL,
+  CN_AD_CDN_RULESET_URL,
+} from "./audited-list-policy.mjs";
 
 export const ALLOWED_CATEGORIES = ["ads", "scam", "gambling"];
 export const BLOCK_PAGE_HOST = "block.rainyxin.cyou";
@@ -289,6 +292,7 @@ export function buildModule(entries, silentEntries = []) {
       ].join(","))
       .sort(),
     `RULE-SET,${AUDITED_ALL_RULESET_URL},REJECT`,
+    `RULE-SET,${CN_AD_CDN_RULESET_URL},REJECT`,
     "",
     "[URL Rewrite]",
     ...rewriteLines,

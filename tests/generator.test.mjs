@@ -13,7 +13,12 @@ import {
   parseGamblingCsv,
   parseSilentDomainList,
 } from "../scripts/lib.mjs";
-import { AUDITED_ALL_RULESET_URL } from "../scripts/audited-list-policy.mjs";
+import {
+  AUDITED_ALL_RULESET_URL,
+  CN_AD_CDN_RULESET_URL,
+  isCnProtectedDomain,
+  isCnSensitiveDomain,
+} from "../scripts/audited-list-policy.mjs";
 
 test("按类别生成三条重定向规则", () => {
   const entries = parseCsv(`category,domain,note
@@ -45,6 +50,12 @@ gambling,casino.example.test,博彩`);
     moduleText,
     new RegExp(
       `RULE-SET,${AUDITED_ALL_RULESET_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")},REJECT`,
+    ),
+  );
+  assert.match(
+    moduleText,
+    new RegExp(
+      `RULE-SET,${CN_AD_CDN_RULESET_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")},REJECT`,
     ),
   );
   assert.match(moduleText, /hostname = %APPEND%/);
@@ -85,6 +96,24 @@ test("解析双源复核精确规则并拒绝后缀和重复项", () => {
       ),
     /域名重复/,
   );
+});
+
+test("中国广告/CDN 审核保护关键第一方与公共域名", () => {
+  for (const domain of [
+    "bzrcdn.openai.com",
+    "dns.weixin.qq.com.cn",
+    "browsercfg-drcn.cloud.dbankcloud.cn",
+    "apd-pcdnwxlogin.teg.tencent-cloud.net",
+    "a.market.xiaomi.com",
+    "service.gov.cn",
+    "university.edu.cn",
+  ]) {
+    assert.equal(isCnProtectedDomain(domain), true, domain);
+  }
+  assert.equal(isCnProtectedDomain("adcdn.example.test"), false);
+  assert.equal(isCnSensitiveDomain("updatepage.example.cn"), true);
+  assert.equal(isCnSensitiveDomain("smetrics.citibank.cn"), true);
+  assert.equal(isCnSensitiveDomain("adcdn.example.test"), false);
 });
 
 test("App 广告域名生成静默 REJECT 规则", () => {

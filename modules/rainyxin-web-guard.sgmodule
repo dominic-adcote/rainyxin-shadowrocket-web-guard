@@ -882,6 +882,7 @@ DOMAIN-SUFFIX,xp.apple.com,REJECT
 DOMAIN-SUFFIX,zeotap.com,REJECT
 DOMAIN-SUFFIX,zoominfo.com,REJECT
 RULE-SET,https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/blocklists/audited-all-ad-tracking.list,REJECT
+RULE-SET,https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/blocklists/cn-ad-cdn-2000.list,REJECT
 
 [URL Rewrite]
 ^https?:\/\/(?:www|s)\.youtube\.com\/api\/stats\/ads(?:\?|$) - reject

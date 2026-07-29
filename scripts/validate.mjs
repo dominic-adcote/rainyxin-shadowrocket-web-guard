@@ -23,7 +23,11 @@ import {
 import {
   AUDITED_ALL_RULESET_PATH,
   AUDITED_ALL_RULESET_URL,
+  CN_AD_CDN_RULESET_PATH,
+  CN_AD_CDN_RULESET_URL,
   isDomainOrChildOf,
+  isCnProtectedDomain,
+  isCnSensitiveDomain,
   isProtectedDomain,
 } from "./audited-list-policy.mjs";
 
@@ -68,6 +72,15 @@ const auditedReportPath = resolve(
   projectRoot,
   "blocklists/audited-all-ad-tracking.audit.json",
 );
+const cnAdCdnRuleSetPath = resolve(projectRoot, CN_AD_CDN_RULESET_PATH);
+const cnAdCdnReportPath = resolve(
+  projectRoot,
+  "blocklists/cn-ad-cdn-2000.audit.json",
+);
+const rulesetSha256 = (text) =>
+  createHash("sha256")
+    .update(text.replace(/\r\n/g, "\n"), "utf8")
+    .digest("hex");
 
 const baseEntries = await readEntries(csvPath);
 const adEntries = await readAdEntries(adListPath);
@@ -122,7 +135,11 @@ const actual = await readFile(modulePath, "utf8");
 const readme = await readFile(readmePath, "utf8");
 const auditedRuleSetText = await readFile(auditedRuleSetPath, "utf8");
 const auditedRuleDomains = parseExactRuleSet(auditedRuleSetText);
+const auditedRuleDomainSet = new Set(auditedRuleDomains);
 const auditedReport = JSON.parse(await readFile(auditedReportPath, "utf8"));
+const cnAdCdnRuleSetText = await readFile(cnAdCdnRuleSetPath, "utf8");
+const cnAdCdnRuleDomains = parseExactRuleSet(cnAdCdnRuleSetText);
+const cnAdCdnReport = JSON.parse(await readFile(cnAdCdnReportPath, "utf8"));
 const expected = buildModule(entries, silentEntries);
 
 if (actual !== expected) {
@@ -155,6 +172,9 @@ if (
 ) {
   throw new Error("模组缺少双源复核广告与追踪器远程规则集");
 }
+if (!actual.includes(`RULE-SET,${CN_AD_CDN_RULESET_URL},REJECT`)) {
+  throw new Error("模组缺少双来源审核中国广告/CDN 远程规则集");
+}
 
 if (
   actual.includes("x-ad-cleaner.js") ||
@@ -169,9 +189,7 @@ if (
   throw new Error("X 修复版不得启用响应清理器或 X/Twitter MITM 主机");
 }
 
-const auditedRuleSetSha256 = createHash("sha256")
-  .update(auditedRuleSetText, "utf8")
-  .digest("hex");
+const auditedRuleSetSha256 = rulesetSha256(auditedRuleSetText);
 if (
   auditedRuleDomains.length !== auditedReport.acceptedExactDomains ||
   auditedRuleSetSha256 !== auditedReport.rulesetSha256
@@ -193,6 +211,57 @@ for (const domain of auditedRuleDomains) {
   if (coveredByWeb || coveredBySilent) {
     throw new Error(`双源复核规则集包含已覆盖域名：${domain}`);
   }
+}
+
+const cnAdCdnRuleSetSha256 = rulesetSha256(cnAdCdnRuleSetText);
+if (
+  cnAdCdnRuleDomains.length !== 2000 ||
+  cnAdCdnRuleDomains.length !== cnAdCdnReport.targetCount ||
+  cnAdCdnRuleDomains.length !== cnAdCdnReport.selectedExactDomains ||
+  cnAdCdnRuleSetSha256 !== cnAdCdnReport.rulesetSha256
+) {
+  throw new Error("中国广告/CDN 规则集数量或 SHA-256 与审核报告不一致");
+}
+if (
+  cnAdCdnRuleDomains.some(
+    (domain) =>
+      isCnProtectedDomain(domain) || isCnSensitiveDomain(domain),
+  )
+) {
+  throw new Error("中国广告/CDN 规则集包含受保护或敏感功能域名");
+}
+if (cnAdCdnRuleDomains.some((domain) => auditedRuleDomainSet.has(domain))) {
+  throw new Error("中国广告/CDN 规则集与既有双源复核规则重复");
+}
+for (const domain of cnAdCdnRuleDomains) {
+  const coveredByWeb = unfilteredEntries.some(({ domain: existing }) =>
+    isDomainOrChildOf(domain, existing),
+  );
+  const coveredBySilent = silentEntries.some(({ domain: existing, match }) =>
+    match === "suffix"
+      ? isDomainOrChildOf(domain, existing)
+      : domain === existing,
+  );
+  if (coveredByWeb || coveredBySilent) {
+    throw new Error(`中国广告/CDN 规则集包含已覆盖域名：${domain}`);
+  }
+}
+const cnAdCdnCdnCount = cnAdCdnRuleDomains.filter((domain) =>
+  /cdn/i.test(domain),
+).length;
+const cnAdCdnCnCount = cnAdCdnRuleDomains.filter((domain) =>
+  domain.endsWith(".cn"),
+).length;
+if (
+  cnAdCdnCdnCount < 300 ||
+  cnAdCdnCnCount < 650 ||
+  cnAdCdnReport.selectedCdnSemantic !== cnAdCdnCdnCount ||
+  cnAdCdnReport.selectedCnTld !== cnAdCdnCnCount ||
+  cnAdCdnReport.selectedDualSource + cnAdCdnReport.selectedSingleSource !==
+    cnAdCdnRuleDomains.length ||
+  cnAdCdnReport.selectedDualSource < 1400
+) {
+  throw new Error("中国广告/CDN 规则集分类数量与审核报告不一致");
 }
 
 for (const { match, domain } of silentEntries) {
@@ -300,10 +369,18 @@ if (
 ) {
   throw new Error("README 未同步双源复核精确广告/追踪域名统计");
 }
+if (
+  !readme.includes(
+    `双来源审核中国广告/CDN 精确域名 ${cnAdCdnRuleDomains.length} 条`,
+  )
+) {
+  throw new Error("README 未同步双来源审核中国广告/CDN 精确域名统计");
+}
 
 console.log(
   `校验通过：${entries.length} 个网页域名，` +
     `${silentEntries.length} 条静默拒绝规则，` +
     `${auditedRuleDomains.length} 条双源复核精确规则，` +
+    `${cnAdCdnRuleDomains.length} 条中国广告/CDN 精确规则，` +
     `${ALLOWED_CATEGORIES.length} 个类别`,
 );

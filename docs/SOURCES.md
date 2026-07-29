@@ -135,6 +135,26 @@ YouTube 的播放器/信息流 JSON 字段、X 的 GraphQL 时间线结构和同
 `blocklists/audited-all-ad-tracking.audit.json`。正式模组通过远程 `RULE-SET`
 加载该文件，因此不会把这批域名加入 HTTPS MITM。
 
+## 2026-07-29 中国广告与广告 CDN 双源复核
+
+新增批次综合以下两个公开项目，并优先收录同时精确出现于两者的域名：
+
+- [anti-AD](https://github.com/privacy-protection-tools/anti-AD)：面向中文区域的广告与
+  隐私保护规则，MIT 许可；
+- [AdRules](https://github.com/Cats-Team/AdRules)：面向中国区域的广告、追踪器、
+  恶意内容、HTTPDNS 与 PCDN 规则，0BSD 许可。
+
+采集时分别解析出 109,311 和 180,761 个有效域名，并集为 203,433 个，精确交集为
+86,639 个。脚本 `scripts/audit-cn-ad-cdn-import.mjs` 排除现有覆盖、第一方平台、
+公共机构，以及登录、支付、银行、下载、DNS 和更新等敏感功能主机，再按 `.cn`、
+中国平台、广告与 CDN 语义筛选，并按根域分散取样。通过语义审核的双源候选共
+1,416 个，全部收录；其余 584 条从单源候选中按相同保护策略补足。最终 2,000 条均为
+精确 `DOMAIN`，其中 1,326 条为 `.cn`、402 条含 CDN 语义；不使用
+`DOMAIN-SUFFIX`，不加入 URL Rewrite 或 MITM。
+
+`blocklists/cn-ad-cdn-2000.audit.json` 记录上游 URL、许可证、采集时 SHA-256、全部
+筛选数量和输出 SHA-256。上游列表持续更新，因此重复采集的数量和哈希可能变化。
+
 ## App 广告网络
 
 - 腾讯优量汇开发者协议确认优量汇 SDK 用于在 App 和网站中展示广告：
