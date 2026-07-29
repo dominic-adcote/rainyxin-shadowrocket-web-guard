@@ -188,6 +188,45 @@ test("X 清理器只移除带明确推广标记的时间线条目", async () => 
   );
 });
 
+test("X 清理器保留推广字段为空的普通帖子", async () => {
+  const result = await runCleaner("x-ad-cleaner.js", {
+    body: JSON.stringify({
+      data: {
+        home: {
+          instructions: [
+            {
+              entries: [
+                {
+                  entryId: "tweet-ordinary",
+                  content: {
+                    itemContent: {
+                      promotedMetadata: null,
+                      promoted_content: false,
+                      tweet_results: {
+                        result: {
+                          rest_id: "ordinary",
+                          legacy: { full_text: "Normal post" },
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    }),
+  });
+
+  const entries = JSON.parse(result.body).data.home.instructions[0].entries;
+  assert.equal(entries.length, 1);
+  assert.equal(
+    entries[0].content.itemContent.tweet_results.result.rest_id,
+    "ordinary",
+  );
+});
+
 test("X 清理器遇到非 JSON 时保持原响应", async () => {
   const result = await runCleaner("x-ad-cleaner.js", {
     body: "not-json",

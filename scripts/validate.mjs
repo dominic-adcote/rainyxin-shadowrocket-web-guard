@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,6 +8,7 @@ import {
   buildModule,
   deduplicate,
   filterAppOverlaps,
+  parseExactRuleSet,
   readAdEntries,
   readAppAdEntries,
   readCnAdEntries,
@@ -18,6 +20,12 @@ import {
   readOverseasAdEntries,
   readTrackerEntries,
 } from "./lib.mjs";
+import {
+  AUDITED_ALL_RULESET_PATH,
+  AUDITED_ALL_RULESET_URL,
+  isDomainOrChildOf,
+  isProtectedDomain,
+} from "./audited-list-policy.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
@@ -55,6 +63,11 @@ const trackerListPath = resolve(
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const modulePath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
 const readmePath = resolve(projectRoot, "README.md");
+const auditedRuleSetPath = resolve(projectRoot, AUDITED_ALL_RULESET_PATH);
+const auditedReportPath = resolve(
+  projectRoot,
+  "blocklists/audited-all-ad-tracking.audit.json",
+);
 
 const baseEntries = await readEntries(csvPath);
 const adEntries = await readAdEntries(adListPath);
@@ -107,6 +120,9 @@ const activeNicheLocalAdEntries = filterAppOverlaps(
 );
 const actual = await readFile(modulePath, "utf8");
 const readme = await readFile(readmePath, "utf8");
+const auditedRuleSetText = await readFile(auditedRuleSetPath, "utf8");
+const auditedRuleDomains = parseExactRuleSet(auditedRuleSetText);
+const auditedReport = JSON.parse(await readFile(auditedReportPath, "utf8"));
 const expected = buildModule(entries, silentEntries);
 
 if (actual !== expected) {
@@ -132,6 +148,51 @@ if (
   !actual.includes("[MITM]")
 ) {
   throw new Error("模组缺少必要区段");
+}
+
+if (
+  !actual.includes(`RULE-SET,${AUDITED_ALL_RULESET_URL},REJECT`)
+) {
+  throw new Error("模组缺少双源复核广告与追踪器远程规则集");
+}
+
+if (
+  actual.includes("x-ad-cleaner.js") ||
+  ["api.twitter.com", "api.x.com", "twitter.com", "x.com"].some((hostname) =>
+    actual
+      .split("\n")
+      .find((line) => line.startsWith("hostname = "))
+      ?.split(/,\s*/)
+      .includes(hostname),
+  )
+) {
+  throw new Error("X 修复版不得启用响应清理器或 X/Twitter MITM 主机");
+}
+
+const auditedRuleSetSha256 = createHash("sha256")
+  .update(auditedRuleSetText, "utf8")
+  .digest("hex");
+if (
+  auditedRuleDomains.length !== auditedReport.acceptedExactDomains ||
+  auditedRuleSetSha256 !== auditedReport.rulesetSha256
+) {
+  throw new Error("双源复核规则集数量或 SHA-256 与审核报告不一致");
+}
+if (auditedRuleDomains.some(isProtectedDomain)) {
+  throw new Error("双源复核规则集包含受保护的第一方或基础设施域名");
+}
+for (const domain of auditedRuleDomains) {
+  const coveredByWeb = unfilteredEntries.some(({ domain: existing }) =>
+    isDomainOrChildOf(domain, existing),
+  );
+  const coveredBySilent = silentEntries.some(({ domain: existing, match }) =>
+    match === "suffix"
+      ? isDomainOrChildOf(domain, existing)
+      : domain === existing,
+  );
+  if (coveredByWeb || coveredBySilent) {
+    throw new Error(`双源复核规则集包含已覆盖域名：${domain}`);
+  }
 }
 
 for (const { match, domain } of silentEntries) {
@@ -232,9 +293,17 @@ const readmeAuditPattern = new RegExp(
 if (!readmeAuditPattern.test(readme)) {
   throw new Error("README 审核统计未与当前广告及博彩清单同步");
 }
+if (
+  !readme.includes(
+    `双源复核精确广告/追踪域名 ${auditedRuleDomains.length} 条`,
+  )
+) {
+  throw new Error("README 未同步双源复核精确广告/追踪域名统计");
+}
 
 console.log(
   `校验通过：${entries.length} 个网页域名，` +
     `${silentEntries.length} 条静默拒绝规则，` +
+    `${auditedRuleDomains.length} 条双源复核精确规则，` +
     `${ALLOWED_CATEGORIES.length} 个类别`,
 );

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.1 - 2026-07-29
+
+- 修复 X 清理器把 `promotedMetadata: null` 等空推广字段误判为广告的问题，并新增
+  普通帖子保留测试。
+- 为优先恢复 X 帖子加载，正式模组暂时撤下 X 响应脚本以及 `x.com`、
+  `twitter.com`、`api.x.com`、`api.twitter.com` 的 MITM；修正后的脚本保留为
+  后续抓取真实响应结构时的兼容性参考。
+- 审计用户提供的 324,059 条广告与追踪域名：剔除 2 条无效项，只接受同时精确出现于
+  HaGeZi Multi Pro 和 StevenBlack 的 25,721 条。
+- 再排除 178 条关键第一方/基础设施域名及 2,645 条现有覆盖项，净新增 22,898 条
+  精确 `DOMAIN` 规则，通过远程 `RULE-SET` 静默拒绝，不加入 URL Rewrite 或 MITM。
+- 自动测试增加到 28 项，并加入规则集格式、重复项和 X 空推广字段回归测试。
+
 ## 1.3.0 - 2026-07-28
 
 - YouTube 响应清理从播放器扩展到 `browse`、`next`、`search` 和 Shorts

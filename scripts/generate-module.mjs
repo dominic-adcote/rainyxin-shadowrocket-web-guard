@@ -1,10 +1,11 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildModule,
   deduplicate,
   filterAppOverlaps,
+  parseExactRuleSet,
   readAdEntries,
   readAppAdEntries,
   readCnAdEntries,
@@ -16,6 +17,7 @@ import {
   readOverseasAdEntries,
   readTrackerEntries,
 } from "./lib.mjs";
+import { AUDITED_ALL_RULESET_PATH } from "./audited-list-policy.mjs";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const csvPath = resolve(projectRoot, "blocklists/domains.csv");
@@ -52,6 +54,7 @@ const trackerListPath = resolve(
 );
 const gamblingCsvPath = resolve(projectRoot, "blocklists/gambling-domains.csv");
 const outputPath = resolve(projectRoot, "modules/rainyxin-web-guard.sgmodule");
+const auditedRuleSetPath = resolve(projectRoot, AUDITED_ALL_RULESET_PATH);
 
 const baseEntries = await readEntries(csvPath);
 const adEntries = await readAdEntries(adListPath);
@@ -73,6 +76,9 @@ const nicheLocalAdEntries = await readNicheLocalAdEntries(
   nicheLocalAdListPath,
 );
 const trackerEntries = await readTrackerEntries(trackerListPath);
+const auditedRuleDomains = parseExactRuleSet(
+  await readFile(auditedRuleSetPath, "utf8"),
+);
 const silentEntries = deduplicate(
   [
     ...appAdEntries,
@@ -134,4 +140,5 @@ console.log(
   } 条 App 广告来源规则`,
 );
 console.log(`已包含 ${trackerEntries.length} 条追踪器静默拒绝规则`);
+console.log(`已引用 ${auditedRuleDomains.length} 条双源复核精确广告/追踪规则`);
 console.log(`静默拒绝规则合计 ${silentEntries.length} 条`);

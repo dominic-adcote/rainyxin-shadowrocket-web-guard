@@ -1,7 +1,7 @@
 # Adcote 全场景广告、诈骗与追踪器拦截
 
 Adcote Shadowrocket Web Guard 定位为面向 Shadowrocket 的全场景广告、诈骗与
-追踪器拦截项目。它统一处理网页广告、Google 搜索广告、YouTube 与 X 应用内广告、
+追踪器拦截项目。它统一处理网页广告、Google 搜索广告、YouTube 应用内广告、
 App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像素和跨站追踪域名。
 
 项目包含可生成、可校验、可导入的 Shadowrocket 模组，以及通过 EdgeOne CDN
@@ -22,9 +22,11 @@ App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像
 - Google 搜索网页会隐藏已识别的文字广告和购物广告容器。
 - YouTube 会拒绝独立广告统计端点，并从播放器、首页、搜索、相关推荐和 Shorts
   JSON 响应中移除明确广告字段与渲染器。
-- X 会从首页、搜索和列表时间线 JSON 中移除带明确推广标记的条目。
+- X 响应清理因正常帖子加载兼容问题暂时停用，模组不再解密 X/Twitter 主机。
 - 不封锁 `googlevideo.com`，因为它同时承载正常视频和广告媒体。
 - App 开屏广告、广告 SDK 与不适合网页跳转的追踪请求使用 `[Rule]` 静默 `REJECT`，不会打开或加载拦截页。
+- 双源复核的大批量广告与追踪器使用远程 `RULE-SET` 和精确 `DOMAIN`，不加入
+  URL Rewrite 或 MITM。
 
 ## 项目结构
 
@@ -40,14 +42,17 @@ blocklists/imported-qqmusic-extra-app-ad-domains.csv TME 生态 17 条补充精�
 blocklists/imported-global-ad-domains.txt 用户提供的 525 条全球广告净新增
 blocklists/imported-niche-local-ad-domains.txt 159 条小众及港美本地广告净新增
 blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
+blocklists/audited-all-ad-tracking.list 双源复核的 22,898 条精确规则
+blocklists/audited-all-ad-tracking.audit.json 可复核的导入统计与 SHA-256
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
 deploy/                             systemd 与 Nginx 部署模板
 scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
+scripts/audit-all-ad-tracking-import.mjs 大清单双源复核工具
 scripts/youtube-ad-cleaner.js       YouTube 播放与信息流广告清理器
-scripts/x-ad-cleaner.js             X 时间线推广内容清理器
+scripts/x-ad-cleaner.js             已停用的 X 清理器兼容性参考
 tests/generator.test.mjs            自动化测试
 tests/block-page.test.mjs           拦截页安全逻辑测试
 tests/ad-cleaners.test.mjs          Google、YouTube 与 X 清理脚本测试
@@ -147,9 +152,20 @@ StevenBlack/hosts 与 HaGeZi Multi LIGHT，并带有明确广告或追踪语义�
 - 原始文件未附逐条证据或明确许可证；项目只确认格式、数量、重复和规则冲突，
   不采纳其“零误报”承诺。
 
+2026-07-29 用户提供的全量文件含 324,059 条精确唯一记录。由于其中包含
+`googleapis.com`、`microsoft.com`、`cloudfront.net` 等正常基础设施根域，项目没有
+整包导入。审核工具剔除 2 条无效记录，只接受同时精确出现于 HaGeZi Multi Pro 与
+StevenBlack unified hosts 的 25,721 条；再排除 178 条受保护第一方/基础设施域名和
+2,645 条现有覆盖项，净生成 22,898 条精确 `DOMAIN` 规则。该批通过远程
+`RULE-SET` 静默拒绝，不扩展为 `DOMAIN-SUFFIX`，也不进入网页跳转或 MITM。
+完整统计和输入/核验源 SHA-256 见
+`blocklists/audited-all-ad-tracking.audit.json`。
+
 ## 已审核的广告网络域名
 
-当前审核统计（2026-07-28）：网页广告域名 1132 条，App 广告来源规则 376 条，追踪器规则 500 条，博彩域名 200 条。
+当前审核统计（2026-07-29）：网页广告域名 1132 条，App 广告来源规则 376 条，追踪器规则 500 条，博彩域名 200 条。
+
+双源复核精确广告/追踪域名 22898 条，通过独立远程规则集加载。
 
 网页广告清单由多批来源组成：
 
@@ -189,8 +205,9 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 `imported-app-ad-domains.txt`、`imported-special-app-ad-domains.csv`、
 `imported-qqmusic-extra-app-ad-domains.csv`、
 `imported-global-ad-domains.txt`、`imported-niche-local-ad-domains.txt`、
-`imported-tracker-domains.txt`、`gambling-domains.csv`，都必须同步更新本节的
-审核日期和数量。`npm run validate` 会校验四项数量，防止 README 与实际清单不一致。
+`imported-tracker-domains.txt`、`audited-all-ad-tracking.list`、
+`gambling-domains.csv`，都必须同步更新本节的
+审核日期和数量。`npm run validate` 会校验各批数量，防止 README 与实际清单不一致。
 
 ## 已审核的博彩域名
 
@@ -202,7 +219,7 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
   或 `wager` 的双源交集。
 - 规则按每 40 个域名拆分；命中后仍使用 `category=gambling` 跳转至拦截页。
 
-## Google 搜索、YouTube 与 X
+## Google 搜索、YouTube 与 X 兼容状态
 
 - Google 搜索广告清理适用于 `google.com`、`google.co.uk`、`google.com.hk` 和
   `google.com.sg` 的网页搜索结果。Google 调整页面结构后，选择器可能需要更新。
@@ -212,10 +229,11 @@ AdRules、CJX、domain-list-community、Peter Lowe 和 HaGeZi。本项目确认�
 - YouTube 官方可能检测广告拦截并限制播放。若出现播放器报错，可先停用模组确认。
 - 模组不会封锁 `youtube.com`、`youtubei.googleapis.com` 或 `googlevideo.com` 整个域名，
   只处理明确的路径与响应字段。
-- X 清理覆盖网页及 App 常见的 GraphQL 首页、搜索和列表时间线，只删除 entry ID
-  或结构化元数据明确标记为推广的条目；帖子正文出现“promoted”等普通文字不会触发。
-- X 或 YouTube 若改用证书固定、QUIC、加密/二进制响应、服务端合成广告或更改接口，
-  脚本可能无法处理。若 App 出现连接或时间线加载异常，应先关闭 HTTPS 解密或本模组确认。
+- 1.3.0 的 X 清理器会把值为 `null` 的推广字段也当成广告，并且 X App 可能拒绝
+  MITM，导致正常帖子或整个时间线无法加载。1.3.1 已从正式模组撤下 X 脚本和四个
+  X/Twitter MITM 主机；修正后的脚本仅作为后续适配参考，不会自动执行。
+- YouTube 若改用证书固定、QUIC、加密/二进制响应、服务端合成广告或更改接口，
+  脚本可能无法处理。若 App 出现连接或视频加载异常，应先关闭 HTTPS 解密或本模组确认。
 
 ## App 开屏广告
 
