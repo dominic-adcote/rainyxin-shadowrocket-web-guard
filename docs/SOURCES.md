@@ -155,6 +155,28 @@ YouTube 的播放器/信息流 JSON 字段、X 的 GraphQL 时间线结构和同
 `blocklists/cn-ad-cdn-2000.audit.json` 记录上游 URL、许可证、采集时 SHA-256、全部
 筛选数量和输出 SHA-256。上游列表持续更新，因此重复采集的数量和哈希可能变化。
 
+## 哔哩哔哩专项域名
+
+专项审核脚本从以下公开规则项目检索 B 站自有域名：
+
+- [anti-AD](https://github.com/privacy-protection-tools/anti-AD)
+- [AdRules](https://github.com/Cats-Team/AdRules)
+- [HaGeZi DNS Blocklists](https://github.com/hagezi/dns-blocklists)
+- [217heidai/adblockfilters](https://github.com/217heidai/adblockfilters)
+- [SukkaW/Surge](https://github.com/SukkaW/Surge)
+- [NobyDa/Script](https://github.com/NobyDa/Script)
+
+`cm.bilibili.com` 获得 3 个来源支持，但已经被项目现有规则覆盖。本批净新增 8 条：
+`data.bilibili.com`、`dataflow.biliapi.com` 和 `line1-log.biligame.net` 分别获得
+4、4、5 个来源支持；播放器追踪与游戏广告评分 3 条各获得 2 个来源支持；
+`data.bilibili.tv` 和 `tracker.chat.bilibili.com` 为单源 experimental 候选。
+所有新增域名在生成审核报告时均通过 Cloudflare DoH 确认存在 A 或 CNAME 记录。
+
+域名语义和规则源命中只能证明它们适合进入测试，不能证明其只承载广告。审核明确排除
+`app.bilibili.com`、`api.bilibili.com`、直播接口、HTTPDNS、视频 CDN、通用静态
+资源及小程序主机。完整逐域名来源、DNS 答案、输入与输出 SHA-256 见
+`blocklists/bilibili-ad-domains.audit.json`。
+
 ## App 广告网络
 
 - 腾讯优量汇开发者协议确认优量汇 SDK 用于在 App 和网站中展示广告：

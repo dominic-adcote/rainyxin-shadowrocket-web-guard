@@ -1,0 +1,282 @@
+{
+  "generatedAt": "2026-07-29T10:47:50.463Z",
+  "policy": "exact Bilibili-owned hosts only; multi-source priority; active DNS required; shared APIs, media CDNs, HTTPDNS, login and playback infrastructure excluded",
+  "selectedExactDomains": 8,
+  "highConfidenceDomains": 6,
+  "experimentalDomains": 2,
+  "sources": [
+    {
+      "name": "anti-AD",
+      "repository": "https://github.com/privacy-protection-tools/anti-AD",
+      "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt",
+      "license": "MIT",
+      "sha256": "9ed93edc88557c7c6b4e00491407f2fe26f5234cb1ebf10af8630a7bca368874",
+      "extractedDomains": 109312
+    },
+    {
+      "name": "AdRules",
+      "repository": "https://github.com/Cats-Team/AdRules",
+      "url": "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules_domainset.txt",
+      "license": "0BSD",
+      "sha256": "be48eeba470d5300f16649093fa89150accc2ce26800c16da3a87a6f976e3d1b",
+      "extractedDomains": 180749
+    },
+    {
+      "name": "HaGeZi Multi Pro",
+      "repository": "https://github.com/hagezi/dns-blocklists",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt",
+      "license": "GPL-3.0",
+      "sha256": "e8147c04fc903629780b65bc44d598b12f404c44daf7448febac3eb87c4f4584",
+      "extractedDomains": 544794
+    },
+    {
+      "name": "217heidai China",
+      "repository": "https://github.com/217heidai/adblockfilters",
+      "url": "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/china.txt",
+      "license": "GPL-3.0",
+      "sha256": "f468dedff13ef67155c64e90b9d70e3720dd0888cadeb9ef7c2acf4975df5774",
+      "extractedDomains": 8898
+    },
+    {
+      "name": "SukkaW reject",
+      "repository": "https://github.com/SukkaW/Surge",
+      "url": "https://raw.githubusercontent.com/SukkaW/Surge/master/Source/domainset/reject.conf",
+      "license": "AGPL-3.0",
+      "sha256": "b5ce90ee2a669dbf7d5327d5f5f980d81e57c5f005cd23682154631609c7edf0",
+      "extractedDomains": 3392
+    },
+    {
+      "name": "NobyDa AdRule",
+      "repository": "https://github.com/NobyDa/Script",
+      "url": "https://raw.githubusercontent.com/NobyDa/Script/master/Surge/AdRule.list",
+      "license": "GPL-3.0",
+      "sha256": "db0b0aeb1395f85bb524681825660928a5ca808bce2410cf4c8fe8ab6f332f57",
+      "extractedDomains": 8454
+    }
+  ],
+  "selected": [
+    {
+      "domain": "ali-web-player-tracker.biliapi.net",
+      "purpose": "播放器追踪",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "49.7.88.7",
+          "106.38.180.240",
+          "49.7.149.118",
+          "49.7.150.179",
+          "49.7.240.75"
+        ]
+      }
+    },
+    {
+      "domain": "data.bilibili.com",
+      "purpose": "广告投放与数据采集",
+      "confidence": "high",
+      "matchedSources": [
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "data.bilicdn2.com.",
+          "103.151.151.131",
+          "164.52.1.10",
+          "164.52.1.58",
+          "192.254.90.180",
+          "192.254.90.181",
+          "103.151.151.2",
+          "103.151.151.3",
+          "103.151.151.130"
+        ]
+      }
+    },
+    {
+      "domain": "data.bilibili.tv",
+      "purpose": "国际站数据采集测试候选",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "i.w.bilicdn1.com.",
+          "148.153.34.154",
+          "148.153.35.66",
+          "103.151.151.133",
+          "103.151.151.134"
+        ]
+      }
+    },
+    {
+      "domain": "dataflow.biliapi.com",
+      "purpose": "数据流与归因采集",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "data.bilicdn2.com.",
+          "192.254.90.181",
+          "103.151.151.2",
+          "103.151.151.3",
+          "103.151.151.130",
+          "103.151.151.131",
+          "164.52.1.10",
+          "164.52.1.58",
+          "192.254.90.180"
+        ]
+      }
+    },
+    {
+      "domain": "hw-v2-web-player-tracker.biliapi.net",
+      "purpose": "播放器追踪",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "101.91.134.222",
+          "101.91.133.30",
+          "101.91.136.148"
+        ]
+      }
+    },
+    {
+      "domain": "line1-log.biligame.net",
+      "purpose": "游戏日志与广告归因",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "line1-log.biligame.net.w.cdngslb.com.",
+          "163.181.243.197",
+          "163.181.243.198",
+          "163.181.243.199",
+          "163.181.243.200",
+          "163.181.243.201",
+          "163.181.243.202",
+          "163.181.243.203",
+          "163.181.243.204"
+        ]
+      }
+    },
+    {
+      "domain": "line3-adscore-api.biligame.net",
+      "purpose": "游戏广告评分接口",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "line3-adscore-api.biligame.net.dsa.dnsv1.com.",
+          "3k8ibc0w.e0.sched.ovscdns.com.",
+          "43.152.42.109",
+          "43.152.186.108"
+        ]
+      }
+    },
+    {
+      "domain": "tracker.chat.bilibili.com",
+      "purpose": "聊天追踪测试候选",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "139.159.161.71",
+          "117.78.9.23",
+          "121.36.75.33",
+          "121.37.27.190",
+          "123.60.10.14",
+          "123.60.65.219",
+          "123.60.99.53",
+          "124.70.102.36",
+          "124.71.7.116"
+        ]
+      }
+    }
+  ],
+  "alreadyCovered": [
+    {
+      "domain": "cm.bilibili.com",
+      "reason": "项目现有国内广告及 App 静默规则已经覆盖"
+    }
+  ],
+  "excluded": [
+    {
+      "domain": "app.bilibili.com",
+      "reason": "开屏、推荐、搜索和账户功能共用主 API，只能按路径清理"
+    },
+    {
+      "domain": "api.bilibili.com",
+      "reason": "网页、播放与账户功能共用主 API"
+    },
+    {
+      "domain": "api.live.bilibili.com",
+      "reason": "直播核心接口"
+    },
+    {
+      "domain": "httpdns.bilivideo.com",
+      "reason": "网络解析基础设施"
+    },
+    {
+      "domain": "dataflow.bilibili.com",
+      "reason": "仅单源命中且当前公共 DNS 无有效记录"
+    },
+    {
+      "domain": "interface.bilibili.com",
+      "reason": "旧版客户端核心接口"
+    },
+    {
+      "domain": "mcdn.bilivideo.com",
+      "reason": "视频 PCDN/媒体分发，域名拒绝可能破坏播放"
+    },
+    {
+      "domain": "mcdn.bilivideo.cn",
+      "reason": "视频 PCDN/媒体分发，域名拒绝可能破坏播放"
+    },
+    {
+      "domain": "miniapp.bilibili.com",
+      "reason": "小程序功能主机且被 AdRules 明确放行"
+    },
+    {
+      "domain": "static.hdslb.com",
+      "reason": "网页和 App 通用静态资源"
+    },
+    {
+      "domain": "upos-sz-mirrorhw.bilivideo.com",
+      "reason": "视频媒体 CDN"
+    }
+  ],
+  "rulesetSha256": "1252f7ac75034a6f85261886746689d12419283480979579fd9561bebc710e47"
+}

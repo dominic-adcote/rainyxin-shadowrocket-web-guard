@@ -353,3 +353,20 @@ JD.com,exact,policy.jd.com,专项广告与统计主机`);
   assert.doesNotMatch(moduleText, /DOMAIN-SUFFIX,mojichina\.com,REJECT/);
   assert.doesNotMatch(moduleText, /DOMAIN-SUFFIX,jd\.com,REJECT/);
 });
+
+test("哔哩哔哩专项域名只生成精确静默规则", () => {
+  const bilibiliEntries = parseAppAdCsv(`provider,match,domain,note
+Bilibili,exact,data.bilibili.com,广告投放与数据采集
+Bilibili,exact,dataflow.biliapi.com,数据流与归因采集`);
+  const moduleText = buildModule([], bilibiliEntries);
+  const rewriteSection = moduleText.split("[URL Rewrite]")[1].split("[Script]")[0];
+  const mitmSection = moduleText.split("[MITM]")[1];
+
+  assert.match(moduleText, /DOMAIN,data\.bilibili\.com,REJECT/);
+  assert.match(moduleText, /DOMAIN,dataflow\.biliapi\.com,REJECT/);
+  assert.doesNotMatch(moduleText, /DOMAIN-SUFFIX,bilibili\.com,REJECT/);
+  assert.doesNotMatch(rewriteSection, /data\.bilibili\.com/);
+  assert.doesNotMatch(mitmSection, /data\.bilibili\.com/);
+  assert.doesNotMatch(moduleText, /DOMAIN,api\.bilibili\.com,REJECT/);
+  assert.doesNotMatch(moduleText, /DOMAIN,mcdn\.bilivideo\.com,REJECT/);
+});

@@ -47,6 +47,10 @@ const qqMusicExtraAppAdCsvPath = resolve(
   projectRoot,
   "blocklists/imported-qqmusic-extra-app-ad-domains.csv",
 );
+const bilibiliAdCsvPath = resolve(
+  projectRoot,
+  "blocklists/bilibili-ad-domains.csv",
+);
 const nicheLocalAdListPath = resolve(
   projectRoot,
   "blocklists/imported-niche-local-ad-domains.txt",
@@ -76,6 +80,7 @@ const specialAppAdEntries = await readAppAdEntries(specialAppAdCsvPath);
 const qqMusicExtraAppAdEntries = await readAppAdEntries(
   qqMusicExtraAppAdCsvPath,
 );
+const bilibiliAdEntries = await readAppAdEntries(bilibiliAdCsvPath);
 const nicheLocalAdEntries = await readNicheLocalAdEntries(
   nicheLocalAdListPath,
 );
@@ -92,6 +97,7 @@ const silentEntries = deduplicate(
     ...importedAppAdEntries,
     ...specialAppAdEntries,
     ...qqMusicExtraAppAdEntries,
+    ...bilibiliAdEntries,
     ...trackerEntries,
   ],
   ({ domain }) => domain,
@@ -143,8 +149,12 @@ console.log(
     appAdEntries.length +
     importedAppAdEntries.length +
     specialAppAdEntries.length +
-    qqMusicExtraAppAdEntries.length
+    qqMusicExtraAppAdEntries.length +
+    bilibiliAdEntries.length
   } 条 App 广告来源规则`,
+);
+console.log(
+  `哔哩哔哩专项新增 ${bilibiliAdEntries.length} 条精确静默规则`,
 );
 console.log(`已包含 ${trackerEntries.length} 条追踪器静默拒绝规则`);
 console.log(`已引用 ${auditedRuleDomains.length} 条双源复核精确广告/追踪规则`);
