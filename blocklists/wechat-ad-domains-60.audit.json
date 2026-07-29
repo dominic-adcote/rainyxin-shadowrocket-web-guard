@@ -1,0 +1,1306 @@
+{
+  "generatedAt": "2026-07-29T13:57:36.154Z",
+  "policy": "exact Tencent GDT/SSP and WeChat advertising hosts only; public blocklist evidence and active public DNS required; login, payment, messaging, Official Accounts content, Mini Program and shared media hosts excluded; broader legacy coverage is recorded rather than counted as net-new behavior",
+  "selectedExactDomains": 60,
+  "highConfidenceDomains": 41,
+  "experimentalDomains": 19,
+  "directWechatAdvertisingHosts": 3,
+  "sources": [
+    {
+      "name": "anti-AD",
+      "repository": "https://github.com/privacy-protection-tools/anti-AD",
+      "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-domains.txt",
+      "license": "MIT",
+      "sha256": "9ed93edc88557c7c6b4e00491407f2fe26f5234cb1ebf10af8630a7bca368874",
+      "extractedDomains": 109312
+    },
+    {
+      "name": "AdRules",
+      "repository": "https://github.com/Cats-Team/AdRules",
+      "url": "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules_domainset.txt",
+      "license": "0BSD",
+      "sha256": "be48eeba470d5300f16649093fa89150accc2ce26800c16da3a87a6f976e3d1b",
+      "extractedDomains": 180749
+    },
+    {
+      "name": "HaGeZi Multi Pro",
+      "repository": "https://github.com/hagezi/dns-blocklists",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt",
+      "license": "GPL-3.0",
+      "sha256": "285606f83c5726b3adb1685ea7c2d7280ce4cee155832f58f3e5283597c356dd",
+      "extractedDomains": 544873
+    },
+    {
+      "name": "217heidai China",
+      "repository": "https://github.com/217heidai/adblockfilters",
+      "url": "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/china.txt",
+      "license": "GPL-3.0",
+      "sha256": "f468dedff13ef67155c64e90b9d70e3720dd0888cadeb9ef7c2acf4975df5774",
+      "extractedDomains": 8898
+    },
+    {
+      "name": "SukkaW reject",
+      "repository": "https://github.com/SukkaW/Surge",
+      "url": "https://raw.githubusercontent.com/SukkaW/Surge/master/Source/domainset/reject.conf",
+      "license": "AGPL-3.0",
+      "sha256": "b5ce90ee2a669dbf7d5327d5f5f980d81e57c5f005cd23682154631609c7edf0",
+      "extractedDomains": 3392
+    },
+    {
+      "name": "NobyDa AdRule",
+      "repository": "https://github.com/NobyDa/Script",
+      "url": "https://raw.githubusercontent.com/NobyDa/Script/master/Surge/AdRule.list",
+      "license": "GPL-3.0",
+      "sha256": "db0b0aeb1395f85bb524681825660928a5ca808bce2410cf4c8fe8ab6f332f57",
+      "extractedDomains": 8454
+    },
+    {
+      "name": "V2Fly Tencent ads/tracking",
+      "repository": "https://github.com/v2fly/domain-list-community/blob/master/data/tencent",
+      "url": "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/tencent",
+      "license": "MIT",
+      "sha256": "4c4bc3136c9fbf5d34fdc3f6ec9d8852229548bb650e7ddef51c79dd218a6ab7",
+      "extractedDomains": 129
+    }
+  ],
+  "selected": [
+    {
+      "domain": "ad.weixin.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "mpv6.weixin.qq.com.",
+          "203.205.232.110",
+          "203.205.239.154"
+        ]
+      }
+    },
+    {
+      "domain": "adping.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adpm.app.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adrdir.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "ads.app.wechat.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "43.163.178.48"
+        ]
+      }
+    },
+    {
+      "domain": "adsclick.qq.com",
+      "purpose": "广告点击、曝光与归因",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adsgroup.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adshmct.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adshmmsg.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adslvseed.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adsmind.gdtimg.com.tcdn.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ovslmt.mid.apdcdn.com.",
+          "gslb.lmtlego.sched.apdcdn.com.",
+          "43.152.29.15",
+          "43.152.28.34",
+          "43.152.137.29"
+        ]
+      }
+    },
+    {
+      "domain": "adsmind.ugdtimg.com.tcdn.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ovslmt.mid.apdcdn.com.",
+          "gslb.lmtlego.sched.apdcdn.com.",
+          "43.152.137.29",
+          "43.152.29.15",
+          "43.152.28.34"
+        ]
+      }
+    },
+    {
+      "domain": "adsqqclick.qq.com",
+      "purpose": "广告点击、曝光与归因",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adsrich.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adstextview.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "123.151.138.105"
+        ]
+      }
+    },
+    {
+      "domain": "adsview.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adsview2.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "adsview.qq.com.",
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adv.app.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "null.mig.tencent-cloud.net.",
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "adver.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject",
+        "NobyDa AdRule",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "api.tui.qq.com.",
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "beacon.cdn.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "beacon.cdn.qq.com.cdn.dnsv1.com.",
+          "best.ovslegodl.sched.ovscdns.com.",
+          "43.132.65.105",
+          "43.132.65.31",
+          "43.174.173.124",
+          "43.132.65.25",
+          "43.132.65.118"
+        ]
+      }
+    },
+    {
+      "domain": "beaconcdn.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject",
+        "V2Fly Tencent ads/tracking"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "beaconcdn.qq.com.cloud.tc.qq.com.",
+          "2143369.sched.legopic1-dk.tdnsv6.com.",
+          "43.175.44.34"
+        ]
+      }
+    },
+    {
+      "domain": "c.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-3clk2oct.ias.tencent-cloud.net.",
+          "43.135.106.77",
+          "43.135.106.65"
+        ]
+      }
+    },
+    {
+      "domain": "c2.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "c2.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "c3.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "c3.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "canvas-cdn.gdt.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "canvas-cdn.gdt.qq.com.cdn.dnsv1.com.",
+          "i4477a63.ovslegodl.sched.ovscdns.com.",
+          "43.132.65.118",
+          "43.174.173.124",
+          "43.132.65.105",
+          "43.132.65.25",
+          "43.132.65.31"
+        ]
+      }
+    },
+    {
+      "domain": "canvas.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "203.205.234.88"
+        ]
+      }
+    },
+    {
+      "domain": "d.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "203.205.235.78"
+        ]
+      }
+    },
+    {
+      "domain": "event.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "157.255.221.54"
+        ]
+      }
+    },
+    {
+      "domain": "h5.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "157.255.220.233"
+        ]
+      }
+    },
+    {
+      "domain": "h5.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "h5.ssp.qq.com.cloud.tc.qq.com.",
+          "h5.ssp.qq.com.sched.legopic2.tdnsv6.com.",
+          "203.205.136.219",
+          "203.205.137.228",
+          "203.205.137.209",
+          "203.205.137.181",
+          "203.205.137.57",
+          "203.205.137.101"
+        ]
+      }
+    },
+    {
+      "domain": "ii.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "203.205.235.88"
+        ]
+      }
+    },
+    {
+      "domain": "ipv4.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "157.255.211.28",
+          "157.255.221.63",
+          "157.255.219.177",
+          "157.255.211.25"
+        ]
+      }
+    },
+    {
+      "domain": "k.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-00cyiaqq.ias.tencent-cloud.net.",
+          "43.129.2.77",
+          "43.155.124.51"
+        ]
+      }
+    },
+    {
+      "domain": "m.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "anti-AD"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "59.36.121.74",
+          "183.61.32.92"
+        ]
+      }
+    },
+    {
+      "domain": "n.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-meneq95m.ias.tencent-cloud.net.",
+          "43.135.106.65",
+          "43.135.106.77"
+        ]
+      }
+    },
+    {
+      "domain": "nc.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "nc.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "news.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "news.ssp.qq.com.eo.dnse2.com.",
+          "43.159.109.55"
+        ]
+      }
+    },
+    {
+      "domain": "newsad.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-nckhdfts.ias.tencent-cloud.net.",
+          "43.159.233.191",
+          "43.159.233.175"
+        ]
+      }
+    },
+    {
+      "domain": "op.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-w34olsuu.ias.tencent-cloud.net.",
+          "43.155.124.51",
+          "43.129.2.77"
+        ]
+      }
+    },
+    {
+      "domain": "p.ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "ins-uemf6bye.ias.tencent-cloud.net.",
+          "43.135.106.77",
+          "43.135.106.65"
+        ]
+      }
+    },
+    {
+      "domain": "public.gdtimg.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "public.gdtimg.com.cdn.dnsv1.com.",
+          "best.sched.sma-dk.tdnsstic1.cn.",
+          "124.95.136.140",
+          "116.131.226.149",
+          "36.249.93.227",
+          "122.193.250.66",
+          "122.188.57.54",
+          "218.61.165.129",
+          "59.83.212.226",
+          "122.188.44.139",
+          "123.6.42.122",
+          "122.188.45.51",
+          "101.72.248.60"
+        ]
+      }
+    },
+    {
+      "domain": "q.i.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "q.i.gdt.qq.com.eo.dnse0.com.",
+          "43.159.108.77"
+        ]
+      }
+    },
+    {
+      "domain": "review.gdtimg.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "review.gdtimg.com.cdn.dnsv1.com.",
+          "812ze4ii.sched.sma-dk.tdnsstic1.cn.",
+          "122.188.44.139",
+          "36.249.93.227",
+          "122.188.57.54",
+          "101.72.248.60",
+          "116.131.226.149",
+          "122.193.250.66",
+          "123.6.42.122",
+          "218.61.165.129",
+          "124.95.136.140",
+          "122.188.45.51"
+        ]
+      }
+    },
+    {
+      "domain": "rm.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "NobyDa AdRule"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "0.0.0.1"
+        ]
+      }
+    },
+    {
+      "domain": "rpt.gdt.qq.com",
+      "purpose": "广告点击、曝光与归因",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "rpt.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "ssp.qq.com",
+      "purpose": "腾讯 SSP 广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "157.255.219.151"
+        ]
+      }
+    },
+    {
+      "domain": "tangram-config.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "tangram-config.gdt.qq.com.cloud.tc.qq.com.",
+          "tangram-config.gdt.qq.com.sched.legopic1.tdnsv6.com.",
+          "43.175.44.34"
+        ]
+      }
+    },
+    {
+      "domain": "ttc.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "203.205.254.156"
+        ]
+      }
+    },
+    {
+      "domain": "union.gdtimg.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "union.gdtimg.com.tcdn.qq.com.",
+          "best.legodlied1.sched.dcloudstc.com.",
+          "116.131.225.198",
+          "218.69.49.181",
+          "183.136.207.66",
+          "157.255.130.189",
+          "183.136.207.65",
+          "36.249.93.232",
+          "116.131.226.145",
+          "122.188.44.140",
+          "116.131.226.151",
+          "116.131.226.143",
+          "183.93.116.78",
+          "116.131.226.150",
+          "116.131.226.152",
+          "14.205.93.185"
+        ]
+      }
+    },
+    {
+      "domain": "v2ii.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "v2ii.gdt.qq.com.eo.dnse0.com.",
+          "43.159.108.77"
+        ]
+      }
+    },
+    {
+      "domain": "v3.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "v3.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "v6ii.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "anti-AD"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "203.205.235.88"
+        ]
+      }
+    },
+    {
+      "domain": "vr.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "vr.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "wxadliteapp.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "wxadliteapp.gdt.qq.com.cloud.tc.qq.com.",
+          "8677768.sched.legopic2.tdnsv6.com.",
+          "203.205.137.101",
+          "203.205.137.57",
+          "203.205.136.219",
+          "203.205.137.209",
+          "203.205.137.228",
+          "203.205.137.181"
+        ]
+      }
+    },
+    {
+      "domain": "wxsnsad.tc.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "AdRules",
+        "HaGeZi Multi Pro",
+        "217heidai China",
+        "SukkaW reject"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "dl1023.tcdn.qq.com.",
+          "42.236.89.11",
+          "42.236.89.15"
+        ]
+      }
+    },
+    {
+      "domain": "x.adnet.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "anti-AD"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "59.36.121.74",
+          "183.61.32.92"
+        ]
+      }
+    },
+    {
+      "domain": "xc.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "high",
+      "matchedSources": [
+        "anti-AD",
+        "HaGeZi Multi Pro",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "xc.gdt.qq.com.eo.dnse0.com.",
+          "43.174.251.16"
+        ]
+      }
+    },
+    {
+      "domain": "xj-landing.gdtimg.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "high",
+      "matchedSources": [
+        "AdRules",
+        "217heidai China"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "xj-landing.gdtimg.com.cloud.tc.qq.com.",
+          "xj-landing.gdtimg.com.sched.legopic2-dk.tdnsv6.com.",
+          "203.205.137.228",
+          "203.205.137.57",
+          "203.205.137.209",
+          "203.205.137.101",
+          "203.205.136.219",
+          "203.205.137.181"
+        ]
+      }
+    },
+    {
+      "domain": "xs.gdt.qq.com",
+      "purpose": "腾讯 GDT/微信广告投放",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "220.194.116.67"
+        ]
+      }
+    },
+    {
+      "domain": "xscdn.gdt.qq.com",
+      "purpose": "广告素材与配置 CDN",
+      "confidence": "experimental",
+      "matchedSources": [
+        "HaGeZi Multi Pro"
+      ],
+      "dns": {
+        "status": 0,
+        "answers": [
+          "xscdn.gdt.qq.com.cloud.tc.qq.com.",
+          "xscdn.gdt.qq.com.legodlied1-dk.sched.dcloudstc.com.",
+          "36.249.93.232",
+          "183.136.207.66",
+          "116.131.226.144",
+          "157.255.130.189",
+          "116.131.226.143",
+          "122.188.44.140",
+          "116.131.226.145",
+          "183.136.207.65",
+          "116.131.226.73",
+          "116.131.226.150",
+          "116.131.226.152",
+          "218.69.49.181",
+          "14.205.93.185",
+          "183.93.116.78"
+        ]
+      }
+    }
+  ],
+  "alreadyCoveredByBroaderRules": [
+    {
+      "domain": "c2.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "c3.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "canvas-cdn.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "canvas.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "d.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "event.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "h5.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "ii.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "ipv4.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "m.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "nc.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "q.i.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "rm.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "rpt.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "tangram-config.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "ttc.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "v2ii.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "v3.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "v6ii.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "vr.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "wxadliteapp.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "x.adnet.qq.com",
+      "broaderRule": "adnet.qq.com",
+      "reason": "现有国内清单已用后缀规则覆盖；本批保留精确广告投放子主机"
+    },
+    {
+      "domain": "xc.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "xs.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    },
+    {
+      "domain": "xscdn.gdt.qq.com",
+      "broaderRule": "gdt.qq.com",
+      "reason": "现有国内/App 清单已用后缀规则覆盖；本批保留精确子主机以建立可审计的 GDT 清单"
+    }
+  ],
+  "excludedCoreHosts": [
+    "login.weixin.qq.com",
+    "long.weixin.qq.com",
+    "mp.weixin.qq.com",
+    "pay.weixin.qq.com",
+    "res.wx.qq.com",
+    "res2.wx.qq.com",
+    "short.weixin.qq.com",
+    "szextshort.weixin.qq.com",
+    "weixin.qq.com",
+    "wx.qq.com"
+  ],
+  "rulesetSha256": "55c5d4d1aa513d00bbaa883167168946f75e1525982b72d9dc2f531c1be386a5"
+}

@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-07-29T10:24:24.211Z",
-  "targetCount": 2000,
-  "policy": "anti-AD and AdRules union with dual-source priority; existing/protected exclusion; China-region sources with .cn/China-platform/ad/CDN semantics; root-domain diversity",
+  "generatedAt": "2026-07-29T13:58:17.587Z",
+  "targetCount": 2060,
+  "baseTargetCount": 2000,
+  "policy": "2,000-domain anti-AD and AdRules base with dual-source priority, plus 60 exact audited Tencent GDT/SSP and WeChat advertising hosts; existing/protected exclusion; no suffix expansion",
   "verificationSources": [
     {
       "name": "anti-AD",
@@ -16,11 +17,11 @@
       "repository": "https://github.com/Cats-Team/AdRules",
       "url": "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules_domainset.txt",
       "license": "0BSD",
-      "sha256": "be48eeba470d5300f16649093fa89150accc2ce26800c16da3a87a6f976e3d1b",
-      "parsedDomains": 180761
+      "sha256": "5bf2e09877b37c023b56ac660ff8b2a73e61ef9a9ade2f3e8b0efdcccb0c9271",
+      "parsedDomains": 180826
     }
   ],
-  "sourceUnionDomains": 203433,
+  "sourceUnionDomains": 203498,
   "dualSourceMatches": 86639,
   "excludedProtected": 3370,
   "excludedAlreadyCovered": 8171,
@@ -31,14 +32,23 @@
     "chinaRelevant": 800,
     "adCdn": 300
   },
-  "selectedExactDomains": 2000,
+  "selectedExactDomains": 2060,
+  "selectedBaseExactDomains": 2000,
   "selectedDualSource": 1416,
   "selectedSingleSource": 584,
+  "wechatSupplement": {
+    "path": "blocklists/wechat-ad-domains-60.list",
+    "selectedExactDomains": 60,
+    "highConfidenceDomains": 41,
+    "experimentalDomains": 19,
+    "directWechatAdvertisingHosts": 3,
+    "rulesetSha256": "55c5d4d1aa513d00bbaa883167168946f75e1525982b72d9dc2f531c1be386a5"
+  },
   "selectedCnTld": 1326,
-  "selectedChinaPlatform": 162,
-  "selectedAdSemantic": 337,
-  "selectedTrackingSemantic": 85,
-  "selectedCdnSemantic": 402,
-  "selectedRootGroups": 1639,
-  "rulesetSha256": "afa4e7a7e131069d3a1cbb082db8c6fb58ad035cb06855e8656fb6842a5328be"
+  "selectedChinaPlatform": 218,
+  "selectedAdSemantic": 373,
+  "selectedTrackingSemantic": 86,
+  "selectedCdnSemantic": 408,
+  "selectedRootGroups": 1642,
+  "rulesetSha256": "98865c906f11c992ea0bbf93ccef556d2937804c472538f983234fbb9db95902"
 }

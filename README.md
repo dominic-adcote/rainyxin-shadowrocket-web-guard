@@ -31,6 +31,8 @@ App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像
   URL Rewrite 或 MITM。
 - 中国广告与广告 CDN 增补也使用独立远程 `RULE-SET`；只拦截精确主机，不扩大到
   CDN、平台或公共机构根域。
+- 微信公众号与朋友圈广告专项条目只列出腾讯 GDT/SSP、素材、点击与归因精确主机；
+  微信登录、支付、消息、公众号正文、小程序和通用媒体主机保持可用。
 
 ## 项目结构
 
@@ -50,8 +52,10 @@ blocklists/imported-niche-local-ad-domains.txt 159 条小众及港美本地广�
 blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
 blocklists/audited-all-ad-tracking.list 双源复核的 22,898 条精确规则
 blocklists/audited-all-ad-tracking.audit.json 可复核的导入统计与 SHA-256
-blocklists/cn-ad-cdn-2000.list     双来源审核的 2,000 条中国广告/CDN 精确规则
+blocklists/cn-ad-cdn-2000.list     2,000 条基础规则及 60 条微信广告专项精确规则
 blocklists/cn-ad-cdn-2000.audit.json 中国广告/CDN 批次统计与 SHA-256
+blocklists/wechat-ad-domains-60.list 微信公众号/朋友圈广告 60 条专项来源
+blocklists/wechat-ad-domains-60.audit.json 微信专项逐域名来源与 DNS 审核
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
@@ -60,6 +64,7 @@ scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
 scripts/audit-all-ad-tracking-import.mjs 大清单双源复核工具
 scripts/audit-cn-ad-cdn-import.mjs  中国广告/CDN 双源复核与抽样工具
+scripts/audit-wechat-ad-domains.mjs 微信公众号/朋友圈广告专项复核工具
 scripts/audit-bilibili-ad-domains.mjs 哔哩哔哩专项复核工具
 scripts/youtube-ad-cleaner.js       YouTube 播放与信息流广告清理器
 scripts/x-ad-cleaner.js             已停用的 X 清理器兼容性参考
@@ -176,10 +181,21 @@ StevenBlack unified hosts 的 25,721 条；再排除 178 条受保护第一方/�
 AdRules 的 180,761 个有效域名，共得到 203,433 个唯一域名，其中 86,639 个精确命中
 两者。对并集排除 3,370 个受保护域名、8,171 个现有覆盖项及登录、支付、银行、下载、
 DNS、更新等敏感主机后，有 7,645 个候选通过语义审核；最终优先选择全部 1,416 个
-双源候选，再加入 584 个单源候选，按根域分散组成 2,000 个精确主机。其中 1,326 个
-为 `.cn`，402 个含 CDN 语义，覆盖 1,639 个根域分组。完整来源快照哈希、筛选数量及输出哈希见
+双源候选，再加入 584 个单源候选，按根域分散组成 2,000 个基础精确主机。其中 1,326 个
+为 `.cn`，402 个含 CDN 语义，覆盖 1,639 个根域分组。此后加入 60 条微信公众号与
+朋友圈广告专项精确主机，当前远程规则集共 2,060 条。完整来源快照哈希、筛选数量及输出哈希见
 `blocklists/cn-ad-cdn-2000.audit.json`。可运行 `npm run audit:cn-ad-cdn` 重新采集；
 上游实时清单变化会使结果与哈希变化，正式发布前必须再次运行完整校验。
+
+微信公众号与朋友圈专项批次从 7 个公开广告/追踪规则源中复核腾讯 GDT、SSP、
+广告素材 CDN、点击、曝光及归因主机，并要求候选当前存在公共 A 或 CNAME 记录。
+60 条中 41 条至少获得两个来源支持，19 条为单源 experimental 候选；其中
+`ad.weixin.qq.com`、`ads.app.wechat.com` 和 `wxsnsad.tc.qq.com` 为微信直接广告
+主机，其余为微信广告使用的腾讯共享投放链路。25 条 GDT/AdNet 精确子主机已经被
+历史后缀规则间接覆盖，本次将其显式记录以便审计，不能计作 25 条新的有效覆盖。
+专项清单不包含 `mp.weixin.qq.com`、登录、支付、消息、公众号内容、小程序或通用
+图片/媒体主机。完整证据见 `blocklists/wechat-ad-domains-60.audit.json`，实机检查见
+`docs/WECHAT-TESTING.md`。
 
 哔哩哔哩专项批次从 6 个公开广告/追踪规则源中检索 B 站自有域名，并要求候选当前
 仍有公共 DNS 记录。`cm.bilibili.com` 已被现有规则覆盖，本次净新增 8 条精确静默
@@ -195,7 +211,7 @@ DNS、更新等敏感主机后，有 7,645 个候选通过语义审核；最终�
 
 双源复核精确广告/追踪域名 22898 条，通过独立远程规则集加载。
 
-双来源审核中国广告/CDN 精确域名 2000 条，通过第二个独立远程规则集加载。
+双来源审核中国广告/CDN 精确域名 2060 条（含微信广告专项），通过第二个独立远程规则集加载。
 
 网页广告清单由多批来源组成：
 

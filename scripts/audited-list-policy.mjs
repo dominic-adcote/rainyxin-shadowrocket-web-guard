@@ -11,6 +11,9 @@ export const CN_AD_CDN_RULESET_URL =
   "https://raw.githubusercontent.com/dominic-adcote/rainyxin-shadowrocket-web-guard/main/" +
   CN_AD_CDN_RULESET_PATH;
 
+export const WECHAT_AD_RULESET_PATH =
+  "blocklists/wechat-ad-domains-60.list";
+
 export const PROTECTED_DOMAIN_SUFFIXES = [
   "adobe.com",
   "alipay.com",

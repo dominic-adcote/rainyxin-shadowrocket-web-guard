@@ -25,6 +25,7 @@ import {
   AUDITED_ALL_RULESET_URL,
   CN_AD_CDN_RULESET_PATH,
   CN_AD_CDN_RULESET_URL,
+  WECHAT_AD_RULESET_PATH,
   isDomainOrChildOf,
   isCnProtectedDomain,
   isCnSensitiveDomain,
@@ -84,6 +85,11 @@ const cnAdCdnRuleSetPath = resolve(projectRoot, CN_AD_CDN_RULESET_PATH);
 const cnAdCdnReportPath = resolve(
   projectRoot,
   "blocklists/cn-ad-cdn-2000.audit.json",
+);
+const wechatAdRuleSetPath = resolve(projectRoot, WECHAT_AD_RULESET_PATH);
+const wechatAdReportPath = resolve(
+  projectRoot,
+  "blocklists/wechat-ad-domains-60.audit.json",
 );
 const rulesetSha256 = (text) =>
   createHash("sha256")
@@ -150,6 +156,10 @@ const auditedReport = JSON.parse(await readFile(auditedReportPath, "utf8"));
 const cnAdCdnRuleSetText = await readFile(cnAdCdnRuleSetPath, "utf8");
 const cnAdCdnRuleDomains = parseExactRuleSet(cnAdCdnRuleSetText);
 const cnAdCdnReport = JSON.parse(await readFile(cnAdCdnReportPath, "utf8"));
+const wechatAdRuleSetText = await readFile(wechatAdRuleSetPath, "utf8");
+const wechatAdRuleDomains = parseExactRuleSet(wechatAdRuleSetText);
+const wechatAdDomainSet = new Set(wechatAdRuleDomains);
+const wechatAdReport = JSON.parse(await readFile(wechatAdReportPath, "utf8"));
 const bilibiliAdCsvText = await readFile(bilibiliAdCsvPath, "utf8");
 const bilibiliAdReport = JSON.parse(
   await readFile(bilibiliAdReportPath, "utf8"),
@@ -229,7 +239,7 @@ for (const domain of auditedRuleDomains) {
 
 const cnAdCdnRuleSetSha256 = rulesetSha256(cnAdCdnRuleSetText);
 if (
-  cnAdCdnRuleDomains.length !== 2000 ||
+  cnAdCdnRuleDomains.length !== 2060 ||
   cnAdCdnRuleDomains.length !== cnAdCdnReport.targetCount ||
   cnAdCdnRuleDomains.length !== cnAdCdnReport.selectedExactDomains ||
   cnAdCdnRuleSetSha256 !== cnAdCdnReport.rulesetSha256
@@ -239,7 +249,8 @@ if (
 if (
   cnAdCdnRuleDomains.some(
     (domain) =>
-      isCnProtectedDomain(domain) || isCnSensitiveDomain(domain),
+      (isCnProtectedDomain(domain) && !wechatAdDomainSet.has(domain)) ||
+      isCnSensitiveDomain(domain),
   )
 ) {
   throw new Error("中国广告/CDN 规则集包含受保护或敏感功能域名");
@@ -248,6 +259,7 @@ if (cnAdCdnRuleDomains.some((domain) => auditedRuleDomainSet.has(domain))) {
   throw new Error("中国广告/CDN 规则集与既有双源复核规则重复");
 }
 for (const domain of cnAdCdnRuleDomains) {
+  if (wechatAdDomainSet.has(domain)) continue;
   const coveredByWeb = unfilteredEntries.some(({ domain: existing }) =>
     isDomainOrChildOf(domain, existing),
   );
@@ -271,11 +283,58 @@ if (
   cnAdCdnCnCount < 650 ||
   cnAdCdnReport.selectedCdnSemantic !== cnAdCdnCdnCount ||
   cnAdCdnReport.selectedCnTld !== cnAdCdnCnCount ||
-  cnAdCdnReport.selectedDualSource + cnAdCdnReport.selectedSingleSource !==
+  cnAdCdnReport.selectedDualSource +
+      cnAdCdnReport.selectedSingleSource +
+      cnAdCdnReport.wechatSupplement.selectedExactDomains !==
     cnAdCdnRuleDomains.length ||
   cnAdCdnReport.selectedDualSource < 1400
 ) {
   throw new Error("中国广告/CDN 规则集分类数量与审核报告不一致");
+}
+
+const wechatAdRuleSetSha256 = rulesetSha256(wechatAdRuleSetText);
+const wechatReportDomains = new Set(
+  wechatAdReport.selected.map(({ domain }) => domain),
+);
+const protectedWechatHosts = new Set(wechatAdReport.excludedCoreHosts);
+if (
+  wechatAdRuleDomains.length !== 60 ||
+  wechatAdDomainSet.size !== 60 ||
+  wechatAdReport.selectedExactDomains !== 60 ||
+  wechatAdReport.highConfidenceDomains !== 41 ||
+  wechatAdReport.experimentalDomains !== 19 ||
+  wechatAdReport.directWechatAdvertisingHosts !== 3 ||
+  wechatAdReport.alreadyCoveredByBroaderRules?.length !== 25 ||
+  wechatAdRuleSetSha256 !== wechatAdReport.rulesetSha256
+) {
+  throw new Error("微信公众号/朋友圈广告专项清单数量、分级或 SHA-256 不一致");
+}
+for (const domain of wechatAdRuleDomains) {
+  const audit = wechatAdReport.selected.find(
+    ({ domain: current }) => current === domain,
+  );
+  if (
+    !wechatReportDomains.has(domain) ||
+    protectedWechatHosts.has(domain) ||
+    !cnAdCdnRuleDomains.includes(domain) ||
+    !audit ||
+    audit.matchedSources.length === 0 ||
+    audit.dns.status !== 0 ||
+    audit.dns.answers.length === 0
+  ) {
+    throw new Error(`微信公众号/朋友圈广告域名未通过独立审核：${domain}`);
+  }
+}
+for (const coreHost of [
+  "login.weixin.qq.com",
+  "mp.weixin.qq.com",
+  "pay.weixin.qq.com",
+  "weixin.qq.com",
+  "wx.qq.com",
+]) {
+  if (cnAdCdnRuleDomains.includes(coreHost)) {
+    throw new Error(`中国广告/CDN 规则集不得包含微信核心主机：${coreHost}`);
+  }
 }
 
 for (const { match, domain } of silentEntries) {
