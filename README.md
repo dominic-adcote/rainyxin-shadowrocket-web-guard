@@ -27,6 +27,8 @@ App 开屏及广告 SDK、诈骗与博彩风险网站，以及广告统计、像
 - App 开屏广告、广告 SDK 与不适合网页跳转的追踪请求使用 `[Rule]` 静默 `REJECT`，不会打开或加载拦截页。
 - 双源复核的大批量广告与追踪器使用远程 `RULE-SET` 和精确 `DOMAIN`，不加入
   URL Rewrite 或 MITM。
+- 中国广告与广告 CDN 增补也使用独立远程 `RULE-SET`；只拦截精确主机，不扩大到
+  CDN、平台或公共机构根域。
 
 ## 项目结构
 
@@ -44,6 +46,8 @@ blocklists/imported-niche-local-ad-domains.txt 159 条小众及港美本地广�
 blocklists/imported-tracker-domains.txt 用户提供的 500 条追踪器规则
 blocklists/audited-all-ad-tracking.list 双源复核的 22,898 条精确规则
 blocklists/audited-all-ad-tracking.audit.json 可复核的导入统计与 SHA-256
+blocklists/cn-ad-cdn-2000.list     双来源审核的 2,000 条中国广告/CDN 精确规则
+blocklists/cn-ad-cdn-2000.audit.json 中国广告/CDN 批次统计与 SHA-256
 blocklists/gambling-domains.csv     双源交叉复核博彩域名清单
 modules/rainyxin-web-guard.sgmodule 生成后的 Shadowrocket 模组
 block-page/                         拦截页、交互逻辑和 9999 端口服务
@@ -51,6 +55,7 @@ deploy/                             systemd 与 Nginx 部署模板
 scripts/generate-module.mjs         模组生成器
 scripts/validate.mjs                清单和产物校验器
 scripts/audit-all-ad-tracking-import.mjs 大清单双源复核工具
+scripts/audit-cn-ad-cdn-import.mjs  中国广告/CDN 双源复核与抽样工具
 scripts/youtube-ad-cleaner.js       YouTube 播放与信息流广告清理器
 scripts/x-ad-cleaner.js             已停用的 X 清理器兼容性参考
 tests/generator.test.mjs            自动化测试
@@ -161,11 +166,22 @@ StevenBlack unified hosts 的 25,721 条；再排除 178 条受保护第一方/�
 完整统计和输入/核验源 SHA-256 见
 `blocklists/audited-all-ad-tracking.audit.json`。
 
+同日再次采集中国广告与广告 CDN 时，审核工具解析 anti-AD 的 109,311 个有效域名和
+AdRules 的 180,761 个有效域名，共得到 203,433 个唯一域名，其中 86,639 个精确命中
+两者。对并集排除 3,370 个受保护域名、8,171 个现有覆盖项及登录、支付、银行、下载、
+DNS、更新等敏感主机后，有 7,645 个候选通过语义审核；最终优先选择全部 1,416 个
+双源候选，再加入 584 个单源候选，按根域分散组成 2,000 个精确主机。其中 1,326 个
+为 `.cn`，402 个含 CDN 语义，覆盖 1,639 个根域分组。完整来源快照哈希、筛选数量及输出哈希见
+`blocklists/cn-ad-cdn-2000.audit.json`。可运行 `npm run audit:cn-ad-cdn` 重新采集；
+上游实时清单变化会使结果与哈希变化，正式发布前必须再次运行完整校验。
+
 ## 已审核的广告网络域名
 
 当前审核统计（2026-07-29）：网页广告域名 1132 条，App 广告来源规则 376 条，追踪器规则 500 条，博彩域名 200 条。
 
 双源复核精确广告/追踪域名 22898 条，通过独立远程规则集加载。
+
+双来源审核中国广告/CDN 精确域名 2000 条，通过第二个独立远程规则集加载。
 
 网页广告清单由多批来源组成：
 

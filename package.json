@@ -1,11 +1,12 @@
 {
   "name": "rainyxin-shadowrocket-web-guard",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "private": true,
   "description": "Shadowrocket module for web ads, App ads, scams, gambling, and tracker blocking.",
   "type": "module",
   "scripts": {
     "build": "node scripts/generate-module.mjs",
+    "audit:cn-ad-cdn": "node scripts/audit-cn-ad-cdn-import.mjs",
     "validate": "node scripts/validate.mjs",
     "test": "node --test tests/generator.test.mjs tests/block-page.test.mjs tests/ad-cleaners.test.mjs",
     "start:block-page": "node block-page/server.mjs",
